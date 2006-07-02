@@ -68,7 +68,6 @@ public class Embedder {
 		String fileName = parts[parts.length - 1]; // filename
 		
 		if (embeddings.get(path) == null && filenames.contains(fileName)) {
-			log.error(fileName + " was embedded twice from different paths");
 			throw new IllegalArgumentException(fileName + " was embedded twice from different paths");
 		}
 		

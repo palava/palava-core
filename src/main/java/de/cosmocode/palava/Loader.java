@@ -86,7 +86,7 @@ public class Loader
 			try {
 				alias.load(new FileInputStream(new File(alias_conf)));
 			} catch (IOException ioe) {
-				logger.error("Alias config file defined but cannot be loaded! (" + ioe + ")");
+				logger.error("Alias config file defined but cannot be loaded!", ioe);
 			}
 		}
 

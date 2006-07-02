@@ -107,7 +107,7 @@ public class Session implements Convertible {
             		try {
 						Destroyable.class.cast(entry.getValue()).destroy();
 					} catch (Exception e) {
-                        log.error("cannot destroy session data " + entry.getKey());
+                        log.error("cannot destroy session data " + entry.getKey(), e);
 					}
             	}
             }
