@@ -23,19 +23,21 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
-import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * manages all components
  * @author Detlef Hüttemann
  */
 public class ComponentManager {
-    
-    private static final Logger logger = Logger.getLogger( ComponentManager.class ) ;
+
+    private static final Logger log = LoggerFactory.getLogger(ComponentManager.class);
     
 	private final Server server;
 	private final Document document;
@@ -50,7 +52,7 @@ public class ComponentManager {
     public void initialize() throws Exception {
         final Element root = document.getRootElement();
         
-        logger.info("ComponentManager initialize start");
+        log.info("ComponentManager initialize start");
 
         List<?> children = root.getChildren();
 
@@ -61,25 +63,32 @@ public class ComponentManager {
                 String clazz = elem.getAttribute("class").getValue();
                 Component component = (Component)Class.forName(clazz).newInstance();
 
-                logger.info("ComponentManager configure " + elem.getName() );
+                log.info("ComponentManager configure " + elem.getName() );
                 component.configure(elem, server);
                 components.put(elem.getName(), component);
         }
 
+        for (ComponentInterceptor interceptor : ServiceLoader.load(ComponentInterceptor.class)) {
+            log.debug("Running interceptor: {}", interceptor);
+            for (Component component : components.values()) {
+                    interceptor.intercept(component);
+            }
+        }
+        
         // compose 
         //
         for (Component component : components.values()) {
-            logger.info("ComponentManager compose " + getComponentName( component, component.getClass().getName() ) );
+            log.info("ComponentManager compose " + getComponentName( component, component.getClass().getName() ) );
             component.compose(this);
         }
 
         // initialize 
         //
         for (Component component : components.values()) {
-            logger.info("ComponentManager initialize " + getComponentName( component, component.getClass().getName() ) );
+            log.info("ComponentManager initialize " + getComponentName( component, component.getClass().getName() ) );
             component.initialize();
         }
-        logger.info("ComponentManager initialize finished");
+        log.info("ComponentManager initialize finished");
     }
 
     public <T extends Component> T lookup(Class<T> component) {
