@@ -107,7 +107,7 @@ public class Server extends Thread
 			if (!components_conf.startsWith(File.separator)) {
 				components_conf = palava_dir + components_conf;
 			}
-            components = new ComponentManager(new File(components_conf), this);
+            components = new DefaultComponentManager(new File(components_conf), this);
             components.initialize();
         } catch (Exception e) {
 			logger.fatal("Cannot initialize components!", e);
