@@ -4,11 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RequestConsumer {
 
-	private static final Logger log = Logger.getLogger(RequestConsumer.class);
+	private static final Logger log = LoggerFactory.getLogger(RequestConsumer.class);
 	
 	public static final ThreadLocal<Session> SESSION = new ThreadLocal<Session>();
 
@@ -53,6 +54,12 @@ public class RequestConsumer {
 		// let the job do his things
 		try {
 			if (process) {
+			    
+			    for (JobInterceptor interceptor : server.getJobInterceptors()) {
+			        log.debug("Running interceptor {} on {}", interceptor, job);
+			        interceptor.intercept(server.components, job);
+			    }
+			    
 			    SESSION.set(session);
 				job.process(request, response, session, server, caddy);
 			}
@@ -93,7 +100,7 @@ public class RequestConsumer {
 	
 	private void log(String job, Exception e) {
 	    
-	    StringBuilder message = new StringBuilder();
+	    final StringBuilder message = new StringBuilder();
 	    message.
 	        append("Req: ").
 	        append(job).append(" ").
@@ -104,7 +111,7 @@ public class RequestConsumer {
 	        message.append(" (").append(e.getMessage()).append(")");
 	    }
 	    
-	    log.debug(message);
+	    log.debug(message.toString());
 	}
 
 	private void createErrorResponse(Response response, Exception e) {
