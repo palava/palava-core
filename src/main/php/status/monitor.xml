@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monitor name="Monitor Test" library="../Palava.php">
+
+	<!-- default tests for alle machines and palava instances -->
+	
+	<machinedefault>
+		<System type="shell">
+			uname -a
+		</System>
+		
+		<Uptime type="shell">
+			uptime
+		</Uptime>
+		
+		<palavadefault>
+			<TotalMemory type="js" order="asc" critical="1000" warning="700" important="600" round="2" unit="MB" align="right">
+				bytes = java.lang.Runtime.getRuntime().totalMemory() / 1024 / 1024;
+				out.write(bytes.toString());
+			</TotalMemory>
+			
+			<FreeMemory type="js" order="desc" critical="1" warning="30" important="70" round="2" unit="MB" align="right">
+				bytes = java.lang.Runtime.getRuntime().freeMemory() / 1024 / 1024;
+				out.write(bytes.toString());
+			</FreeMemory>
+			
+			<MaxMemory type="js" order="asc" critical="1000" warning="700" important="600" round="2" unit="MB" align="right">
+				bytes = java.lang.Runtime.getRuntime().maxMemory() / 1024 / 1024;
+				out.write(bytes.toString());
+			</MaxMemory>
+		</palavadefault>
+	</machinedefault>
+	
+
+	<!-- specific machine and palava instance configurations -->	
+	
+	<machine name="Lokales Testbackend" host="localhost">
+		<palava name="Test" port="2007" />
+	</machine>
+
+	<machine name="TheLabelFinder Snapshot" host="snapshot.tlf.cosmocode.de">
+		<palavadefault>			
+			<TotalMemory important="510" />
+			<FreeMemory important="150" warning="100" critical="50" />
+			<MaxMemory important="510" />
+		</palavadefault>
+		
+		<Users type="shell">
+			users
+		</Users>
+		
+		
+		<palava name="Business" port="2007" />
+		<palava name="Office" port="2010" />
+		<palava name="Premium" port="5555" />
+	</machine>
+</monitor>

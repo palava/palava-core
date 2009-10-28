@@ -1,0 +1,174 @@
+* {
+	font-family: Verdana;
+	font-size: 12px;
+
+	margin: 0px;
+	padding: 0px;
+
+	background-color: #cccccc;
+}
+
+body {
+	text-align: center;
+}
+
+div#main {
+	text-align: left;
+	margin: 0 auto;
+	margin-top: 5px;
+	width: 1000px;
+	border: 1px solid;
+}
+
+div#main * {
+	background-color: white;
+}
+
+
+/***** HEADER *****/
+
+div#header {
+	background-image: url(./logo.png);
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+
+	padding: 5px;
+	padding-left: 190px;
+
+	height: 80px
+
+}
+
+
+h1 {
+	font-size: 32px;
+	margin-bottom: 5px;
+}
+
+
+h2 {
+	font-size: 16px;
+}
+
+h2#error {
+	color: #ff0000;
+}
+
+h2#session {
+	color: #0000ff;
+	font-size: 12px;
+}
+
+h2#version_fe {
+	font-size: 10px;
+}
+
+h2#version_be {
+	font-size: 10px;
+}
+
+
+/***** FOOTER *****/
+
+div#footer {
+	text-align: center;
+
+	padding: 2px;
+
+	border-top: 1px solid;
+}
+
+
+/***** BODY *****/
+
+div#output {
+	margin: 10px;
+	padding: 10px;
+
+	border: 1px solid #777777;
+}
+
+div#java {
+	float: left;
+
+	width: 499px;
+	height: 450px;
+	border-right: 1px solid;
+	border-bottom: 1px solid;
+}
+
+div#raw {
+	float: right;
+
+	width: 500px;
+	height: 450px;
+	border-bottom: 1px solid;
+}
+
+h3 {
+	background-color: black !important;
+	color: white;
+
+	text-align: center;
+	font-size: 14px;
+
+	padding: 3px;
+}
+
+
+
+div.protocolbox {
+	margin: 15px;
+}
+
+h4 {
+	background-color: black !important;
+	color: white;
+}
+
+p.protocol {
+	border: 1px solid;
+	border-top: 0;
+	padding: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-family: "Courier New", Courier;
+}
+
+select.type {
+	border: 0;
+	font-family: "Courier New", Courier;
+}
+
+input.job {
+	border: 0;
+	background-color: #cccccc !important;
+	font-family: "Courier New", Courier;
+}
+
+input.sessionid {
+	border: 0;
+	background-color: #cccccc !important;
+	font-family: "Courier New", Courier;
+}
+
+input.length {
+	border: 0;
+	background-color: #cccccc !important;
+	text-align: right;
+	font-family: "Courier New", Courier;
+}
+
+textarea.content {
+	border: 0;
+	width: 100%;
+	height: 150px;
+	background-color: #cccccc !important;
+	font-family: "Courier New", Courier;
+}
+
+input.reqsubmit {
+	border: 1px solid;
+	width: 100px;
+	margin: 1px;
+}
