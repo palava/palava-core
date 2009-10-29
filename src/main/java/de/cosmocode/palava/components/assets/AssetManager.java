@@ -158,7 +158,7 @@ public class AssetManager  {
      * @param assetId the id of the asset this method is looking for
      * @return an id/name-list of all directories containing
      * the asset with the given assetID
-     * @author schoenborn
+     * @author schoenborn@cosmocode.de
      */
 	@SuppressWarnings("unchecked")
 	public Map<Long, String> getDirectoryIdsForAsset(Long assetId) {

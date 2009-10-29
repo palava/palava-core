@@ -20,7 +20,7 @@ import org.jdom.Element;
 /**
  * Creates org.apache.commons.mail.Email Objects from XML-Templates.
  * 
- * @author schoenborn
+ * @author schoenborn@cosmocode.de
  *
  */
 class EmailFactory {
