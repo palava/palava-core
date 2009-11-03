@@ -12,7 +12,7 @@
     <version>1.3</version>
   </parent>
   <scm>
-    <developerConnection>scm:svn:http://commons.svn.cosmocode.de/palava-core/tags/1.3.1</developerConnection>
+    <developerConnection>scm:svn:http://palava.svn.cosmocode.de/palava-core/tags/1.3.1</developerConnection>
   </scm>
   <repositories>
   	<repository>
