@@ -7,9 +7,10 @@
   <name>Palava Core</name>
   <url>http://palava.cosmocode.de</url>
   <parent>
-    <groupId>de.cosmocode</groupId>
-    <artifactId>cosmocode-parent</artifactId>
-    <version>1.3</version>
+  	<artifactId>palava-parent</artifactId>
+    <groupId>de.cosmocode.palava</groupId>
+    <version>1.4-SNAPSHOT</version>
+    <relativePath>../palava-parent</relativePath>
   </parent>
   <scm>
     <developerConnection>scm:svn:http://palava.svn.cosmocode.de/palava-core/trunk</developerConnection>
@@ -97,6 +98,11 @@
     <dependency>
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>de.cosmocode</groupId>
+    	<artifactId>cosmocode-json</artifactId>
+    	<version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

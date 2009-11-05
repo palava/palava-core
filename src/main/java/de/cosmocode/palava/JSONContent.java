@@ -29,78 +29,90 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 import org.json.extension.JSONEncoder;
 
-/**
- * use the JSONConverter to produce JSON output of java objects
- * @author Detlef Hüttemann
- */
-public class JSONContent extends Content
-{
+import de.cosmocode.json.JSONRenderer;
+import de.cosmocode.patterns.Immutable;
 
-    public static final JSONContent EMPTY;
+/**
+ * use the JSONConverter to produce JSON output of java objects.
+ * 
+ * @author Detlef Hüttemann
+ * @author Willi Schoenborn
+ */
+@Immutable
+public class JSONContent extends Content {
+
+    public static final JSONContent EMPTY = new JSONContent(new JSONObject());
     
-    static {
-        try {
-            EMPTY = new JSONContent(new JSONObject());
-        } catch (ConversionException e) {
-            throw new RuntimeException(e);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+    private final byte [] bytes;
+    
+    public JSONContent(JSONRenderer renderer) {
+        if (renderer == null) throw new NullPointerException("Renderer must not be null");
+        bytes = renderer.toString().getBytes();
     }
     
-    byte [] _bytes;
+    public JSONContent(JSONObject object) {
+        if (object == null) throw new NullPointerException("JSONObject must not be null");
+        bytes = object.toString().getBytes();
+    }
     
-    public JSONContent( Object object ) throws ConversionException, JSONException {
-    	
-        if ( object == null ) {
-            _bytes = "null".getBytes();
-        } else if ( object instanceof JSONObject 
-        		 || object instanceof JSONArray
-        		 || object instanceof JSONConstructor) {
-    		_bytes = object.toString().getBytes();
-        } else if ( object instanceof JSONEncoder ) {
-            JSONStringer builder = new JSONStringer();
-            ((JSONEncoder)object).encodeJSON(builder);
-    		_bytes = builder.toString().getBytes();
-    	} else if (object instanceof Iterable<?>) {
-    		Iterable<?> list = (Iterable<?>) object;
-    	    JSONConstructor json = new JSONStringer();    	    
-    	    json.array();    	    
-    	    for (Object e : list) {
-    	        if (e instanceof JSONEncoder) {
-    	            ((JSONEncoder) e).encodeJSON(json);
-    	        } else {
-    	            json.value(e);
-    	        }
-    	    }    	    
-    	    json.endArray();    	    
-    	    _bytes = json.toString().getBytes();
-    	} else if (object instanceof Map<?, ?>) {
-    	    Map<?, ?> map = (Map<?, ?>) object;
-    	    JSONConstructor json = new JSONStringer();    	    
-    	    json.object();
-    	    for (Map.Entry<?, ?> entry : map.entrySet()) {
-    	        json.key(entry.getKey().toString());
-    	        if (entry.getValue() instanceof JSONEncoder) {
-    	            ((JSONEncoder) entry.getValue()).encodeJSON(json);    	            
-    	        } else {
-    	            json.value(entry.getValue());
-    	        }
-    	    }
-    	    json.endObject();    	    
-    	    _bytes = json.toString().getBytes();
-    	} else {
-    		JSONConverter converter = new JSONConverter () ;
-    		StringBuffer buf = new StringBuffer () ;
-    		converter.convert( buf, object ) ;
-            _bytes = buf.toString().getBytes();
-    	}
-    	
-        _length = _bytes.length;
+    public JSONContent(JSONArray array) {
+        if (array == null) throw new NullPointerException("JSONArray must not be null");
+        bytes = array.toString().getBytes();
+    }
+    
+    public JSONContent(JSONConstructor constructor) {
+        if (constructor == null) throw new NullPointerException("JSONConstructor must not be null");
+        bytes = constructor.toString().getBytes();
+    }
+    
+    public JSONContent(Object object) throws ConversionException, JSONException {
+        if (object == null) {
+            bytes = "null".getBytes();
+        } else if (object instanceof JSONEncoder) {
+            final JSONStringer builder = new JSONStringer();
+            ((JSONEncoder) object).encodeJSON(builder);
+            bytes = builder.toString().getBytes();
+        } else if (object instanceof Iterable<?>) {
+            final Iterable<?> list = (Iterable<?>) object;
+            final JSONConstructor json = new JSONStringer();            
+            json.array();            
+            for (Object e : list) {
+                if (e instanceof JSONEncoder) {
+                    ((JSONEncoder) e).encodeJSON(json);
+                } else {
+                    json.value(e);
+                }
+            }            
+            json.endArray();            
+            bytes = json.toString().getBytes();
+        } else if (object instanceof Map<?, ?>) {
+            final Map<?, ?> map = (Map<?, ?>) object;
+            final JSONConstructor json = new JSONStringer();            
+            json.object();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                json.key(entry.getKey().toString());
+                if (entry.getValue() instanceof JSONEncoder) {
+                    ((JSONEncoder) entry.getValue()).encodeJSON(json);                    
+                } else {
+                    json.value(entry.getValue());
+                }
+            }
+            json.endObject();            
+            bytes = json.toString().getBytes();
+        } else {
+            final JSONConverter converter = new JSONConverter();
+            final StringBuffer buf = new StringBuffer();
+            converter.convert(buf, object);
+            bytes = buf.toString().getBytes();
+        }
+        
+        _length = bytes.length;
         _mime = MimeType.JSON;
     }
     
-    public void write( OutputStream out ) throws IOException {
-        out.write( _bytes, 0, (int)_length );
+    @Override
+    public void write(OutputStream out) throws IOException {
+        out.write(bytes, 0, (int) _length);
     }
+    
 }
