@@ -16,15 +16,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 package de.cosmocode.palava;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * convert a java object into json
+ * Converts a java object into json.
+ * 
  * @author Detlef Huettemann
  */
 public class JSONConverter extends ContentConverter {

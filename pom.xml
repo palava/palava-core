@@ -18,15 +18,23 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.google.code.maven-license-plugin</groupId>
+        <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>1.4.0</version>
+        <version>1.5.0</version>
         <configuration>
           <header>src/etc/header</header>
           <includes>
             <include>**/*.java</include>
           </includes>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
