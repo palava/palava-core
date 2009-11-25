@@ -19,7 +19,7 @@
 
 package de.cosmocode.palava;
 
-public class UncachableException extends Exception {
+public class UncachableException extends RuntimeException {
     
     private static final long serialVersionUID = -4123365865843473019L;
 
