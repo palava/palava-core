@@ -20,17 +20,21 @@
 package de.cosmocode.palava;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.Maps;
 
 /**
  * manages all components
@@ -40,13 +44,24 @@ public class DefaultComponentManager implements ComponentManager {
 
     private static final Logger log = LoggerFactory.getLogger(ComponentManager.class);
     
-	private final Server server;
-	private final Document document;
-	
-    private final Map<String,Component> components = new LinkedHashMap<String,Component>();
+    private final Server server;
+    private final Document document;
+    
+    /**
+     * TODO make it a {@link BiMap}.
+     */
+    private final Map<String, Component> components = Maps.newLinkedHashMap();
 
-    public DefaultComponentManager (File file, Server server) throws Exception {
-		this.server = server;
+    /**
+     * TODO throw meaningful exception
+     * 
+     * @param file
+     * @param server
+     * @throws JDOMException
+     * @throws IOException
+     */
+    public DefaultComponentManager(File file, Server server) throws JDOMException, IOException {
+        this.server = server;
         document = new SAXBuilder().build(file);
     }
 
@@ -55,46 +70,40 @@ public class DefaultComponentManager implements ComponentManager {
         
         log.info("ComponentManager initialize start");
 
-        List<?> children = root.getChildren();
+        final List<?> children = root.getChildren();
 
-        // construct
-        //
-        for (Iterator<?> iter = children.iterator(); iter.hasNext(); ) {
-            Element elem = (Element) iter.next();
-                String clazz = elem.getAttribute("class").getValue();
-                Component component = (Component)Class.forName(clazz).newInstance();
+        for (final Iterator<?> iterator = children.iterator(); iterator.hasNext(); ) {
+            final Element element = (Element) iterator.next();
+            final String clazz = element.getAttribute("class").getValue();
+            final Component component = Class.forName(clazz).asSubclass(Component.class).newInstance();
 
-                log.info("ComponentManager configure " + elem.getName() );
-                component.configure(elem, server);
-                components.put(elem.getName(), component);
+            log.info("ComponentManager configure " + element.getName());
+            component.configure(element, server);
+            components.put(element.getName(), component);
         }
 
         for (ComponentInterceptor interceptor : ServiceLoader.load(ComponentInterceptor.class)) {
             log.debug("Running interceptor: {}", interceptor);
             
             for (Component component : components.values()) {
-                    interceptor.intercept(this, component);
+                interceptor.intercept(this, component);
             }
         }
         
-        // compose 
-        //
         for (Component component : components.values()) {
-            log.info("ComponentManager compose " + getComponentName( component, component.getClass().getName() ) );
+            log.info("ComponentManager compose " + getComponentName(component, component.getClass().getName()));
             component.compose(this);
         }
 
-        // initialize 
-        //
         for (Component component : components.values()) {
-            log.info("ComponentManager initialize " + getComponentName( component, component.getClass().getName() ) );
+            log.info("ComponentManager initialize " + getComponentName(component, component.getClass().getName()));
             component.initialize();
         }
         log.info("ComponentManager initialize finished");
     }
 
     public <T extends Component> T lookup(Class<T> component) {
-    	return lookup(component, component.getSimpleName());
+        return lookup(component, component.getSimpleName());
     }
     
     public <T extends Component> T lookup(Class<T> spec, String name) {
@@ -103,9 +112,9 @@ public class DefaultComponentManager implements ComponentManager {
         return t;
     }
 
-    private String getComponentName( Component instance, String notFoundValue ) {
-        for( Map.Entry<String,Component> me :components.entrySet() ) {
-            if ( me.getValue() == instance ) return me.getKey();
+    private String getComponentName(Component instance, String notFoundValue) {
+        for (Map.Entry<String, Component> me : components.entrySet()) {
+            if (me.getValue() == instance) return me.getKey();
         }
         return notFoundValue;
     }
