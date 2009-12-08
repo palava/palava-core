@@ -118,8 +118,8 @@ public class DefaultComponentManager implements ComponentManager {
     @Override
     public void shutdown() {
         for (Component component : components.values()) {
-            if (component instanceof ManagedService) {
-                ManagedService.class.cast(component).shutdown();
+            if (component instanceof Service) {
+                Service.class.cast(component).shutdown();
             }
         }
     }

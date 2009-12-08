@@ -22,12 +22,12 @@ package de.cosmocode.palava;
 import org.jdom.Element;
 
 /**
- * A {@link ManagedService} is a {@link Component}
+ * A {@link Service} is a {@link Component}
  * with more lifecycle methods.
  *
  * @author Willi Schoenborn
  */
-public interface ManagedService extends Component {
+public interface Service extends Component {
 
     @Override
     void configure(Element root, Server server);

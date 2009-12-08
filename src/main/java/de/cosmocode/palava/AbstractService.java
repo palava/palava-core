@@ -22,12 +22,12 @@ package de.cosmocode.palava;
 import org.jdom.Element;
 
 /**
- * An abstract implementation of the {@link ManagedService} interface
+ * An abstract implementation of the {@link Service} interface
  * which implements all methods with an empty block.
  *
  * @author Willi Schoenborn
  */
-public abstract class AbstractService implements ManagedService {
+public abstract class AbstractService implements Service {
 
     @Override
     public void configure(Element root, Server server) {
