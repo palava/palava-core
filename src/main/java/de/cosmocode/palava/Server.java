@@ -212,6 +212,8 @@ public class Server extends Thread {
             }
             catch (Exception ex) {}
 
+            components.shutdown();
+            
             // destroy all sessions
             sessions.purge(-1);
         }
@@ -227,7 +229,7 @@ public class Server extends Thread {
 
 
     // everyone can ask here to shutdown their functions
-    public Boolean shutdown_initiated()
+    public boolean shutdown_initiated()
     {
         return shutdown;
     }

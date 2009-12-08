@@ -27,4 +27,6 @@ public interface ComponentManager {
     
     <T extends Component> T lookup(Class<T> spec, String name);
     
+    void shutdown();
+    
 }

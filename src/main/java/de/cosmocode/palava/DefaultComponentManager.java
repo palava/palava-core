@@ -33,7 +33,6 @@ import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Maps;
 
 /**
@@ -47,9 +46,6 @@ public class DefaultComponentManager implements ComponentManager {
     private final Server server;
     private final Document document;
     
-    /**
-     * TODO make it a {@link BiMap}.
-     */
     private final Map<String, Component> components = Maps.newLinkedHashMap();
 
     /**
@@ -117,5 +113,14 @@ public class DefaultComponentManager implements ComponentManager {
             if (me.getValue() == instance) return me.getKey();
         }
         return notFoundValue;
+    }
+    
+    @Override
+    public void shutdown() {
+        for (Component component : components.values()) {
+            if (component instanceof ManagedService) {
+                ManagedService.class.cast(component).shutdown();
+            }
+        }
     }
 }
