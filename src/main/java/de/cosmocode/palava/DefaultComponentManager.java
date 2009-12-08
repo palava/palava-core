@@ -119,7 +119,12 @@ public class DefaultComponentManager implements ComponentManager {
     public void shutdown() {
         for (Component component : components.values()) {
             if (component instanceof Service) {
-                Service.class.cast(component).shutdown();
+                try {
+                    Service.class.cast(component).shutdown();
+                } catch (RuntimeException e) {
+                    log.warn("Uncaught Exception while shutting down " + component, e);
+                    continue;
+                }
             }
         }
     }
