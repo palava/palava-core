@@ -49,21 +49,29 @@ public class JSONContent extends Content {
     public JSONContent(JSONRenderer renderer) {
         if (renderer == null) throw new NullPointerException("Renderer must not be null");
         bytes = renderer.toString().getBytes();
+        _length = bytes.length;
+        _mime = MimeType.JSON;
     }
     
     public JSONContent(JSONObject object) {
         if (object == null) throw new NullPointerException("JSONObject must not be null");
         bytes = object.toString().getBytes();
+        _length = bytes.length;
+        _mime = MimeType.JSON;
     }
     
     public JSONContent(JSONArray array) {
         if (array == null) throw new NullPointerException("JSONArray must not be null");
         bytes = array.toString().getBytes();
+        _length = bytes.length;
+        _mime = MimeType.JSON;
     }
     
     public JSONContent(JSONConstructor constructor) {
         if (constructor == null) throw new NullPointerException("JSONConstructor must not be null");
         bytes = constructor.toString().getBytes();
+        _length = bytes.length;
+        _mime = MimeType.JSON;
     }
     
     public JSONContent(Object object) throws ConversionException, JSONException {
