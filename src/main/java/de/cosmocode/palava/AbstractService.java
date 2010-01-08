@@ -30,7 +30,7 @@ import org.jdom.Element;
 public abstract class AbstractService implements Service {
 
     @Override
-    public void configure(Element root, Server server) {
+    public void configure(Element root, Server neverUsed) {
 
     }
     
@@ -40,7 +40,7 @@ public abstract class AbstractService implements Service {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws ServiceInitializationException {
 
     }
 

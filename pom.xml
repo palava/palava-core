@@ -107,7 +107,7 @@
       <artifactId>mysql-connector-java</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-email</groupId>
+      <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
     </dependency>
     <dependency>

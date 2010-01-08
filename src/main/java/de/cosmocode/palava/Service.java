@@ -42,7 +42,7 @@ public interface Service extends Component {
     void compose(ComponentManager manager);
     
     @Override
-    void initialize();
+    void initialize() throws ServiceInitializationException;
     
     /**
      * Called when the server is about to shutdown.
