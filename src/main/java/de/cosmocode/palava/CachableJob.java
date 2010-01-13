@@ -20,6 +20,7 @@
 package de.cosmocode.palava;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
@@ -30,6 +31,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
+import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.JSONContent;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.TextContent;
+import de.cosmocode.palava.core.protocol.TextRequest;
+import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.utils.ObjectSizeCalculator;
 
 
@@ -38,11 +48,11 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     //  methods implemented from UtilityJob
 
     @Override
-    public String getMandatory(String key) throws MissingArgumentException, Exception {
+    public String getMandatory(String key) throws Exception {
         throw new UnsupportedOperationException();
     }
     @Override
-    public String getMandatory(String key, String argumentType) throws MissingArgumentException, Exception {
+    public String getMandatory(String key, String argumentType) throws Exception {
         throw new UnsupportedOperationException();
     }
     @Override
@@ -124,7 +134,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     public abstract void process (Request request,
             Response response, 
             Server server, 
-            Session session, 
+            HttpSession session, 
             Map<String, Object> caddy)
     throws ConnectionLostException, Exception;
     
@@ -146,9 +156,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      */
     protected Object getArguments (Request request) throws Exception, UncachableException {
         if (request instanceof DataRequest) {
-            return request.as(DataRequest.class).getArguments();
-        } else if (request instanceof JSONRequest) {
-            return ((JSONRequest)request).getText();
+            return ((DataRequest) request).getArguments();
         } else if (request instanceof TextRequest) {
             return ((TextRequest)request).getText();
         } else {
@@ -159,7 +167,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     /**
      * Returns the CacheItem for the job-call or null if caching is not supported.
      */
-    protected CacheItem getCacheItem (Request request, Session session, Server server, Map<String, Object> caddy) throws Exception {
+    protected CacheItem getCacheItem (Request request, HttpSession session, Server server, Map<String, Object> caddy) throws Exception {
         final String language = session == null ? null : (String) session.get("lang");
         
         // we need a language for caching
@@ -167,7 +175,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
         
         try {
             // normal behaviour
-            return new CacheItem(this, getArguments(request), language, request.header.getContentLength());
+            return new CacheItem(this, getArguments(request), language, request.getHeader().getContentLength());
         } catch (UncachableException e) {
             // no caching for this job
             logger.warn("getArguments not supported by job " + this.getClass().getCanonicalName(), e);
@@ -255,7 +263,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     @Override
     public final void process(Request request,
             Response response,
-            Session session,
+            HttpSession session,
             Server server,
             Map<String, Object> caddy)
     throws ConnectionLostException, Exception {
@@ -299,8 +307,8 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
         }
     }
     
-    
-    public static class ImmutableContent extends Content {
+    // TODO move to own file
+    public static class ImmutableContent implements Content {
         
         private final Content wrapped;
         
@@ -318,18 +326,9 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
             return wrapped.getMimeType();
         }
 
-        @Override
-        public void setLength(long length) {
-            throw new UnsupportedOperationException();
-        }
 
         @Override
-        public void setMimeType(MimeType mime) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void write(OutputStream out) throws Exception {
+        public void write(OutputStream out) throws IOException {
             wrapped.write(out);
         }
         

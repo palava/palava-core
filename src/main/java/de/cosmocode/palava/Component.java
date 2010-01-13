@@ -19,13 +19,21 @@
 
 package de.cosmocode.palava;
 
+import org.jdom.Element;
 
 /**
+ * Deprecated version of {@link Service}. 
+ * 
  * @author Detlef Hüttemann
+ * @deprecated use lifecycle interfaces
  */
-public interface Component
-{
-    public void configure(org.jdom.Element root, Server server) throws ComponentException;
+@Deprecated
+public interface Component {
+    
+    public void configure(Element root, Server server) throws ComponentException;
+    
     public void compose(ComponentManager manager) throws ComponentException;
-    public void initialize() throws Exception;
+    
+    public void initialize() throws ComponentException;
+    
 }

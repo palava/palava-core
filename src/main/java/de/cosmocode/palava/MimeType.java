@@ -19,46 +19,79 @@
 
 package de.cosmocode.palava;
 
+import com.google.common.base.Preconditions;
+
+import de.cosmocode.patterns.Immutable;
 
 /**
- * a mimetype and some static mimetypes
+ * MimeTypes define a content type.
+ * 
  * @author Detlef Hüttemann
+ * @author Willi Schoenborn
  */
-public class MimeType
-{
-    private String _type;
-    private int _slash;
-
-	public static final MimeType Error = new MimeType("application/error");
+@Immutable
+public class MimeType {
+    
+    public static final MimeType ERROR = new MimeType("application/error");
     public static final MimeType PHP = new MimeType("application/x-httpd-php");
     public static final MimeType JSON = new MimeType("application/json");
-	public static final MimeType Text = new MimeType("text/plain");
-	public static final MimeType XML = new MimeType("application/xml");
-	public static final MimeType HTML = new MimeType("text/html");
-	public static final MimeType Image = new MimeType("image/*");
-	public static final MimeType Jpeg = new MimeType("image/jpeg");
-	
+    public static final MimeType TEXT = new MimeType("text/plain");
+    public static final MimeType XML = new MimeType("application/xml");
+    public static final MimeType HTML = new MimeType("text/html");
+    public static final MimeType IMAGE = new MimeType("image/*");
+    public static final MimeType JPEG = new MimeType("image/jpeg");
+    
+    private final String type;
 
-    public MimeType( String type ) {
-        if ( type == null ) throw new NullPointerException("MimeType");
-        _type = type;
-        _slash = _type.indexOf("/");
-        if ( _slash <0 || _slash == _type.length()-1 )
-        	throw new IllegalArgumentException("missing '/' in mimetype declaration");
+    public MimeType(String type) {
+        this.type = Preconditions.checkNotNull(type, "MimeType");
+        final int slash = type.indexOf("/");
+        Preconditions.checkArgument(slash >= 0, "Type contains no /");
+        Preconditions.checkArgument(slash == type.length() - 1, "Type ends with /");
     }
 
-    public String toString() {
-        return _type;
-    }
-    public boolean equals( Object o ) {
-        return (o instanceof MimeType) && _type.equals(((MimeType)o)._type);
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
     }
 
-    /** returns the part after the '/'
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof MimeType)) {
+            return false;
+        }
+        final MimeType other = (MimeType) obj;
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns the part after the '/'.
+     * 
+     * @return the minor part
      */
-	public String getMinor() {
-		
-		return _type.substring(_slash+1);
-	}
+    public String getMinor() {
+        return type.substring(type.indexOf("/") + 1);
+    }
+    
+    @Override
+    public String toString() {
+        return type;
+    }
 
 }

@@ -20,6 +20,7 @@
 package de.cosmocode.palava.components;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.jdom.Element;
@@ -63,11 +64,12 @@ public class DBCPDatabase extends Database implements Component
 
     public void compose (ComponentManager mngr) {}
 
-    public void initialize () throws Exception
-	{
-        // check availability of connections
-        //
-        Connection conn = ds.getConnection();
-        conn.close();
+    public void initialize () throws ComponentException {
+        try {
+            Connection conn = ds.getConnection();
+            conn.close();
+        } catch (SQLException e) {
+            throw new ComponentException(e);
+        }
     }
 }

@@ -19,12 +19,22 @@
 
 package de.cosmocode.palava;
 
-
 /**
- * marks an object to be usable with a converter
+ * marks an object to be usable with a converter.
+ * 
  * @author Detlef Hüttemann
+ * @deprecated use JSONMapable instead
  */
-public interface Convertible
-{
-    public void convert( StringBuffer buf, ContentConverter converter ) throws ConversionException;
+@Deprecated
+public interface Convertible {
+    
+    /**
+     * Converts this object using the given converter.
+     * 
+     * @param buf the target buffer
+     * @param converter the {@linkplain ContentConverter content converter} used to convert this object
+     * @throws ConversionException if conversion failed
+     */
+    void convert(StringBuffer buf, ContentConverter converter) throws ConversionException;
+    
 }

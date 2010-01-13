@@ -24,7 +24,7 @@ package de.cosmocode.palava;
  *
  * @author Willi Schoenborn
  */
-public final class ServiceInitializationException extends Exception {
+public final class ServiceInitializationException extends RuntimeException {
 
     private static final long serialVersionUID = 3953941499290200392L;
 

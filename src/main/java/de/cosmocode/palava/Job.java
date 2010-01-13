@@ -21,6 +21,10 @@ package de.cosmocode.palava;
 
 import java.util.Map;
 
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
+
 
 /**
  * every job has to have a process() function
@@ -38,6 +42,6 @@ public interface Job
 	 * @throws ConnectionLostException
 	 * @throws Exception
 	 */
-	public void process(Request request, Response response, Session session, Server server, Map<String,Object> caddy ) throws ConnectionLostException, Exception;
+	public void process(Request request, Response response, HttpSession session, Server server, Map<String,Object> caddy ) throws ConnectionLostException, Exception;
 
 }

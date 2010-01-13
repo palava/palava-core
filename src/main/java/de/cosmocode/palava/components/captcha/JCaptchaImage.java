@@ -87,15 +87,20 @@ public class JCaptchaImage implements Captcha {
 		captchaEngine = new PalavaGimpyEngine();
 
         Element child = root.getChild("imagecaptcha");
-        if ( child == null ) throw new ComponentException("missing config node 'imagecaptcha'", this);
+        if ( child == null ) throw new ComponentException("missing config node 'imagecaptcha'");
 		captchaEngine.configure( child,server);
 
 	}
 
 	@Override
-	public void initialize() throws Exception {
+	public void initialize() throws ComponentException {
 		
-        captchaEngine.initialize();
+        try {
+            captchaEngine.initialize();
+        } catch (Exception e) {
+            throw new ComponentException(e);
+        }
+        
 		service = new DefaultManageableImageCaptchaService(
             new FastHashMapCaptchaStore(),
             captchaEngine,

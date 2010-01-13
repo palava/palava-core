@@ -23,12 +23,12 @@ import java.util.Map;
 
 import de.cosmocode.palava.CachableJob;
 import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 public abstract class CachableDataJob extends CachableJob {
 	
@@ -36,7 +36,7 @@ public abstract class CachableDataJob extends CachableJob {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final void process(Request request, Response response, Server server, Session session, 
+	public final void process(Request request, Response response, Server server, HttpSession session, 
 		Map<String, Object> caddy) throws ConnectionLostException, Exception {
 		
 		DataRequest dataRequest = (DataRequest) request;
@@ -45,7 +45,7 @@ public abstract class CachableDataJob extends CachableJob {
 		process(args, response, session, server, caddy);
 	}
 	
-	protected abstract void process(Map<String, String> args, Response response, Session session, Server server, 
+	protected abstract void process(Map<String, String> args, Response response, HttpSession session, Server server, 
 		Map<String, Object> caddy) throws ConnectionLostException, Exception;
     
     

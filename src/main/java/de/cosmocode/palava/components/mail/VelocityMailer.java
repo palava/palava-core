@@ -79,8 +79,12 @@ public class VelocityMailer implements Mailer, Component {
 	}
 
 	@Override
-	public void initialize() throws Exception {
-		engine.init(properties);
+	public void initialize() throws ComponentException {
+		try {
+            engine.init(properties);
+        } catch (Exception e) {
+            throw new ComponentException(e);
+        }
 	}
 	
 	@Override

@@ -20,6 +20,7 @@
 package de.cosmocode.palava.components;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
@@ -70,14 +71,13 @@ public class Database implements Component {
 
     public void compose (ComponentManager mngr) {}
 
-    public void initialize () throws Exception
-	{
-
-        // check availability of connections
-        //
-        Connection conn = ds.getConnection();
-
-        conn.close();
+    public void initialize ()  {
+        try {
+            final Connection c = ds.getConnection();
+            c.close();
+        } catch (SQLException e) {
+            throw new ComponentException(e);
+        }
     }
     
     public DataSource getDataSource() {

@@ -21,21 +21,21 @@ package de.cosmocode.palava.jobs.assets;
 
 import java.util.Map;
 
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
 public class addDirectory extends HibJob {
 
 	@Override
-	public void process(Request req, Response resp, Session session,
+	public void process(Request req, Response resp, HttpSession session,
 			Server server, Map<String, Object> caddy,
 			org.hibernate.Session hibSession) throws Exception {
 		

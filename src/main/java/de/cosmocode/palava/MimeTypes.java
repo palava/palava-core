@@ -21,58 +21,72 @@ package de.cosmocode.palava;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
 /**
- * can parse the mimetype from a file extension
+ * can parse the mimetype from a file extension.
+ * 
  * @author Detlef Hüttemann
  */
-public class MimeTypes
-{
+public final class MimeTypes {
 
-	public static MimeTypes SINGLETON;
+    public static final MimeTypes SINGLETON;
     
     static {
         try {
             SINGLETON = new MimeTypes("/etc/mime.types");
-        } catch ( Exception e ) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
         }
     };
 
-	private Map<String,MimeType> _mimes;
+    private final Map<String, MimeType> mimeTypes;
 
-    private MimeTypes( String file ) throws Exception {
-        _mimes = new HashMap<String,MimeType>();
-        BufferedReader reader = new BufferedReader( new FileReader( file ) ) ;
+    private MimeTypes(String file) throws IOException {
+        mimeTypes = new HashMap<String, MimeType>();
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
-        Pattern pattern = Pattern.compile("\\s+");
+        final Pattern pattern = Pattern.compile("\\s+");
 
-
-        while ( null != ( line = reader.readLine())) {
-            if ( line.length() > 0 && line.charAt(0) != '#' ) {
-                String [] result = pattern.split( line ) ;
-                if ( result.length > 1 ) {
-                    MimeType mime = new MimeType(result[0]);
-                    for ( int i=1;i<result.length;i++) {
-                        _mimes.put( result[i], mime );
+        while (null != (line = reader.readLine())) {
+            if (line.length() > 0 && line.charAt(0) != '#') {
+                final String [] results = pattern.split(line);
+                if (results.length > 1) {
+                    final MimeType mimeType = new MimeType(results[0]);
+                    for (String name : results) {
+                        mimeTypes.put(name, mimeType);
                     }
                 }
             }
         }
     }
 
-	public MimeType getMimeTypeByExt( String ext ) {
-		return _mimes.get( ext ) ;
-	}
-	public MimeType getMimeTypeByName( String name ) {
-        int dot = name.lastIndexOf(".");
-        if ( dot != -1 ) 
-		    return getMimeTypeByExt( name.substring(dot+1).toLowerCase());
+    /**
+     * Get a {@link MimeType} by file extension.
+     * 
+     * @param ext the file extension
+     * @return the found {@link MimeType} or null if there was no mimetype
+     *         found for the given extension
+     */
+    public MimeType byExtension(String ext) {
+        return mimeTypes.get(ext);
+    }
+    
+    /**
+     * Get a {@link MimeType} by name.
+     * 
+     * @param name the name
+     * @return the found {@link MimeType} of null if there was no mimetype
+     *         found for the given name
+     */
+    public MimeType byName(String name) {
+        final int dot = name.lastIndexOf(".");
+        if (dot != -1) 
+            return byExtension(name.substring(dot + 1).toLowerCase());
         return null;
-	}
+    }
 
 }

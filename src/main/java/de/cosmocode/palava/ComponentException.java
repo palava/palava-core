@@ -19,26 +19,27 @@
 
 package de.cosmocode.palava;
 
-
 /**
+ * Indicates a problem while component instantiation/configuration/initialization.
+ * 
  * @author Detlef Hüttemann
+ * @deprecated use {@link ServiceInitializationException} instead
  */
-public class ComponentException extends Exception
-{
+@Deprecated
+public class ComponentException extends RuntimeException {
 
     private static final long serialVersionUID = -5326161820444504422L;
     
-    Component _component;
-
-    public ComponentException( String msg, Component c )
-	{
-         super(msg);
-         _component = c;
+    public ComponentException(String message) {
+        super(message);
     }
-
-    public Component getComponent ()
-	{
-        return _component;
+    
+    public ComponentException(Throwable throwable) {
+        super(throwable);
+    }
+    
+    public ComponentException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
 }

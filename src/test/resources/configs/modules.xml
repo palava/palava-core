@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modules>
+  <!-- 
+  <module name="de.cosmocode.palava.core.thread.DefaultThreadModule">
+    <configuration>
+      <minPoolSize>10</minPoolSize>
+      <maxPoolSize>500</maxPoolSize>
+      <keepAliveTime>10</keepAliveTime>
+      <keepAliveTimeUnit>minutes</keepAliveTimeUnit>
+    </configuration>
+  </module>
+  <module name="de.cosmocode.palava.core.jobs.DefaultJobModule">
+    <configuration>
+      <aliases>
+        <alias name="palava" package="de.cosmocode.palava.jobs"/>
+        <alias name="tlf" package="com.thelabelfinder.professional.jobs"/>
+      </aliases>
+    </configuration>
+  </module>
+  -->
+  <module name="de.cosmocode.palava.core.server.ServerModule">
+    <configuration>
+      <minPoolSize>10</minPoolSize>
+      <maxPoolSize>500</maxPoolSize>
+      <keepAliveTime>10</keepAliveTime>
+      <keepAliveTimeUnit>minutes</keepAliveTimeUnit>
+    </configuration>
+  </module>
+  <module name="de.cosmocode.palava.core.socket.SocketModule">
+    <configuration>
+      <port>2010</port>
+    </configuration>
+  </module>
+  <module name="de.cosmocode.palava.core.concurrent.ConcurrencyModule"/>
+  <module name="de.cosmocode.palava.core.service.ServiceModule">
+    <configuration>
+      <file>src/test/resources/configs/services.xml</file>
+    </configuration>
+  </module>
+  <module name="de.cosmocode.palava.core.registry.RegistryModule"/>
+  <module name="de.cosmocode.palava.core.session.SessionModule"/>
+</modules>

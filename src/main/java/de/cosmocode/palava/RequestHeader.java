@@ -22,166 +22,147 @@ package de.cosmocode.palava;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.cosmocode.palava.core.protocol.RequestType;
 
 /**
- * parse an inputstream for a palava protocol header and represent it as an object
+ * parse an inputstream for a palava protocol header and represent it as an object.
+ * 
  * @author Tobias Sarnowski
  */
-public class RequestHeader
-{
+public class RequestHeader {
 
+    private final RequestType type; 
+    private final String job;
+    private final String sessionId;
+    private final long length;
 
-	private String _type;
-	private String _job;
-	private String _session_id;
-	private long _content_length;
+    public RequestHeader(String type, String job, String sessionId, long length) {
+        this.type = RequestType.valueOf(type.toUpperCase());
+        this.job = job;
+        this.sessionId = sessionId;
+        this.length = length;
+    }
 
+    public RequestType getType() {
+        return type;
+    }
 
-	public RequestHeader(String type, String job, String session_id, long content_length)
-	{
-		this._type = type;
-		this._job = job;
-		this._session_id = session_id;
-		this._content_length = content_length;
-	}
+    public String getJob() {
+        return job;
+    }
 
+    public String getSessionID() {
+        return sessionId;
+    }
 
-	public String getType()
-	{
-		return _type;
-	}
+    public long getContentLength() {
+        return length;
+    }
 
-	public String getJob()
-	{
-		return _job;
-	}
+    public static RequestHeader createHeader(InputStream in) throws ProtocolErrorException, ConnectionLostException {
+        boolean headerComplete = false;
+        int part = 0;
 
-	public String getSessionID()
-	{
-		return _session_id;
-	}
+        final StringBuilder type = new StringBuilder();
+        final StringBuilder job = new StringBuilder();
+        final StringBuilder sessionId = new StringBuilder();
+        final StringBuilder length = new StringBuilder();
 
-	public long getContentLength()
-	{
-		return _content_length;
-	}
+        while (true) {
+            if (headerComplete) break;
+            
+            char c = 0;
+            
+            try {
+                c = (char) in.read();
+            } catch (IOException e) {
+                throw new ConnectionLostException(e);
+            }
+            
+            if (c == -1) {
+                throw new ConnectionLostException("Stream was empty");
+            }
 
+            // parse the byte
+            switch (part) {
+                case 0: {
+                    // type
+                    if (c == ':') {
+                        part++;
+                    } else {
+                        type.append(c);
+                    }
+                    break;
+                }
+                case 1: {
+                    //  /
+                }
+                case 2: {
+                    if (c == '/') {
+                        part++;
+                    } else {
+                        throw new ProtocolErrorException();
+                    }
+                    break;
+                }
+                case 3: {
+                    //  job /
+                    if (c == '/') {
+                        part++;
+                    } else {
+                        job.append(c);
+                    }
+                    break;
+                }
+                case 4: {
+                    //  session_id /
+                    if (c == '/') {
+                        part++;
+                    } else {
+                        sessionId.append(c);
+                    }
+                    break;
+                }
+                case 5: {
+                    //  (
+                    if (c == '(') {
+                        part++;
+                    } else {
+                        throw new ProtocolErrorException();
+                    }
+                    break;
+                }
+                case 6: {
+                    //  content-length )
+                    if (c == ')') {
+                        part++;
+                    } else {
+                        length.append(c);
+                    }
+                    break;
+                }
+                case 7: {
+                    //  ?
+                    if (c == '?') {
+                        headerComplete = true;
+                    } else {
+                        throw new ProtocolErrorException();
+                    }
+                    break;
+                }
+                default: {
+                    break;
+                }
+                        
+            }
+        }
 
-
-	public static RequestHeader formHeader(InputStream in) throws ProtocolErrorException, ConnectionLostException
-	{
-		boolean header_complete = false;
-		int part = 0;
-
-		StringBuffer type = new StringBuffer();
-		StringBuffer job = new StringBuffer();
-		StringBuffer session_id = new StringBuffer();
-		StringBuffer content_length = new StringBuffer();
-
-		while (!header_complete)
-		{
-			// read one byte
-			int buffer = 0;
-			try
-			{
-				buffer = in.read();
-			}
-			catch (IOException ioe)
-			{
-				throw new ConnectionLostException();
-			}
-			if (buffer == -1)
-			{
-				throw new ConnectionLostException();
-			}
-
-			// parse the byte
-			switch (part)
-			{
-				case 0:  //  type :
-						if ((char)buffer == ':')
-						{
-							part++;
-						}
-						else
-						{
-							type.append((char)buffer);
-						}
-						break;
-
-				case 1:  //  /
-				case 2:
-						if ((char)buffer == '/')
-						{
-							part++;
-						}
-						else
-						{
-							throw new ProtocolErrorException();
-						}
-						break;
-
-				case 3:  //  job /
-						if ((char)buffer == '/')
-						{
-							part++;
-						}
-						else
-						{
-							job.append((char)buffer);
-						}
-						break;
-
-				case 4:  //  session_id /
-						if ((char)buffer == '/')
-						{
-							part++;
-						}
-						else
-						{
-							session_id.append((char)buffer);
-						}
-						break;
-
-				case 5:  //  (
-						if ((char)buffer == '(')
-						{
-							part++;
-						}
-						else
-						{
-							throw new ProtocolErrorException();
-						}
-						break;
-
-				case 6:  //  content-length )
-						if ((char)buffer == ')')
-						{
-							part++;
-						}
-						else
-						{
-							content_length.append((char)buffer);
-						}
-						break;
-
-				case 7:  //  ?
-						if ((char)buffer == '?')
-						{
-							header_complete = true;
-						}
-						else
-						{
-							throw new ProtocolErrorException();
-						}
-						break;
-						
-			}
-		}
-
-//		log.info("Request:  " + job.toString());
-//		log.debug("Request:  <" + type.toString() + "> " + job.toString() + " (SID: " + session_id.toString() + ") [" + content_length.toString() + " bytes]");
-		return new RequestHeader(type.toString(), job.toString(), session_id.toString(), Long.parseLong(content_length.toString()));
-	}
+        return new RequestHeader(
+            type.toString(),
+            job.toString(), 
+            sessionId.toString(), 
+            Long.parseLong(length.toString())
+        );
+    }
 
 }

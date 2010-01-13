@@ -50,8 +50,12 @@ public class AssetStore implements Component {
 	}
 
 	@Override
-	public void initialize() throws Exception {
-		store.initialize();
+	public void initialize() throws ComponentException {
+		try {
+            store.initialize();
+        } catch (Exception e) {
+            throw new ComponentException(e);
+        }
 	}
 	
 

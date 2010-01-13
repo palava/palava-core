@@ -61,14 +61,11 @@ public class Worker extends RequestConsumer implements Runnable
 			
 			// process all incoming requests
 			//while (!server.shutdown_initiated() && client != null)  // FIXME with permanent connections, you should check here for shutdown!
-			Benchmark.start();
 			while (client != null) {
-				Benchmark.hit();
 				consumeRequest(server, in, out, caddy);
 			}
         } catch (CloseConnection cc) {
-        	Benchmark.stop();
-            if (Benchmark.isActive()) requestLogger.debug(Benchmark.getCurrent());
+            logger.debug("Connection closed");
 		} catch (ConnectionLostException cle) {
 			// connection down?
 			logger.warn("Worker lost the connection unexpected.");

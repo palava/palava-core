@@ -23,9 +23,9 @@ public interface ComponentManager {
 
     void initialize() throws Exception;
 
-    <T extends Component> T lookup(Class<T> component);
+    <T> T lookup(Class<T> component);
     
-    <T extends Component> T lookup(Class<T> spec, String name);
+    <T> T lookup(Class<T> spec, String name);
     
     void shutdown();
     

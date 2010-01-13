@@ -21,6 +21,13 @@ package de.cosmocode.palava;
 
 import org.jdom.Element;
 
+/**
+ * A abstract skeleton implementation of the {@link Component} interface.
+ *
+ * @author Willi Schoenborn
+ * @deprecated use {@link AbstractService} instead
+ */
+@Deprecated
 public class AbstractComponent implements Component {
 
     @Override
@@ -34,7 +41,7 @@ public class AbstractComponent implements Component {
     }
 
     @Override
-    public void initialize() throws Exception {
+    public void initialize() throws ComponentException {
 
     }
 

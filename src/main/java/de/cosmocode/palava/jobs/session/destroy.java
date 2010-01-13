@@ -24,11 +24,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -40,9 +40,9 @@ public class destroy implements Job
 
     private static final Logger logger = Logger.getLogger( destroy.class ) ;
 
-    public void process( Request request, Response resp, Session session, Server server, Map<String,Object> caddy ) throws Exception
+    public void process( Request request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception
 	{
-		session.invalidate();
+		session.destroy();
         resp.setContent(new PHPContent(PHPContent.OK)) ;
     }
 }

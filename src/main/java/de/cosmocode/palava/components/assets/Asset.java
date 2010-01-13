@@ -41,8 +41,8 @@ import de.cosmocode.palava.ConversionException;
 import de.cosmocode.palava.Convertible;
 import de.cosmocode.palava.KeyValueState;
 import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.StreamContent;
 import de.cosmocode.palava.components.logging.NoObjectContext;
+import de.cosmocode.palava.core.protocol.StreamContent;
 
 @Entity
 public class Asset implements JSONEncoder, NoObjectContext, Convertible {
@@ -149,7 +149,7 @@ public class Asset implements JSONEncoder, NoObjectContext, Convertible {
 	public void setContent( StreamContent content ) throws SQLException, IOException {
 		this.content = content;
 		
-		this.mime = content.getMimeType() == null ? MimeType.Image.toString() : content.getMimeType().toString();
+		this.mime = content.getMimeType() == null ? MimeType.IMAGE.toString() : content.getMimeType().toString();
 		this.length = content.getLength();
 		/*
 		byte [] buffer = new byte[(int) length];

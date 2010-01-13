@@ -65,16 +65,16 @@ public class ImageStore extends AssetStore {
 			// test name
 			
 			Matcher m = validFilterName.matcher(name);
-			if ( ! m.matches())
-				throw new ComponentException(
-						"bad filter name " + name + " : should match " + validFilterName.pattern(),
-						this);
+			if (!m.matches()) {
+			    throw new ComponentException(
+		            "bad filter name " + name + " : should match " + validFilterName.pattern());
+			}
 			
 		}
 	}
 	
 	@Override
-	public void initialize() throws Exception {
+	public void initialize() {
 		super.initialize();
 		if ( ! dir.exists() )
 			dir.mkdirs();

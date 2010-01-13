@@ -19,28 +19,29 @@
 
 package de.cosmocode.palava;
 
-
+import com.google.common.base.Preconditions;
 
 /**
- * hooks the shutdown event of the virtual machine
+ * hooks the shutdown event of the virtual machine.
+ * 
  * @author Tobias Sarnowski
  */
-public class ShutdownHook implements Runnable
-{
-	private Server server;
+public class ShutdownHook implements Runnable {
+    
+    private final Server server;
 
-	public ShutdownHook(Server server)
-	{
-		this.server = server;
-	}
+    public ShutdownHook(Server server) {
+        this.server = Preconditions.checkNotNull(server, "Server");
+    }
 
-
-	public void run()
-	{
-		System.out.println("ShutdownHook caught.");
-		server.shutdown();
-		try {
-			server.join();
-		} catch(Exception e) {}
-	}
+    @Override
+    public void run() {
+        System.out.println("ShutdownHook caught.");
+        server.shutdown();
+        try {
+            server.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

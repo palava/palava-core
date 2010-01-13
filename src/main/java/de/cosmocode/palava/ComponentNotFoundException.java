@@ -19,12 +19,22 @@
 
 package de.cosmocode.palava;
 
+/**
+ * Indicates a missing component, usually due to a typo in
+ * the configuration.
+ *
+ * @author Willi Schoenborn
+ */
 public class ComponentNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = -5631423543797268353L;
 
     public ComponentNotFoundException(String name) {
         super(name);
+    }
+    
+    public ComponentNotFoundException(Class<?> type) {
+        this(type.getName());
     }
     
 }

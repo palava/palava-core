@@ -20,14 +20,17 @@
 package de.cosmocode.palava.components.assets;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cosmocode.palava.FileContent;
-import de.cosmocode.palava.StreamContent;
+import de.cosmocode.palava.MimeType;
 import de.cosmocode.palava.components.cstore.ContentStore;
+import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.FileContent;
+import de.cosmocode.palava.core.protocol.StreamContent;
 
 public class ImageManager extends AssetManager {
 	
@@ -59,7 +62,7 @@ public class ImageManager extends AssetManager {
 
         if ( filterName == null ) return asset;
 
-        StreamContent content = asset.getContent();
+        final StreamContent content = asset.getContent();
     
         File filteredFile = imst.getFile(asset.getStoreKey(),filterName);
         
@@ -70,7 +73,7 @@ public class ImageManager extends AssetManager {
             log.debug("Running: " + command);
             final Process proc = Runtime.getRuntime().exec(command);
             try {
-                int exitValue = proc.waitFor();
+                final int exitValue = proc.waitFor();
                 if (exitValue != 0)
                     log.error("Error during thumbnail generation. Error code: {}", exitValue);
             } catch (InterruptedException ie) {
@@ -84,9 +87,10 @@ public class ImageManager extends AssetManager {
             
         }
         
-        final FileContent filteredContent = new FileContent(filteredFile);
-        filteredContent.setMimeType( content.getMimeType());
-        asset.setContent( filteredContent);
+        final StreamContent filteredContent = new StreamContent(
+            new FileInputStream(filteredFile), filteredFile.length(), content.getMimeType());
+        
+        asset.setContent(filteredContent);
         
         return asset;
 	}

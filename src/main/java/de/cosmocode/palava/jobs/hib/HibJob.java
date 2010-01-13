@@ -26,18 +26,18 @@ import org.hibernate.Transaction;
 
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.hib.ClosableSession;
 import de.cosmocode.palava.components.hib.Hib;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
 
 public abstract class HibJob implements Job {
     
 	public static final String CADDY_HIBSESSION = "HibSession";
 	
 	@Override
-	public final void process(Request request, Response response, de.cosmocode.palava.Session s, Server server,
+	public final void process(Request request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
 			Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
 		Session session = (Session) caddy.get(CADDY_HIBSESSION);
@@ -66,7 +66,7 @@ public abstract class HibJob implements Job {
 	}
 
 
-	public abstract void process(Request request, Response response, de.cosmocode.palava.Session s, Server server,
+	public abstract void process(Request request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
         Map<String, Object> caddy, Session session) throws Exception;
 
 }

@@ -27,21 +27,10 @@ import org.jdom.Element;
  *
  * @author Willi Schoenborn
  */
-public interface Service extends Component {
+public interface Service {
 
-    @Override
     void configure(Element root, Server server);
     
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated use the Service annotation instead
-     */
-    @Deprecated
-    @Override
-    void compose(ComponentManager manager);
-    
-    @Override
     void initialize() throws ServiceInitializationException;
     
     /**

@@ -139,11 +139,8 @@ public class PalavaGimpyEngine extends ListImageCaptchaEngine implements de.cosm
 	}
 
 	@Override
-	public void initialize() throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void initialize() {
 		rebuildFactories();
-		
 	}
 
 }

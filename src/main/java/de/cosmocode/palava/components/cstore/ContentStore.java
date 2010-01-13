@@ -19,8 +19,8 @@
 
 package de.cosmocode.palava.components.cstore;
 
-import de.cosmocode.palava.Content;
-import de.cosmocode.palava.StreamContent;
+import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.StreamContent;
 
 public interface ContentStore {
 

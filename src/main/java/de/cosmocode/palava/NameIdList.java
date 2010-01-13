@@ -22,6 +22,11 @@ package de.cosmocode.palava;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ *
+ * @deprecated use Map instead
+ */
 @Deprecated
 public class NameIdList implements Convertible {
 

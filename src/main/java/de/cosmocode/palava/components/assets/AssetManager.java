@@ -33,11 +33,11 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cosmocode.palava.Content;
-import de.cosmocode.palava.StreamContent;
 import de.cosmocode.palava.components.cstore.ContentStore;
 import de.cosmocode.palava.components.logging.Operation;
 import de.cosmocode.palava.components.logging.PalavaLogger;
+import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.StreamContent;
 
 public class AssetManager  {
     

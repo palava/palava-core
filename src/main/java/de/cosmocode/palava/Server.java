@@ -33,9 +33,15 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 
 import org.apache.log4j.Logger;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
+import de.cosmocode.palava.core.CoreModule;
+import de.cosmocode.palava.core.session.HttpSessionManager;
 
 /**
  * Main thread, accepts connections and inititates the worker.
@@ -47,23 +53,27 @@ public class Server extends Thread {
 
     private String version;
     private int listenPort;
-    private long uptime_start;
+    private long uptimeStart;
 
     private ThreadGroup clients;
 
     private Boolean shutdown = false;
 
-    public Properties config;
+    private Properties config;
     public Properties alias;
-    public String palava_dir = null;
+    
+    public String directoryName;
+//    private final File baseDirectory;
 
     public JobManager jobs;
-    public SessionManager sessions;
+    public HttpSessionManager sessions;
     public ComponentManager components;
 
     private final ImmutableSet<JobInterceptor> jobInterceptors;
 
     private boolean interactive;
+    
+    private Injector injector;
 
     public Server() {
         jobInterceptors = ImmutableSet.copyOf(ServiceLoader.load(JobInterceptor.class));
@@ -77,23 +87,23 @@ public class Server extends Thread {
         this.interactive = interactive;
         
 
-        palava_dir = config.getProperty("PALAVA_DIR");
-        if (!palava_dir.endsWith(File.separator)) {
-            palava_dir = palava_dir + File.separator;
+        directoryName = config.getProperty("PALAVA_DIR");
+        if (!directoryName.endsWith(File.separator)) {
+            directoryName = directoryName + File.separator;
         }
+        
+//        baseDirectory = new File(palava_dir);
 
         // read in version
-        File versionfile = new File(palava_dir + "/version");
-        try
-        {
+        final File versionfile = new File(directoryName + "/version");
+        
+        try {
             FileInputStream fstream = new FileInputStream(versionfile);
             BufferedReader in = new BufferedReader(new InputStreamReader(fstream));
             version = in.readLine().trim();
             in.close();
             fstream.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.fatal("Cannot resolve version: " + e);
             return;
         }
@@ -108,10 +118,15 @@ public class Server extends Thread {
         try {
             String components_conf = config.getProperty("COMPONENTS_XML");
             if (!components_conf.startsWith(File.separator)) {
-                components_conf = palava_dir + components_conf;
+                components_conf = directoryName + components_conf;
             }
-            components = new DefaultComponentManager(new File(components_conf), this);
+            final Element root = new SAXBuilder().build(components_conf).getRootElement();
+            
+            final GuiceComponentManager<Object> manager = GuiceComponentManager.create(root, this);
+            components = manager;
             components.initialize();
+            injector = Guice.createInjector(new CoreModule(), manager);
+            
         } catch (Exception e) {
             log.fatal("Cannot initialize components!", e);
             e.printStackTrace();
@@ -119,13 +134,13 @@ public class Server extends Thread {
         }
 
         // socket options
-        this.listenPort = Integer.parseInt((String)config.getProperty("PALAVA_PORT"));
+        this.listenPort = Integer.parseInt(config.getProperty("PALAVA_PORT"));
 
         // we are important ;-)
         this.setPriority(NORM_PRIORITY + 1);
         
         // server.sessions
-        sessions = new SessionManager();
+        sessions = getInjector().getInstance(HttpSessionManager.class);
         
         // server.jobs
         jobs = new JobManager(this);
@@ -141,7 +156,7 @@ public class Server extends Thread {
     public String getFilename( String filename ){
         if ( filename.startsWith( File.separator )) return filename;
         
-        return palava_dir + filename;
+        return directoryName + filename;
     }
 
 
@@ -168,18 +183,17 @@ public class Server extends Thread {
             clients = new ThreadGroup("clients");
 
             // check every 5 seconds for shutdown
+            // TODO make configurable
             server.setSoTimeout(5000);
 
-
             // save starttime for uptime checks
-            Date now = new Date();
-            uptime_start = now.getTime();
+            uptimeStart = System.currentTimeMillis();
 
             // the only system output
             System.out.println("server started at port " + listenPort + ".");
 
             // our server main-loop
-            while(!shutdown_initiated()) {
+            while (!shutdownInitiated()) {
                 Socket client;
                 try {
                     client = server.accept();
@@ -189,10 +203,9 @@ public class Server extends Thread {
 
                 // new client connected
                 if (client != null) {
-                    Worker worker = new Worker(client, this);
-
-                    Thread wt = new Thread(clients, worker);
-                    wt.start();
+                    final Worker worker = new Worker(client, this);
+                    final Thread thread = new Thread(clients, worker);
+                    thread.start();
                 }
 
             }
@@ -215,7 +228,7 @@ public class Server extends Thread {
             components.shutdown();
             
             // destroy all sessions
-            sessions.purge(-1);
+            sessions.purge();
         }
     }
 
@@ -229,7 +242,7 @@ public class Server extends Thread {
 
 
     // everyone can ask here to shutdown their functions
-    public boolean shutdown_initiated()
+    public boolean shutdownInitiated()
     {
         return shutdown;
     }
@@ -251,31 +264,20 @@ public class Server extends Thread {
         return listenPort;
     }
 
-    public long getUptime()
-    {
-        Date now = new Date();
-        return now.getTime() - uptime_start;
+    public long getUptime() {
+        return System.currentTimeMillis() - uptimeStart;
     }
-
-
-
-    public static long[] timer = new long[255];  // max 255 possible timers
-
-    public static void startBench(int index) {
-        timer[index] = System.currentTimeMillis();
-    }
-
-    public static long getBench(int index) {
-        return System.currentTimeMillis() - timer[index];
-    }
-
 
     public String getPalavaDir() {
-        return palava_dir;
+        return directoryName;
     }
     
     public ImmutableSet<JobInterceptor> getJobInterceptors() {
         return jobInterceptors;
     }
 
+    public Injector getInjector() {
+        return injector;
+    }
+    
 }

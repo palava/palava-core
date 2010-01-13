@@ -25,11 +25,11 @@ import de.cosmocode.palava.Closable;
 import de.cosmocode.palava.CloseConnection;
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -38,7 +38,7 @@ import de.cosmocode.palava.Session;
  */
 public class close implements Job {
 	
-	public void process(Request request, Response response, Session s, Server server, 
+	public void process(Request request, Response response, HttpSession s, Server server, 
 		Map<String,Object> caddy) throws ConnectionLostException, CloseConnection, Exception {
 		
 		response.setContent(PHPContent.OK);

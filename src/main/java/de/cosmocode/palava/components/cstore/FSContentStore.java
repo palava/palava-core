@@ -24,17 +24,18 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Content;
-import de.cosmocode.palava.FileContent;
 import de.cosmocode.palava.MimeType;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.StreamContent;
+import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.FileContent;
+import de.cosmocode.palava.core.protocol.StreamContent;
 
 public class FSContentStore implements ContentStore, Component {
 	
@@ -75,7 +76,7 @@ public class FSContentStore implements ContentStore, Component {
 		
 		FileOutputStream out = new FileOutputStream(file);
 		
-		StreamContent.copy(in,out);
+		IOUtils.copy(in, out);
 		out.flush();
 		out.close();
 		return name;
@@ -95,7 +96,7 @@ public class FSContentStore implements ContentStore, Component {
 	}
 
 	@Override
-	public void initialize() throws Exception {
+	public void initialize() {
 		
 	}
 	@Override

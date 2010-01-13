@@ -54,7 +54,7 @@ public class Hib implements Component {
         try {
 			cfg.addURL(new URL(hibernateSchema));
 		} catch (MalformedURLException e) {
-			throw new ComponentException(e.getMessage(), this);
+			throw new ComponentException(e.getMessage());
 		}
         cfg.configure(new File(hibernateConfiguration));
         sessionFactory = cfg.buildSessionFactory();
@@ -67,7 +67,7 @@ public class Hib implements Component {
     }
     
     @Override
-    public void initialize() throws Exception {
+    public void initialize() {
         
     }
     public SessionFactory getSessionFactory() {

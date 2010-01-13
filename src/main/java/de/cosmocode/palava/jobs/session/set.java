@@ -23,13 +23,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -40,7 +40,7 @@ public class set implements Job {
 
     private static final Logger logger = Logger.getLogger( set.class ) ;
 
-    public void process( Request request, Response resp, Session session, Server server, Map<String,Object> caddy ) throws Exception {
+    public void process( Request request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception {
         DataRequest req = (DataRequest) request;
 
         if ( session == null ) throw new NullPointerException("session");

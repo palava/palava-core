@@ -22,13 +22,13 @@ package de.cosmocode.palava.jobs.session;
 import java.util.Map;
 
 import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -38,10 +38,10 @@ import de.cosmocode.palava.Session;
 public class get implements Job
 {
 
-	public void process(Request request, Response response, Session session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+	public void process(Request request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
 	{
         DataRequest req = (DataRequest) request;
-        Map<String,String> args = req.getArgs();
+        Map<String, String> args = req.getArgs();
         String key = args.get("key");
         if ( key == null ) throw new NullPointerException("key");
         Object data = session.get( key ) ;

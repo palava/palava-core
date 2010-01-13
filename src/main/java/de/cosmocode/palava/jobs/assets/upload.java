@@ -23,21 +23,21 @@ import java.util.Map;
 
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.RequestContent;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
 import de.cosmocode.palava.components.assets.Asset;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.RequestContent;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
 public class upload extends HibJob {
 
 	@Override
-	public void process(Request request, Response response, Session session,
+	public void process(Request request, Response response, HttpSession session,
 			Server server, Map<String, Object> caddy, org.hibernate.Session hibSession)
 			throws ConnectionLostException, Exception {
 		

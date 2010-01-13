@@ -26,25 +26,31 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.cosmocode.palava.core.protocol.DefaultResponse;
+import de.cosmocode.palava.core.protocol.ErrorContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
+
 public class RequestConsumer {
 
 	private static final Logger log = LoggerFactory.getLogger(RequestConsumer.class);
 	
-	public static final ThreadLocal<Session> SESSION = new ThreadLocal<Session>();
+	public static final ThreadLocal<HttpSession> SESSION = new ThreadLocal<HttpSession>();
 
 	void consumeRequest(Server server, InputStream in, OutputStream out, Map<String, Object> caddy)
-			throws ConnectionLostException, CloseConnection, Exception {
+		throws ConnectionLostException, CloseConnection, Exception {
 	    
 		// read the request
-		RequestHeader header = RequestHeader.formHeader(in);
+		final RequestHeader header = RequestHeader.createHeader(in);
 	
-		Request request = Request.formRequest(header, in);
+		final Request request = header.getType().createRequest(header, in);
 	
 		// find the session
-	    String sessionID = header.getSessionID();
-	    Session session = null;
+	    final String sessionID = header.getSessionID();
+	    HttpSession session = null;
 	
-	    if ( sessionID.length() > 0 )
+	    if (sessionID.length() > 0)
 		    session = server.sessions.get(header.getSessionID());
 	
 		if (session != null) {
@@ -52,16 +58,15 @@ public class RequestConsumer {
 		}
 	
 		// prepare the response object
-		Response response = new Response(out);
+		// TODO use injector
+		final Response response = new DefaultResponse(out);
 	
 		// initialize the job
 		Job job = null;
 		boolean process = true;
 	
-		String jobname = request.header.getJob();
+		final String jobname = request.getHeader().getJob();
 		
-		Server.startBench(0);
-	
 		try {
 			job = server.jobs.getJob(jobname);
 		} catch (Exception ex) {
@@ -95,50 +100,26 @@ public class RequestConsumer {
 			}
 			return;
 		} catch (Exception e) {
-            log(jobname, e);
 			log.error("Job " + jobname + " died with an error.", e);
 			createErrorResponse(response, e);
-		} finally {
-			log(jobname);
 		}
 	
 		request.freeInputStream();
 	
-        if ( !response.hasContent() )
-			createErrorResponse(response, new NullPointerException("no content in job " + jobname) );
+        if (!response.hasContent())
+			createErrorResponse(response, new NullPointerException("no content in job " + jobname));
 
-		if (!response.alreadySent()) {
-			Server.startBench(1);
+		if (!response.sent()) {
 	        response.send();
 		}
 	}
 	
-	private void log(String job) {
-	    log(job, null);
-	}
-	
-	private void log(String job, Exception e) {
-	    
-	    final StringBuilder message = new StringBuilder();
-	    message.
-	        append("Req: ").
-	        append(job).append(" ").
-	        append(Server.getBench(0)).append(" ms ").
-	        append(Thread.currentThread().getName());
-	    
-	    if (e != null) {
-	        message.append(" (").append(e.getMessage()).append(")");
-	    }
-	    
-	    log.debug(message.toString());
-	}
-
 	private void createErrorResponse(Response response, Exception e) {
 		try {
-			response.setContent(new ErrorContent(e));
-		} catch (Exception ex) {
-			log.error("Cannot set error response!", ex);
-		}
+            response.setContent(new ErrorContent(e));
+        } catch (ConversionException e1) {
+            throw new IllegalArgumentException(e);
+        }
 	}
 
 }

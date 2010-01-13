@@ -22,19 +22,19 @@ package de.cosmocode.palava.jobs.captcha;
 import java.util.Map;
 
 import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
 import de.cosmocode.palava.components.captcha.Captcha;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 public class validate implements Job {
 
 	@Override
-	public void process(Request request, Response response, Session session,
+	public void process(Request request, Response response, HttpSession session,
 			Server server, Map<String, Object> caddy)
 			throws ConnectionLostException, Exception {
 		
@@ -45,7 +45,7 @@ public class validate implements Job {
 		
 		String userInput = (String) args.get("code");
 
-		Boolean result = captcha.validate( session.getSessionID(), userInput );
+		Boolean result = captcha.validate( session.getSessionId(), userInput );
 		
 		response.setContent( new PHPContent(result));
 		

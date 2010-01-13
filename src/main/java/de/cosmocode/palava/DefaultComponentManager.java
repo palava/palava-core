@@ -98,11 +98,11 @@ public class DefaultComponentManager implements ComponentManager {
         log.info("ComponentManager initialize finished");
     }
 
-    public <T extends Component> T lookup(Class<T> component) {
+    public <T> T lookup(Class<T> component) {
         return lookup(component, component.getSimpleName());
     }
     
-    public <T extends Component> T lookup(Class<T> spec, String name) {
+    public <T> T lookup(Class<T> spec, String name) {
         final T t = spec.cast(components.get(name));
         if (t == null) throw new ComponentNotFoundException(name);
         return t;

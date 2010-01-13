@@ -24,10 +24,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import de.cosmocode.json.JSONRenderer;
+
 
 /**
- * convert java objects into php
+ * convert java objects into php.
+ * 
  * @author Detlef Hüttemann
+ * @deprecated use {@link JSONRenderer} instead
  */
 @Deprecated
 public class PHPConverter extends ContentConverter {

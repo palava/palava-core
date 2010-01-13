@@ -23,15 +23,14 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import de.cosmocode.palava.Benchmark;
 import de.cosmocode.palava.ClientData;
-import de.cosmocode.palava.DataRequest;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.PHPContent;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -43,16 +42,11 @@ public class initialize implements Job {
 
     private static final Logger logger = Logger.getLogger( initialize.class ) ;
 
-	public void process( Request request, Response response, Session session, Server server, 
+	public void process( Request request, Response response, HttpSession session, Server server, 
             Map<String,Object> caddy ) throws Exception {
         
         DataRequest dRequest = (DataRequest) request;
         Map<String, String> args = dRequest.getArgs();
-        
-        if (args.containsKey("url")) {
-            String url = args.get("url");
-            Benchmark.setURL(url);
-        }
         
         if ( session != null ) {
 
@@ -78,7 +72,7 @@ public class initialize implements Job {
         //
         //
 
-        response.setContent( new PHPContent( session.getSessionID() ) ) ;
+        response.setContent( new PHPContent( session.getSessionId() ) ) ;
 
     }
 }

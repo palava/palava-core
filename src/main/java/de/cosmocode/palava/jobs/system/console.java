@@ -30,12 +30,12 @@ import org.mozilla.javascript.ScriptableObject;
 import de.cosmocode.palava.Client;
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
-import de.cosmocode.palava.TextContent;
-import de.cosmocode.palava.TextRequest;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.TextContent;
+import de.cosmocode.palava.core.protocol.TextRequest;
+import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
@@ -45,7 +45,7 @@ import de.cosmocode.palava.TextRequest;
 public class console implements Job
 {
 
-	public void process(Request request, Response response, Session session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+	public void process(Request request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
 	{
 		// get the code
 		String jscode = ((TextRequest)request).getText();
@@ -96,7 +96,7 @@ public class console implements Job
 		}
 
 		// send the output
-		if (!response.contentSet())
+		if (!response.hasContent())
 	        response.setContent(new TextContent(sout.toString()));
 	}
 

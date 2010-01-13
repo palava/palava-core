@@ -24,12 +24,12 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.cosmocode.palava.JSONRequest;
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Request;
-import de.cosmocode.palava.Response;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.Session;
+import de.cosmocode.palava.core.protocol.JSONRequest;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.CachableHibJob;
 
 public abstract class CachableJSONHibJob extends CachableHibJob {
@@ -37,7 +37,7 @@ public abstract class CachableJSONHibJob extends CachableHibJob {
 	private JSONObject json;
 
 	@Override
-	public final void process(Request request, Response response, Session s, Server server, 
+	public final void process(Request request, Response response, HttpSession s, Server server, 
 		Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
 
 		JSONRequest jRequest = (JSONRequest) request;
@@ -49,7 +49,7 @@ public abstract class CachableJSONHibJob extends CachableHibJob {
 		session.flush();
 	}
     
-    protected abstract void process(JSONObject json, Response response, Session s, Server server,
+    protected abstract void process(JSONObject json, Response response, HttpSession s, Server server,
         Map<String, Object> caddy, org.hibernate.Session session) throws Exception;
     
 	

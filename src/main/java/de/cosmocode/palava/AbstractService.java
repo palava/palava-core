@@ -33,11 +33,6 @@ public abstract class AbstractService implements Service {
     public void configure(Element root, Server neverUsed) {
 
     }
-    
-    @Override
-    public final void compose(ComponentManager manager) {
-
-    }
 
     @Override
     public void initialize() throws ServiceInitializationException {
