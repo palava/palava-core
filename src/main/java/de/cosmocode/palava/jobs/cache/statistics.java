@@ -30,13 +30,13 @@ import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.protocol.JSONContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public class statistics implements Job {
 
-    public void process(Request request, Response response, HttpSession session,
+    public void process(Call request, Response response, HttpSession session,
             Server server, Map<String, Object> caddy)
             throws ConnectionLostException, Exception {
         

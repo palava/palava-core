@@ -17,23 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.request;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.net.InetAddress;
+import java.net.URI;
 
-import com.google.inject.ScopeAnnotation;
+import de.cosmocode.palava.core.session.Destroyable;
+import de.cosmocode.palava.core.session.HttpSession;
 
 /**
- * Apply this to implementation classes when you want one instance per call.
+ * 
  *
  * @author Willi Schoenborn
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@ScopeAnnotation
-public @interface CallScoped {
+public interface HttpRequest extends Destroyable {
 
+    URI getRequestUri();
+    
+    InetAddress getRemoteAddress();
+    
+    String getUserAgent();
+    
+    HttpSession getHttpSession();
+    
+    <K, V> void set(K key, V value);
+    
+    <K, V> V get(K key);
+    
 }

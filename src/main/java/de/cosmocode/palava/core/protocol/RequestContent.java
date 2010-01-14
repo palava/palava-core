@@ -29,7 +29,7 @@ import de.cosmocode.palava.MimeType;
  */
 public class RequestContent extends StreamContent {
 
-    public RequestContent(Request request, MimeType mimeType) {
+    public RequestContent(Call request, MimeType mimeType) {
         super(request.getInputStream(), request.getHeader().getContentLength(), mimeType);
     }
 

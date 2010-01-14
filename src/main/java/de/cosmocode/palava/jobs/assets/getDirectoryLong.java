@@ -33,7 +33,7 @@ import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.JSONContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
@@ -41,7 +41,7 @@ import de.cosmocode.palava.jobs.hib.HibJob;
 public class getDirectoryLong extends HibJob {
 
 	@Override
-	public void process(Request req, Response response, HttpSession session, Server server, 
+	public void process(Call req, Response response, HttpSession session, Server server, 
 			Map<String, Object> caddy, org.hibernate.Session hibSession) throws Exception {
 		
         ImageStore store = server.components.lookup(ImageStore.class);

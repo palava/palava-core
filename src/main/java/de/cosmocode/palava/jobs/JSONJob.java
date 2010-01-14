@@ -28,7 +28,7 @@ import de.cosmocode.palava.Job;
 import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.protocol.JSONRequest;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -37,7 +37,7 @@ public abstract class JSONJob implements Job {
 	private JSONObject json;
 
 	@Override
-	public final void process(Request request, Response response, HttpSession session, Server server, 
+	public final void process(Call request, Response response, HttpSession session, Server server, 
 		Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
 		JSONRequest jRequest = (JSONRequest) request;

@@ -28,7 +28,7 @@ import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.FileContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 /**
@@ -47,7 +47,7 @@ public class FileJob implements Job {
 	 * if filename is relative, the filename is expanded with palava dir
 	 * if filename is not specified, the classname of the (probably derived) class is used.
 	 */
-	public void process(Request request, Response response, HttpSession session, Server server, Map<String,Object> caddy)
+	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy)
 			throws ConnectionLostException, Exception {
 		
 		String dir = server.getPalavaDir();

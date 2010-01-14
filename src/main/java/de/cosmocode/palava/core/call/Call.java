@@ -17,27 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.protocol;
+package de.cosmocode.palava.core.call;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Map;
 
-import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.RequestHeader;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
 
 /**
  * 
  *
  * @author Willi Schoenborn
  */
-public interface Request {
+public interface Call {
 
-    RequestHeader getHeader();
+    Command getCommand();
     
-    InputStream getInputStream();
+    HttpRequest getHttpRequest();
     
-    int read(byte[] data) throws ConnectionLostException, IOException;
-    
-    void freeInputStream() throws ConnectionLostException, IOException;
+    Map<String, Object> getArguments();
     
 }

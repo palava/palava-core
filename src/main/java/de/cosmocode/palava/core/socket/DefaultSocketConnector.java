@@ -38,7 +38,7 @@ import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.concurrent.ExecutorBuilder;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.service.lifecycle.Config;
 
@@ -132,7 +132,7 @@ final class DefaultSocketConnector implements SocketConnector {
                         
                         // TODO protocol parsing here?!
                         
-                        final Request request = null;
+                        final Call request = null;
                         final Response response = null;
                         callback.incomingRequest(request, response);
                     } catch (IOException e) {

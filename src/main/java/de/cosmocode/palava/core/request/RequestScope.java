@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.request;
 
 import java.util.Map;
 
@@ -28,65 +28,72 @@ import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 
+import de.cosmocode.palava.core.scope.ManagedScope;
+
 /**
- * Custom {@link Scope} implementation for one single call.
+ * Custom {@link Scope} implementation for one http request.
  * 
  * @author Oliver Lorenz
  * @author Willi Schoenborn
  */
-public class CallScope implements CustomScope {
+final class RequestScope implements ManagedScope {
 
-    private final ThreadLocal<Map<Key<?>, Object>> values = new ThreadLocal<Map<Key<?>, Object>>();
+    private final ThreadLocal<Map<Key<?>, Object>> context = new ThreadLocal<Map<Key<?>, Object>>();
 
     @Override
     public void enter() {
-        Preconditions.checkState(values.get() == null, "A scoping block is already in progress");
-        values.set(Maps.<Key<?>, Object>newHashMap());
+        Preconditions.checkState(context.get() == null, "A scoping block is already in progress");
+        final Map<Key<?>, Object> map = Maps.newHashMap();
+        context.set(map);
+    }
+
+    @Override
+    public <T> void seed(Key<T> key, T value) {
+        final Map<Key<?>, Object> scopeContext = getScopeContext(key);
+        Preconditions.checkState(
+            !scopeContext.containsKey(key), 
+            "A value for the key %s was already seeded in this scope. Old value: %s New value: %s",
+            key, scopeContext.get(key), value
+        );
+        scopeContext.put(key, value);
+    }
+
+    @Override
+    public <T> void seed(Class<T> type, T value) {
+        seed(Key.get(type), value);
     }
 
     @Override
     public void exit() {
-        Preconditions.checkState(values.get() != null, "No scoping block in progress");
-        values.remove();
-    }
-
-    private <T> void seed(Key<T> key, T value) {
-        final Map<Key<?>, Object> scopedObjects = getScopedObjectMap(key);
-        Preconditions.checkState(!scopedObjects.containsKey(key), 
-            "A value for the key %s was already seeded in this scope. Old value: %s New value: %s",
-            key, scopedObjects.get(key), value
-        );
-        scopedObjects.put(key, value);
+        Preconditions.checkState(context.get() != null, "No scoping block in progress");
+        context.remove();
     }
 
     @Override
-    public <T> void seed(Class<T> clazz, T value) {
-        seed(Key.get(clazz), value);
-    }
-
-    @Override
-    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
+    public <T> Provider<T> scope(final Key<T> key, final Provider<T> provider) {
         return new Provider<T>() {
+            
             public T get() {
-                final Map<Key<?>, Object> scopedObjects = getScopedObjectMap(key);
+                final Map<Key<?>, Object> scopeContext = getScopeContext(key);
 
                 @SuppressWarnings("unchecked")
-                T current = (T) scopedObjects.get(key);
-                if (current == null && !scopedObjects.containsKey(key)) {
-                    current = unscoped.get();
-                    scopedObjects.put(key, current);
+                T current = (T) scopeContext.get(key);
+                if (current == null && !scopeContext.containsKey(key)) {
+                    current = provider.get();
+                    scopeContext.put(key, current);
                 }
                 return current;
             }
+            
         };
     }
 
-    private <T> Map<Key<?>, Object> getScopedObjectMap(Key<T> key) {
-        final Map<Key<?>, Object> scopedObjects = values.get();
-        if (scopedObjects == null) {
+    private <T> Map<Key<?>, Object> getScopeContext(Key<T> key) {
+        final Map<Key<?>, Object> scopedContext = context.get();
+        if (scopedContext == null) {
             throw new OutOfScopeException("Cannot access " + key + " outside of a scoping block");
         } else {
-            return scopedObjects;
+            return scopedContext;
         }
     }
 

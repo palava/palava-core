@@ -19,11 +19,11 @@
 
 package de.cosmocode.palava.core.command.filter;
 
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 public interface Filter {
 
-    void filter(Request request, Response response, FilterChain chain);
+    void filter(Call call, Response response, FilterChain chain) throws FilterException;
     
 }

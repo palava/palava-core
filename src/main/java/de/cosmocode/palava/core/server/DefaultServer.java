@@ -31,7 +31,7 @@ import com.google.inject.Singleton;
 import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.command.filter.Filter;
 import de.cosmocode.palava.core.command.filter.FilterChain;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.session.HttpSessionManager;
@@ -84,7 +84,7 @@ final class DefaultServer implements Server, RequestCallback {
     }
     
     @Override
-    public void incomingRequest(Request request, Response response) {
+    public void incomingRequest(Call request, Response response) {
         // TODO Auto-generated method stub
         
     }

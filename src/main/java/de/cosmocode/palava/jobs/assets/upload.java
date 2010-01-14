@@ -28,7 +28,7 @@ import de.cosmocode.palava.components.assets.Asset;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.RequestContent;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
@@ -37,7 +37,7 @@ import de.cosmocode.palava.jobs.hib.HibJob;
 public class upload extends HibJob {
 
 	@Override
-	public void process(Request request, Response response, HttpSession session,
+	public void process(Call request, Response response, HttpSession session,
 			Server server, Map<String, Object> caddy, org.hibernate.Session hibSession)
 			throws ConnectionLostException, Exception {
 		

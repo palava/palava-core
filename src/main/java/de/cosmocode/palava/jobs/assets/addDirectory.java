@@ -27,7 +27,7 @@ import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
@@ -35,7 +35,7 @@ import de.cosmocode.palava.jobs.hib.HibJob;
 public class addDirectory extends HibJob {
 
 	@Override
-	public void process(Request req, Response resp, HttpSession session,
+	public void process(Call req, Response resp, HttpSession session,
 			Server server, Map<String, Object> caddy,
 			org.hibernate.Session hibSession) throws Exception {
 		

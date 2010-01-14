@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.inject.servlet.SessionScoped;
-
 import de.cosmocode.json.JSONMapable;
 import de.cosmocode.json.JSONRenderer;
 import de.cosmocode.palava.ClientData;

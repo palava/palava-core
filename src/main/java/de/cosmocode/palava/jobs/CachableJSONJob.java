@@ -29,7 +29,7 @@ import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.protocol.JSONRequest;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -38,7 +38,7 @@ public abstract class CachableJSONJob extends CachableJob {
     private JSONObject json;
 
     @Override
-    public final void process(Request request, Response response, Server server, HttpSession session, 
+    public final void process(Call request, Response response, Server server, HttpSession session, 
         Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
         JSONRequest jRequest = (JSONRequest) request;

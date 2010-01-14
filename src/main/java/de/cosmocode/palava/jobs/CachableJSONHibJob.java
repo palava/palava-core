@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.protocol.JSONRequest;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.CachableHibJob;
@@ -37,7 +37,7 @@ public abstract class CachableJSONHibJob extends CachableHibJob {
 	private JSONObject json;
 
 	@Override
-	public final void process(Request request, Response response, HttpSession s, Server server, 
+	public final void process(Call request, Response response, HttpSession s, Server server, 
 		Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
 
 		JSONRequest jRequest = (JSONRequest) request;

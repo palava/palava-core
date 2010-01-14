@@ -17,18 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.scope;
 
+import com.google.inject.Key;
 import com.google.inject.Scope;
 
 /**
- * 
+ * The {@link ManagedScope} interface is built
+ * on top of {@link Scope} and adds some more methods
+ * that can be used to enter or exit the scope
+ * manually.
  *
  * @author Willi Schoenborn
  */
-public interface CustomScope extends Scope {
+public interface ManagedScope extends Scope {
 
     void enter();
+    
+    <T> void seed(Key<T> key, T value);
     
     public <T> void seed(Class<T> type, T value);
     

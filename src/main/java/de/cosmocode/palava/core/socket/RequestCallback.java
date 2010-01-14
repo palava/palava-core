@@ -19,11 +19,11 @@
 
 package de.cosmocode.palava.core.socket;
 
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 public interface RequestCallback {
 
-    void incomingRequest(Request request, Response response);
+    void incomingRequest(Call request, Response response);
     
 }

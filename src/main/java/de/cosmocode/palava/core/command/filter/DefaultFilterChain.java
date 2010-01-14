@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 /**
@@ -47,7 +47,7 @@ final class DefaultFilterChain implements FilterChain {
     }
 
     @Override
-    public void filter(Request request, Response response) {
+    public void filter(Call request, Response response) throws FilterException {
         index++;
         if (index < filters.size()) {
             final Filter filter = filters.get(index);

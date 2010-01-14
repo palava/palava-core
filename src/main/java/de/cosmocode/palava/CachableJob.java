@@ -35,7 +35,7 @@ import de.cosmocode.palava.core.protocol.Content;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.JSONContent;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.TextContent;
 import de.cosmocode.palava.core.protocol.TextRequest;
@@ -131,7 +131,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * Process the job as it normally would be.
      * ATTENTION: parameters server and session are flipped in the signature
      */
-    public abstract void process (Request request,
+    public abstract void process (Call request,
             Response response, 
             Server server, 
             HttpSession session, 
@@ -154,7 +154,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * @throws Exception: in case something went wrong
      * @throws UncachableException: if the given request isn't supported
      */
-    protected Object getArguments (Request request) throws Exception, UncachableException {
+    protected Object getArguments (Call request) throws Exception, UncachableException {
         if (request instanceof DataRequest) {
             return ((DataRequest) request).getArguments();
         } else if (request instanceof TextRequest) {
@@ -167,7 +167,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     /**
      * Returns the CacheItem for the job-call or null if caching is not supported.
      */
-    protected CacheItem getCacheItem (Request request, HttpSession session, Server server, Map<String, Object> caddy) throws Exception {
+    protected CacheItem getCacheItem (Call request, HttpSession session, Server server, Map<String, Object> caddy) throws Exception {
         final String language = session == null ? null : (String) session.get("lang");
         
         // we need a language for caching
@@ -261,7 +261,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     // ----------------------
 
     @Override
-    public final void process(Request request,
+    public final void process(Call request,
             Response response,
             HttpSession session,
             Server server,

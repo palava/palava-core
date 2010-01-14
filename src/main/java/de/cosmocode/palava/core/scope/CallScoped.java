@@ -17,13 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.scope;
 
-import de.cosmocode.palava.core.protocol.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface FilterChain {
+import com.google.inject.ScopeAnnotation;
 
-    void filter(Call call, Response response) throws FilterException;
-    
+/**
+ * Apply this to implementation classes when you want one instance per call.
+ *
+ * @author Willi Schoenborn
+ */
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@ScopeAnnotation
+public @interface CallScoped {
+
 }

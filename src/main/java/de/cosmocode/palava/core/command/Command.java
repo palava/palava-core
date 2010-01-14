@@ -20,12 +20,12 @@
 package de.cosmocode.palava.core.command;
 
 import de.cosmocode.palava.core.protocol.Content;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public interface Command {
 
-    Content execute(Request request, Response response, HttpSession httpSession);
+    Content execute(Call request, Response response, HttpSession httpSession);
     
 }

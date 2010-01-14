@@ -17,13 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.request;
 
-import de.cosmocode.palava.core.protocol.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.servlet.RequestScoped;
 
-public interface FilterChain {
+/**
+ * A {@link Module} for the {@link de.cosmocode.palava.core.request} package.
+ *
+ * @author Willi Schoenborn
+ */
+public final class RequestModule implements Module {
 
-    void filter(Call call, Response response) throws FilterException;
-    
+    @Override
+    public void configure(Binder binder) {
+        final RequestScope scope = new RequestScope();
+        binder.bindScope(RequestScoped.class, scope);
+        binder.bind(RequestScope.class).toInstance(scope);
+    }
+
 }

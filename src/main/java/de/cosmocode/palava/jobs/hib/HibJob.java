@@ -29,7 +29,7 @@ import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.hib.ClosableSession;
 import de.cosmocode.palava.components.hib.Hib;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 public abstract class HibJob implements Job {
@@ -37,7 +37,7 @@ public abstract class HibJob implements Job {
 	public static final String CADDY_HIBSESSION = "HibSession";
 	
 	@Override
-	public final void process(Request request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
+	public final void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
 			Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
 		Session session = (Session) caddy.get(CADDY_HIBSESSION);
@@ -66,7 +66,7 @@ public abstract class HibJob implements Job {
 	}
 
 
-	public abstract void process(Request request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
+	public abstract void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
         Map<String, Object> caddy, Session session) throws Exception;
 
 }

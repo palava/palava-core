@@ -30,12 +30,12 @@ import de.cosmocode.palava.RequestHeader;
 import de.cosmocode.palava.UncloseableInputStream;
 
 /**
- * Abstract implementation of the {@link Request} interface.
+ * Abstract implementation of the {@link Call} interface.
  * 
  * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */
-abstract class AbstractRequest implements Request {
+abstract class AbstractRequest implements Call {
     
     protected static final Charset CHARSET = Charset.forName("UTF-8");
 

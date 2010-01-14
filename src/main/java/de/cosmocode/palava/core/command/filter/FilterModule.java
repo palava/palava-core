@@ -31,12 +31,7 @@ public final class FilterModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        final CallScope scope = new CallScope();
-        binder.bindScope(CallScoped.class, scope);
         
-        binder.bind(CallScope.class).toInstance(scope);
-        
-        binder.bind(Filter.class).to(CallScopedFilter.class);
     }
     
 }

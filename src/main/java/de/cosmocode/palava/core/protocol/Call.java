@@ -17,13 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.protocol;
 
-import de.cosmocode.palava.core.protocol.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import java.io.IOException;
+import java.io.InputStream;
 
-public interface FilterChain {
+import de.cosmocode.palava.ConnectionLostException;
+import de.cosmocode.palava.RequestHeader;
 
-    void filter(Call call, Response response) throws FilterException;
+/**
+ * 
+ *
+ * @author Willi Schoenborn
+ */
+public interface Call {
+
+    RequestHeader getHeader();
+    
+    InputStream getInputStream();
+    
+    int read(byte[] data) throws ConnectionLostException, IOException;
+    
+    void freeInputStream() throws ConnectionLostException, IOException;
     
 }

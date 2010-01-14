@@ -17,19 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command.filter;
+package de.cosmocode.palava.core.call;
+
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
+import com.google.inject.Key;
+import com.google.inject.internal.Maps;
 
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.command.filter.Filter;
+import de.cosmocode.palava.core.command.filter.FilterChain;
+import de.cosmocode.palava.core.command.filter.FilterException;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 /**
- * A {@link Filter} which enters and exits the {@link CallScope}.
+ * A {@link Filter} which enters and exits the {@link RequestScope}.
  *
  * @author Willi Schoenborn
  */
@@ -37,26 +42,21 @@ final class CallScopedFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(CallScopedFilter.class);
 
-    private final CallScope scope;
-    
-    @Inject
-    public CallScopedFilter(CallScope scope) {
-        this.scope = Preconditions.checkNotNull(scope, "Scope");
-    }
+    private boolean entered;
+    private final Map<Key<?>, Object> context = Maps.newHashMap(); 
     
     @Override
-    public void filter(Request request, Response response, FilterChain chain) {
+    public void filter(Call request, Response response, FilterChain chain) throws FilterException {
         log.debug("Entering call scope");
-        scope.enter();
-        scope.seed(Request.class, request);
-        scope.seed(Response.class, response);
+        entered = true;
+        // TODO enter scope
         
-        try {
-            chain.filter(request, response);
-        } finally {
-            log.debug("Exiting call scope");
-            scope.exit();
-        }
+        chain.filter(request, response);
+        
+        log.debug("Exiting call scope");
+        entered = false;
+        context.clear();
+        // TODO exit scope
     }
 
 }

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import de.cosmocode.palava.core.protocol.DefaultResponse;
 import de.cosmocode.palava.core.protocol.ErrorContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -44,7 +44,7 @@ public class RequestConsumer {
 		// read the request
 		final RequestHeader header = RequestHeader.createHeader(in);
 	
-		final Request request = header.getType().createRequest(header, in);
+		final Call request = header.getType().createRequest(header, in);
 	
 		// find the session
 	    final String sessionID = header.getSessionID();

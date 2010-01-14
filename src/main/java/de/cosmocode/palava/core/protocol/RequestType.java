@@ -39,7 +39,7 @@ public enum RequestType {
     DATA {
         
         @Override
-        public Request createRequest(RequestHeader header, InputStream stream) {
+        public Call createRequest(RequestHeader header, InputStream stream) {
             return new DataRequest(header, stream);
         }
         
@@ -48,7 +48,7 @@ public enum RequestType {
     TEXT {
         
         @Override
-        public Request createRequest(RequestHeader header, InputStream stream) {
+        public Call createRequest(RequestHeader header, InputStream stream) {
             return new TextRequest(header, stream);
         }
         
@@ -57,7 +57,7 @@ public enum RequestType {
     JSON {
         
         @Override
-        public Request createRequest(RequestHeader header, InputStream stream) {
+        public Call createRequest(RequestHeader header, InputStream stream) {
             return new JSONRequest(header, stream);
         }
         
@@ -66,19 +66,19 @@ public enum RequestType {
     BINARY {
         
         @Override
-        public Request createRequest(RequestHeader header, InputStream stream) {
+        public Call createRequest(RequestHeader header, InputStream stream) {
             return new BinaryRequest(header, stream);
         }
         
     };
     
     /**
-     * Creates a new {@link Request} based on this value.
+     * Creates a new {@link Call} based on this value.
      * 
      * @param header the request header
      * @param stream the stream to read from
-     * @return a new {@link Request}
+     * @return a new {@link Call}
      */
-    public abstract Request createRequest(RequestHeader header, InputStream stream);
+    public abstract Call createRequest(RequestHeader header, InputStream stream);
     
 }

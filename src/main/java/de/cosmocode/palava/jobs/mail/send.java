@@ -27,7 +27,7 @@ import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.mail.Mailer;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -38,7 +38,7 @@ import de.cosmocode.palava.core.session.HttpSession;
 public class send implements Job
 {
 
-	public void process(Request request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
 	{
         Mailer mailer = server.components.lookup(Mailer.class);
         DataRequest req = (DataRequest) request;
