@@ -26,6 +26,8 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.octo.captcha.service.captchastore.FastHashMapCaptchaStore;
 import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -36,22 +38,34 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
 import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.service.lifecycle.Configurable;
+import de.cosmocode.palava.core.service.lifecycle.Initializable;
+import de.cosmocode.palava.core.service.lifecycle.Lifecycle;
+import de.cosmocode.palava.core.service.lifecycle.LifecycleException;
 
 /**
  * capctha implementation based on jcaptcha.
  *
  */
-public class JCaptchaImage implements Captcha {
+public class JCaptchaImage implements Captcha, Configurable, Initializable {
 
-	ImageCaptchaService service;
+    private static final Logger logger = Logger.getLogger(JCaptchaImage.class);
+
+    private final Server server;
+    
+	private ImageCaptchaService service;
 	private PalavaGimpyEngine captchaEngine;
-	private static final Logger logger = Logger.getLogger(JCaptchaImage.class);
 
     /// TODO: make these fields configurable
     private int minGuarantedStorageDelayInSeconds = 180;
     private int maxCaptchaStoreSize = 100000;
     private int captchaStoreLoadBeforeGarbageCollection = 75000;
 
+    @Inject
+    public JCaptchaImage(Server server) {
+        this.server = Preconditions.checkNotNull(server, "Server");
+    }
+    
 	@Override
 	public byte[] getJpegCapchta(String token) {
 		
@@ -73,33 +87,18 @@ public class JCaptchaImage implements Captcha {
         return jpegOutputStream.toByteArray();	
 	}
 	
-
 	@Override
-	public void compose(ComponentManager manager) throws ComponentException {
-		// TODO Auto-generated method stub
-
+	public void configure(Element root) {
+	    captchaEngine = new PalavaGimpyEngine();
+        final Element child = root.getChild("imagecaptcha");
+        Lifecycle.check(child != null, "missing config node 'imagecaptcha'");
+		captchaEngine.configure(child, server);
 	}
 
 	@Override
-	public void configure(Element root, Server server)
-			throws ComponentException {
+	public void initialize() {
 		
-		captchaEngine = new PalavaGimpyEngine();
-
-        Element child = root.getChild("imagecaptcha");
-        if ( child == null ) throw new ComponentException("missing config node 'imagecaptcha'");
-		captchaEngine.configure( child,server);
-
-	}
-
-	@Override
-	public void initialize() throws ComponentException {
-		
-        try {
-            captchaEngine.initialize();
-        } catch (Exception e) {
-            throw new ComponentException(e);
-        }
+	    captchaEngine.initialize();
         
 		service = new DefaultManageableImageCaptchaService(
             new FastHashMapCaptchaStore(),
@@ -108,7 +107,6 @@ public class JCaptchaImage implements Captcha {
             maxCaptchaStoreSize,
             captchaStoreLoadBeforeGarbageCollection
         );
-		
 
 	}
 

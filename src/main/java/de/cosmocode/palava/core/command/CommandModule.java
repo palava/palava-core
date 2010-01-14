@@ -17,22 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
+package de.cosmocode.palava.core.command;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * A {@link Module} for the {@link de.cosmocode.palava.core.command} package.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+public final class CommandModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
+        
     }
 
 }

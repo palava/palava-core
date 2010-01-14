@@ -19,6 +19,8 @@
 
 package de.cosmocode.palava.core.server;
 
-public interface Server extends Runnable {
+import de.cosmocode.commons.Service;
+
+public interface Server extends Service {
 
 }

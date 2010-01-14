@@ -33,6 +33,8 @@ public interface Initializable {
 
     /**
      * Initializes the service.
+     * 
+     * @throws LifecycleException if initialize failed
      */
     void initialize();
     

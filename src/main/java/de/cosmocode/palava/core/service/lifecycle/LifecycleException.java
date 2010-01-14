@@ -17,22 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
-
-import com.google.inject.Binder;
-import com.google.inject.Module;
+package de.cosmocode.palava.core.service.lifecycle;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * Indicates an error in a service lifycycle.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+public class LifecycleException extends RuntimeException {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
+    private static final long serialVersionUID = 4658363777699992043L;
+
+    public LifecycleException(String message) {
+        super(message);
+    }
+    
+    public LifecycleException(Throwable throwable) {
+        super(throwable);
+    }
+    
+    public LifecycleException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
 }

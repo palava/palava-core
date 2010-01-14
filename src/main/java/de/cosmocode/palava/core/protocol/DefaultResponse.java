@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
  * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */
+// TODO package private
 public final class DefaultResponse implements Response {
 
     private final OutputStream out;

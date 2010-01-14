@@ -33,11 +33,15 @@ public interface Startable {
 
     /**
      * Starts the service.
+     * 
+     * @throws LifecycleException if start failed
      */
     void start();
     
     /**
      * Stops the service.
+     * 
+     * @throws LifecycleException if stop failed
      */
     void stop();
     

@@ -17,8 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.filter;
+package de.cosmocode.palava.core.command.filter;
 
-public interface FilterChain {
+import com.google.inject.Scope;
 
+/**
+ * 
+ *
+ * @author Willi Schoenborn
+ */
+public interface CustomScope extends Scope {
+
+    void enter();
+    
+    public <T> void seed(Class<T> type, T value);
+    
+    void exit();
+    
 }

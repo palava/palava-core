@@ -19,14 +19,30 @@
 
 package de.cosmocode.palava.components.captcha;
 
-import de.cosmocode.palava.Component;
+/**
+ * A service for generating captchas.
+ *
+ * @author Willi Schoenborn
+ */
+public interface Captcha {
 
-public interface Captcha extends  Component {
+    String SESSION_KEY = "Captcha_question";
 
-	public static String SESSION_QUESTIONKEY = "Captcha_question";
+    /**
+     * Returns the byte data of the captcha with the given token.
+     * 
+     * @param token the token
+     * @return byte array of jpeg image data
+     */
+    byte[] getJpegCapchta(String token);
 
-	public byte [] getJpegCapchta( String token ) ;
-
-    public boolean validate( String sessionID, String userInput );
+    /**
+     * Checks for valid user inputs.
+     * 
+     * @param sessionId the user's session id
+     * @param userInput the user's input
+     * @return true if userInput was valid
+     */
+    boolean validate(String sessionId, String userInput);
 
 }

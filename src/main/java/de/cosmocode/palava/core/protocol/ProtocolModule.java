@@ -31,7 +31,7 @@ public final class ProtocolModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        
+        binder.bind(Response.class).to(DefaultResponse.class);
     }
 
 }

@@ -19,12 +19,51 @@
 
 package de.cosmocode.palava.core.service;
 
+import com.google.inject.Inject;
+
+/**
+ * A manager for all services running inside the palava
+ * framework. The {@link ServiceManager} is responsible for
+ * the proper execution of all lifecycle methods
+ * as defined in the lifecycle package.
+ *
+ * @author Willi Schoenborn
+ */
 public interface ServiceManager {
 
+    /**
+     * Lookups a service by its specification.
+     * 
+     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
+     * annotation instead.
+     * 
+     * @param <T> the generic interface type
+     * @param spec the spec class literal
+     * @return the found Service
+     * @throws NullPointerException if spec is null
+     */
+    @Deprecated
     <T> T lookup(Class<T> spec);
-    
+
+    /**
+     * Lookups a service by its specification and a its name.
+     * 
+     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
+     * annotation instead.
+     * 
+     * @param <T> the generic interface type
+     * @param spec the spec class literal
+     * @param name the service name
+     * @return the found Service
+     * @throws NullPointerException if spec or name is null
+     */
+    @Deprecated
     <T> T lookup(Class<T> spec, String name);
     
+    /**
+     * Shuts down this {@link ServiceManager} and its
+     * services.
+     */
     void shutdown();
     
 }

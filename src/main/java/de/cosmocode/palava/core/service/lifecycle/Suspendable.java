@@ -29,15 +29,19 @@ package de.cosmocode.palava.core.service.lifecycle;
  *
  * @author Willi Schoenborn
  */
-public interface Suspendable {
+public interface Suspendable extends Startable {
 
     /**
      * Suspends the service.
+     * 
+     * @throws LifecycleException if suspend failed
      */
     void suspend();
     
     /**
      * Resumes the service.
+     * 
+     * @throws LifecycleException if resume failed
      */
     void resume();
     

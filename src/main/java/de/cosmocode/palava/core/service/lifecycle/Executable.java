@@ -33,6 +33,8 @@ public interface Executable {
 
     /**
      * Execution entry point.
+     * 
+     * @throws LifecycleException if execute failed
      */
     void execute();
     

@@ -17,22 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
+package de.cosmocode.palava.core.service.lifecycle;
 
-import com.google.inject.Binder;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Module;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * A {@link BindingAnnotation} for addressing configuration.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+@BindingAnnotation
+@Target({
+    ElementType.FIELD,
+    ElementType.PARAMETER,
+    ElementType.METHOD
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Config {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
-    }
-
+    Class<? extends Module> value();
+    
 }

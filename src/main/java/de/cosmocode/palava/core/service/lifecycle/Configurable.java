@@ -37,6 +37,7 @@ public interface Configurable {
      * Configures this service.
      * 
      * @param element the configuration element
+     * @throws LifecycleException if configure failed
      */
     void configure(Element element);
     

@@ -70,6 +70,7 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         for (HttpSession session : purged) {
             log.debug("purged {}", session.toString());
             session.destroy();
+            // TODO session scope destroy
         }
     }
 
@@ -82,6 +83,7 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         }
         final String sessionId = builder.toString();
         final HttpSession session = create(sessionId);
+        // TODO session scope enter
         sessions.put(sessionId, session);
         return session;
     }

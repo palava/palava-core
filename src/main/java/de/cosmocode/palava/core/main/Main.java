@@ -44,6 +44,8 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import de.cosmocode.palava.core.server.Server;
+import de.cosmocode.palava.core.service.lifecycle.Config;
+import de.cosmocode.palava.core.service.lifecycle.Configs;
 
 /**
  * Application entry point.
@@ -58,7 +60,7 @@ public final class Main {
     private static final String CONFIGURATION = "configuration";
 
     @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to modules.xml")
-    private File config;
+    private File configFile;
     
     private Main() {
         
@@ -83,7 +85,7 @@ public final class Main {
         log.debug("Created server {}", server);
         
         log.info("Starting server");
-        server.run();
+        server.start();
         log.info("Server successfully stopped");
     }
     
@@ -92,7 +94,7 @@ public final class Main {
         final Element root;
         
         try {
-            root = new SAXBuilder().build(config).getRootElement();
+            root = new SAXBuilder().build(configFile).getRootElement();
         } catch (JDOMException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
@@ -120,13 +122,16 @@ public final class Main {
                 } else {
                     log.debug("Found configuration for {}", module);
                     
-                    final Named configurationName = Names.named(moduleClass.getSimpleName());
+                    final Named configName = Names.named(moduleClass.getSimpleName());
+                    final Config config = Configs.of(moduleClass);
+                    
                     modules.add(new Module() {
                         
                         @Override
                         public void configure(Binder binder) {
                             binder.install(module);
-                            binder.bind(Key.get(Element.class, configurationName)).toInstance(configuration);
+                            binder.bind(Key.get(Element.class, configName)).toInstance(configuration);
+                            binder.bind(Key.get(Element.class, config)).toInstance(configuration);
                         }
                         
                     });

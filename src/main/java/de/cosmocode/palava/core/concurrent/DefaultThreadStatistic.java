@@ -19,20 +19,33 @@
 
 package de.cosmocode.palava.core.concurrent;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import java.util.Date;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * Default implementation of the {@link ThreadStatistic} interface.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+final class DefaultThreadStatistic implements ThreadStatistic {
 
+    private ImmutableSet<Thread> threads;
+    
+    private final Date date = new Date();
+    
+    public DefaultThreadStatistic(Iterable<Thread> threads) {
+        this.threads = ImmutableSet.copyOf(threads);
+    }
+    
     @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
+    public Date getDate() {
+        return new Date(date.getTime());
+    }
+    
+    @Override
+    public int size() {
+        return threads.size();
     }
 
 }

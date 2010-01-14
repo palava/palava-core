@@ -19,6 +19,8 @@
 
 package de.cosmocode.palava.core.server;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +28,15 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import de.cosmocode.commons.State;
+import de.cosmocode.palava.core.command.filter.Filter;
+import de.cosmocode.palava.core.command.filter.FilterChain;
+import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.session.HttpSessionManager;
+import de.cosmocode.palava.core.socket.RequestCallback;
+import de.cosmocode.palava.core.socket.SocketConnector;
 
 /**
  * Default implementation of the {@link Server} interface.
@@ -35,7 +44,7 @@ import de.cosmocode.palava.core.session.HttpSessionManager;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServer implements Server {
+final class DefaultServer implements Server, RequestCallback {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
 
@@ -43,16 +52,71 @@ final class DefaultServer implements Server {
     
     private final HttpSessionManager sessionManager;
     
+    private final SocketConnector socketConnector;
+    
+    private State state = State.NEW;
+    
     @Inject
-    public DefaultServer(ServiceManager serviceManager, HttpSessionManager sessionManager) {
+    public DefaultServer(ServiceManager serviceManager, HttpSessionManager sessionManager,
+        SocketConnector connector) {
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
         this.sessionManager = Preconditions.checkNotNull(sessionManager, "SessionManager");
+        this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
     }
     
     @Override
-    public void run() {
+    public void start() {
+        state = State.STARTING;
+        addHook();
         log.debug("ServiceManager: {}", serviceManager);
         log.debug("SessionManager: {}", sessionManager);
+        log.debug("SocketConnector: {}", socketConnector);
+
+        state = State.RUNNING;
+        
+        try {
+            socketConnector.run(this);
+        } catch (IOException e) {
+            log.error("Socket error", e);
+            stop();
+            state = State.FAILED;
+        }
+    }
+    
+    @Override
+    public void incomingRequest(Request request, Response response) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    private void addHook() {
+        // TODO dont create new thread
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                stop();
+            }
+            
+        }));
+    }
+    
+    @Override
+    public State currentState() {
+        return state;
+    }
+    
+    @Override
+    public boolean isRunning() {
+        return state == State.RUNNING;
+    }
+    
+    @Override
+    public void stop() {
+        state = State.STOPPING;
+        socketConnector.stop();
+        serviceManager.shutdown();
+        state = State.TERMINATED;
     }
     
 }

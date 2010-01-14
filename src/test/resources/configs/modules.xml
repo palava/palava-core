@@ -20,15 +20,19 @@
   -->
   <module name="de.cosmocode.palava.core.server.ServerModule">
     <configuration>
-      <minPoolSize>10</minPoolSize>
-      <maxPoolSize>500</maxPoolSize>
-      <keepAliveTime>10</keepAliveTime>
-      <keepAliveTimeUnit>minutes</keepAliveTimeUnit>
     </configuration>
   </module>
   <module name="de.cosmocode.palava.core.socket.SocketModule">
     <configuration>
       <port>2010</port>
+      <socketTimeout>5</socketTimeout>
+      <socketTimeoutUnit>seconds</socketTimeoutUnit>
+      <minPoolSize>10</minPoolSize>
+      <maxPoolSize>500</maxPoolSize>
+      <keepAliveTime>10</keepAliveTime>
+      <keepAliveTimeUnit>minutes</keepAliveTimeUnit>
+      <shutdownTimeout>120</shutdownTimeout>
+      <shutdownTimeoutUnit>seconds</shutdownTimeoutUnit>
     </configuration>
   </module>
   <module name="de.cosmocode.palava.core.concurrent.ConcurrencyModule"/>
@@ -36,6 +40,21 @@
     <configuration>
       <file>src/test/resources/configs/services.xml</file>
     </configuration>
+  </module>
+  <module name="de.cosmocode.palava.core.command.CommandModule"/>
+  <module name="de.cosmocode.palava.core.command.filter.FilterModule">
+    <filters>
+      <filter>
+        <filter-name>callscope-filter</filter-name>
+        <filter-class>de.cosmocode.palava.core.command.filter.CallScopedFilter</filter-class>
+      </filter>
+    </filters>
+    <filter-mappings>
+      <filter-mapping>
+        <filter-ref>callscope-filter</filter-ref>
+        <command-pattern>@palava\..*</command-pattern>
+      </filter-mapping>
+    </filter-mappings>
   </module>
   <module name="de.cosmocode.palava.core.registry.RegistryModule"/>
   <module name="de.cosmocode.palava.core.session.SessionModule"/>

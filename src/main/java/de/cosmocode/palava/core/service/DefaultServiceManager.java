@@ -22,7 +22,7 @@ package de.cosmocode.palava.core.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -31,15 +31,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
-import com.google.inject.internal.Sets;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+
+import de.cosmocode.palava.core.service.lifecycle.Config;
+import de.cosmocode.palava.core.service.lifecycle.Configurable;
+import de.cosmocode.palava.core.service.lifecycle.Disposable;
+import de.cosmocode.palava.core.service.lifecycle.Initializable;
+import de.cosmocode.palava.core.service.lifecycle.LifecycleException;
+import de.cosmocode.palava.core.service.lifecycle.Startable;
 
 /**
  * Default implementation of the {@link ServiceManager} interface.
@@ -60,14 +70,15 @@ final class DefaultServiceManager implements ServiceManager {
     
     private final Element root;
     
-    private final Set<Object> services = Sets.newHashSet();
+    private final Map<Key<Object>, Element> configuration = Maps.newHashMap();
+    private final BiMap<Key<Object>, Object> services = HashBiMap.create();
     
     @Inject
-    public DefaultServiceManager(Injector injector, @Named("ServiceModule") Element configuration) {
-        this.injector = Preconditions.checkNotNull(injector, "Injector");
+    public DefaultServiceManager(Injector parentInjector, @Config(ServiceModule.class) Element config) {
+        Preconditions.checkNotNull(parentInjector, "Injector");
         
-        Preconditions.checkNotNull(configuration, "Configuration");
-        final String path = configuration.getChildText(FILE);
+        Preconditions.checkNotNull(config, "Configuration");
+        final String path = config.getChildText(FILE);
         Preconditions.checkNotNull(path, "Service config file path not set");
         
         final File file = new File(path);
@@ -81,7 +92,17 @@ final class DefaultServiceManager implements ServiceManager {
             throw new IllegalArgumentException(e);
         }
         
-        injector.createChildInjector(new IntegratedServiceModule());
+        this.injector = parentInjector.createChildInjector(new IntegratedServiceModule());
+        
+        for (Key<Object> key : configuration.keySet()) {
+            final Object service = injector.getInstance(key);
+            log.debug("Created service {}", service);
+            services.put(key, service);
+        }
+        
+        configure();
+        initialize();
+        start();
     }
     
     /**
@@ -115,36 +136,95 @@ final class DefaultServiceManager implements ServiceManager {
                     throw new IllegalArgumentException(e);
                 }
 
+                final Key<Object> key;
                 final String name = child.getAttributeValue(NAME);
                 
                 if (name == null) {
                     log.debug("No name given, binding {} to {}", spec, impl);
-                    binder.bind(spec).to(impl);
+                    key = Key.get(spec);
                 } else {
                     log.debug("Name given, binding {} to {} using name '{}'", new Object[] {
                         spec, impl, name
                     });
-                    binder.bind(spec).annotatedWith(Names.named(name)).to(impl);
+                    key = Key.get(spec, Names.named(name));
                 }
+                
+                configuration.put(key, child);
+                binder.bind(key).to(impl).in(Scopes.SINGLETON);
             }
             
         }
         
     }
     
+    private void configure() {
+        log.info("Configuring services");
+        for (Configurable configurable : Iterables.filter(services.values(), Configurable.class)) {
+            final Element element = configuration.get(services.inverse().get(configurable));
+            log.info("Configuring {}", configurable);
+            configurable.configure(element);
+        }
+    }
+    
+    private void initialize() {
+        log.info("Initializing services");
+        for (Initializable initializable : Iterables.filter(services.values(), Initializable.class)) {
+            log.info("Initializing {}", initializable);
+            initializable.initialize();
+        }
+    }
+    
+    private void start() {
+        log.info("Starting services");
+        for (Startable startable : Iterables.filter(services.values(), Startable.class)) {
+            log.info("Starting {}", startable);
+            startable.start();
+        }
+    }
+    
     @Override
     public <T> T lookup(Class<T> spec) {
+        Preconditions.checkNotNull(spec, "Spec");
         return injector.getInstance(spec);
     }
     
     @Override
     public <T> T lookup(Class<T> spec, String name) {
+        Preconditions.checkNotNull(spec, "Spec");
+        Preconditions.checkNotNull(name, "Name"); 
         return injector.getInstance(Key.get(spec, Names.named(name)));
     }
     
     @Override
     public void shutdown() {
-        
+        stop();
+        dispose();
+    }
+    
+    private void stop() {
+        log.info("Stopping services");
+        for (Startable startable : Iterables.filter(services.values(), Startable.class)) {
+            log.info("Stopping {}", startable);
+            try {
+                startable.stop();
+            } catch (LifecycleException e) {
+                final String message = String.format("Unable to stop service %s", startable);
+                log.warn(message, e);
+            }
+        }
+    }
+    
+    private void dispose() {
+        log.info("Disposing services");
+        for (Disposable disposable : Iterables.filter(services.values(), Disposable.class)) {
+            log.info("Disposing {}", disposable);
+            try {
+                disposable.dispose();
+            } catch (LifecycleException e) {
+                final String message = String.format("Unable to stop service %s", disposable);
+                log.warn(message, e);
+            }
+        }
     }
     
 }

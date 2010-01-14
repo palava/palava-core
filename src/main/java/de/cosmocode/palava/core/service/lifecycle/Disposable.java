@@ -33,6 +33,8 @@ public interface Disposable {
 
     /**
      * Disposes the service.
+     * 
+     * @throws LifecycleException if dispose failed
      */
     void dispose();
     

@@ -17,22 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
-
-import com.google.inject.Binder;
-import com.google.inject.Module;
+package de.cosmocode.palava.core.service.lifecycle;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * Utility class for condition checks inside
+ * the lifecycle framework. 
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+public final class Lifecycle {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
+    private Lifecycle() {
+        
     }
-
+   
+    /**
+     * Checks the given expression and throws a {@link LifecycleException}
+     * if it is false. 
+     * 
+     * @param expression the condition
+     * @param message the error message
+     * @throws LifecycleException if expression is false
+     */
+    public static void check(boolean expression, String message) {
+        if (expression) return;
+        throw new LifecycleException(message);
+    }
+    
 }

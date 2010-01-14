@@ -19,20 +19,32 @@
 
 package de.cosmocode.palava.core.concurrent;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import java.util.Date;
+
+import de.cosmocode.patterns.Immutable;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * A {@link ThreadStatistic} holds all relevant information
+ * about all threads currently in use. The statistic data
+ * is bound to a specific date and not modifiable.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+@Immutable
+public interface ThreadStatistic {
+    
+    /**
+     * The date when this statistic has been created.
+     * 
+     * @return the Date of creation
+     */
+    Date getDate();
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
-    }
-
+    /**
+     * The amount of threads.
+     * 
+     * @return total count of threads
+     */
+    int size();
+    
 }

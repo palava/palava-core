@@ -17,22 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
+package de.cosmocode.palava.core.socket;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import java.io.IOException;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
+ * A {@link SocketConnector} is able to listen
+ * on one specific port and establish a socket
+ * connection. 
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+public interface SocketConnector {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
-    }
-
+    void run(RequestCallback callback) throws IOException;
+    
+    /**
+     * Blocks until socket has been closed.
+     */
+    void stop();
+    
 }

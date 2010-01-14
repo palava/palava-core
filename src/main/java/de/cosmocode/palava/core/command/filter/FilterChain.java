@@ -17,12 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.filter;
+package de.cosmocode.palava.core.command.filter;
 
 import de.cosmocode.palava.core.protocol.Request;
+import de.cosmocode.palava.core.protocol.Response;
 
-public interface Filter {
+public interface FilterChain {
 
-    void filter(Request request);
+    void filter(Request request, Response response);
     
 }

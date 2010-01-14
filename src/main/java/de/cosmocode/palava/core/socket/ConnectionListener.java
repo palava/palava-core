@@ -17,22 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.concurrent;
+package de.cosmocode.palava.core.socket;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-/**
- * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
- *
- * @author Willi Schoenborn
- */
-public final class ConcurrencyModule implements Module {
+public interface ConnectionListener {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
-    }
-
+    void connected(InputStream input, OutputStream output);
+    
 }

@@ -28,14 +28,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 /**
  * Default implementation of the {@link ExecutorBuilder} interface.
  *
  * @author Willi Schoenborn
  */
-public final class DefaultExecutorBuilder implements ExecutorBuilder {
+final class DefaultExecutorBuilder implements ExecutorBuilder {
 
+    private final ThreadFactoryProvider provider;
+    
     private int minPoolSize = DEFAULT_MIN_POOL_SIZE;
     private int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
     private long keepAliveTime = DEFAULT_KEEP_ALIVE_TIME;
@@ -43,8 +46,13 @@ public final class DefaultExecutorBuilder implements ExecutorBuilder {
     private BlockingQueue<Runnable> workQueue;
     private ThreadFactory threadFactory;
     
+    @Inject
+    public DefaultExecutorBuilder(ThreadFactoryProvider provider) {
+        this.provider = Preconditions.checkNotNull(provider, "Provider");
+    }
+    
     @Override
-    public ExecutorBuilder withMinPoolSize(int size) {
+    public ExecutorBuilder minSize(int size) {
         Preconditions.checkArgument(size >= 0, "Minimum pool size must be greater than 0");
         Preconditions.checkArgument(size <= maxPoolSize, "Minimum pool size must be less than maximum pool size");
         this.minPoolSize = size;
@@ -52,7 +60,7 @@ public final class DefaultExecutorBuilder implements ExecutorBuilder {
     }
     
     @Override
-    public ExecutorBuilder withMaxPoolSize(int size) {
+    public ExecutorBuilder maxSize(int size) {
         Preconditions.checkArgument(size >= 0, "Maximum pool size must be greater than 0");
         Preconditions.checkArgument(size >= minPoolSize, "Maximum pool size must be greater than minimum pool size");
         this.maxPoolSize = size;
@@ -60,7 +68,7 @@ public final class DefaultExecutorBuilder implements ExecutorBuilder {
     }
     
     @Override
-    public ExecutorBuilder withKeepAliveTime(long time, TimeUnit unit) {
+    public ExecutorBuilder keepAlive(long time, TimeUnit unit) {
         Preconditions.checkArgument(time >= 0, "Keep alive time must be greater than 0");
         Preconditions.checkNotNull(unit, "Unit");
         this.keepAliveTime = time;
@@ -69,20 +77,20 @@ public final class DefaultExecutorBuilder implements ExecutorBuilder {
     }
     
     @Override
-    public ExecutorBuilder withQueue(BlockingQueue<Runnable> queue) {
+    public ExecutorBuilder queue(BlockingQueue<Runnable> queue) {
         this.workQueue = Preconditions.checkNotNull(queue, "Queue");
         return this;
     }
     
     @Override
-    public ExecutorBuilder withQueue(QueueMode mode) {
+    public ExecutorBuilder queue(QueueMode mode) {
         Preconditions.checkNotNull(mode, "Mode");
         this.workQueue = Preconditions.checkNotNull(mode, "Mode").create();
         return this;
     }
     
     @Override
-    public ExecutorBuilder withThreadFactory(ThreadFactory factory) {
+    public ExecutorBuilder threadFactory(ThreadFactory factory) {
         Preconditions.checkNotNull(factory, "Factory");
         this.threadFactory = Preconditions.checkNotNull(factory, "Factory");
         return this;
@@ -95,14 +103,17 @@ public final class DefaultExecutorBuilder implements ExecutorBuilder {
             maxPoolSize,
             keepAliveTime,
             keepAliveTimeUnit,
-            workQueue,
-            threadFactory
+            workQueue == null ? DEFAULT_QUEUE_MODE.create() : workQueue,
+            threadFactory == null ? provider.newThreadFactory() : provider.newThreadFactory(threadFactory)
         );
     }
     
     @Override
     public ScheduledExecutorService buildScheduled() {
-        return new ScheduledThreadPoolExecutor(minPoolSize, threadFactory);
+        return new ScheduledThreadPoolExecutor(
+            minPoolSize,
+            threadFactory == null ? provider.newThreadFactory() : provider.newThreadFactory(threadFactory)
+        );
     }
     
 }
