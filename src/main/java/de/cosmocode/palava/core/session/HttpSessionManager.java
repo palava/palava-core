@@ -19,26 +19,17 @@
 
 package de.cosmocode.palava.core.session;
 
-import de.cosmocode.patterns.ParameterizedFactory;
-
 /**
  * A manager for {@link HttpSession}s.
  *
  * @author Willi Schoenborn
  */
-public interface HttpSessionManager extends ParameterizedFactory<HttpSession, String> {
+public interface HttpSessionManager {
 
     /**
      * Purge all sessions.
      */
     void purge();
-    
-    /**
-     * Create a new {@link HttpSession} and cache it.
-     * 
-     * @return a new {@link HttpSession}
-     */
-    HttpSession createSession();
     
     /**
      * Retrieve an {@link HttpSession} for a given session id.
@@ -48,5 +39,7 @@ public interface HttpSessionManager extends ParameterizedFactory<HttpSession, St
      *         with the given id
      */
     HttpSession get(String sessionId);
+    
+    HttpSession get();
     
 }

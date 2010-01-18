@@ -21,8 +21,9 @@ package de.cosmocode.palava.components.cstore;
 
 import de.cosmocode.palava.core.protocol.Content;
 import de.cosmocode.palava.core.protocol.StreamContent;
+import de.cosmocode.palava.core.service.Service;
 
-public interface ContentStore {
+public interface ContentStore extends Service {
 
 	public String store( Content content ) throws Exception;
 	

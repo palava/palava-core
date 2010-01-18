@@ -21,7 +21,7 @@ package de.cosmocode.palava;
 
 import java.util.Map;
 
-import de.cosmocode.palava.core.protocol.Call;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -34,7 +34,7 @@ public interface Job
 {
 
 	/**
-	 * @param request the request of this job. contains the invoking args
+	 * @param call the request of this job. contains the invoking args
 	 * @param response the container for the results 
 	 * @param session a session (may be null). available across different frontent/http requests
 	 * @param server the server structure - basically for the components lookup
@@ -42,6 +42,7 @@ public interface Job
 	 * @throws ConnectionLostException
 	 * @throws Exception
 	 */
-	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy ) throws ConnectionLostException, Exception;
+	public void process(Call call, Response response, HttpSession session, Server server, 
+        Map<String,Object> caddy) throws Exception;
 
 }

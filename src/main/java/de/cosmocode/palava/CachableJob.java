@@ -31,11 +31,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Content;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.JSONContent;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.TextContent;
 import de.cosmocode.palava.core.protocol.TextRequest;

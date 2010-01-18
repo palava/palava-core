@@ -20,6 +20,7 @@
 package de.cosmocode.palava.core.protocol;
 
 import de.cosmocode.palava.MimeType;
+import de.cosmocode.palava.core.call.Call;
 
 /**
  * a content based an request data.

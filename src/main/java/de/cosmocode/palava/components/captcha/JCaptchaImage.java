@@ -35,19 +35,15 @@ import com.sun.image.codec.jpeg.ImageFormatException;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
-import de.cosmocode.palava.ComponentException;
-import de.cosmocode.palava.ComponentManager;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.core.service.lifecycle.Configurable;
 import de.cosmocode.palava.core.service.lifecycle.Initializable;
 import de.cosmocode.palava.core.service.lifecycle.Lifecycle;
-import de.cosmocode.palava.core.service.lifecycle.LifecycleException;
 
 /**
  * capctha implementation based on jcaptcha.
  *
  */
-public class JCaptchaImage implements Captcha, Configurable, Initializable {
+public class JCaptchaImage implements Captcha, Initializable {
 
     private static final Logger logger = Logger.getLogger(JCaptchaImage.class);
 
@@ -60,6 +56,9 @@ public class JCaptchaImage implements Captcha, Configurable, Initializable {
     private int minGuarantedStorageDelayInSeconds = 180;
     private int maxCaptchaStoreSize = 100000;
     private int captchaStoreLoadBeforeGarbageCollection = 75000;
+    
+    @Inject
+    private Element root;
 
     @Inject
     public JCaptchaImage(Server server) {
@@ -88,15 +87,11 @@ public class JCaptchaImage implements Captcha, Configurable, Initializable {
 	}
 	
 	@Override
-	public void configure(Element root) {
-	    captchaEngine = new PalavaGimpyEngine();
-        final Element child = root.getChild("imagecaptcha");
-        Lifecycle.check(child != null, "missing config node 'imagecaptcha'");
-		captchaEngine.configure(child, server);
-	}
-
-	@Override
 	public void initialize() {
+	    captchaEngine = new PalavaGimpyEngine();
+	    final Element child = root.getChild("imagecaptcha");
+	    Lifecycle.check(child != null, "missing config node 'imagecaptcha'");
+	    captchaEngine.configure(child, server);
 		
 	    captchaEngine.initialize();
         

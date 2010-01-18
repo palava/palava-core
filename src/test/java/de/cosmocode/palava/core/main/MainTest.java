@@ -36,7 +36,7 @@ public final class MainTest {
      */
     @Test
     public void main() throws CmdLineException {
-        Main.main(new String[] {"-c", "src/test/resources/configs/modules.xml"});
+        Main.main(new String[] {"-c", "src/test/resources/configs/settings.properties"});
     }
 
 }

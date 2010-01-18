@@ -24,8 +24,8 @@ import java.util.Map;
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 

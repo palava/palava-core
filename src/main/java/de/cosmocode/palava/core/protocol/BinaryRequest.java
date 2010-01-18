@@ -28,7 +28,7 @@ import de.cosmocode.palava.RequestHeader;
  * 
  * @author Tobias Sarnowski
  */
-public final class BinaryRequest extends AbstractRequest {
+public final class BinaryRequest extends AbstractCall {
     
     public BinaryRequest(RequestHeader header, InputStream in) {
         super(header, in);

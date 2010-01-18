@@ -43,7 +43,7 @@ import de.cosmocode.palava.RequestHeader;
  * @deprecated use {@link JSONRequest} instead
  */
 @Deprecated
-public final class DataRequest extends AbstractRequest {
+public final class DataRequest extends AbstractCall {
     
     private static final Logger log = Logger.getLogger(DataRequest.class);
 

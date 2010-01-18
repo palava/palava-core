@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public interface SocketConnector {
 
-    void run(RequestCallback callback) throws IOException;
+    void run(CallHandler callback) throws IOException;
     
     /**
      * Blocks until socket has been closed.

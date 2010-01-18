@@ -31,7 +31,7 @@ import de.cosmocode.palava.Client;
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
-import de.cosmocode.palava.core.protocol.Call;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.TextContent;
 import de.cosmocode.palava.core.protocol.TextRequest;

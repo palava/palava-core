@@ -29,13 +29,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
-import de.cosmocode.palava.core.command.filter.Filter;
-import de.cosmocode.palava.core.command.filter.FilterChain;
-import de.cosmocode.palava.core.protocol.Call;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.session.HttpSessionManager;
-import de.cosmocode.palava.core.socket.RequestCallback;
+import de.cosmocode.palava.core.socket.CallHandler;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
 /**
@@ -44,7 +42,7 @@ import de.cosmocode.palava.core.socket.SocketConnector;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServer implements Server, RequestCallback {
+final class DefaultServer implements Server, CallHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
 
@@ -84,7 +82,7 @@ final class DefaultServer implements Server, RequestCallback {
     }
     
     @Override
-    public void incomingRequest(Call request, Response response) {
+    public void incomingCall(Call request, Response response) {
         // TODO Auto-generated method stub
         
     }
@@ -115,7 +113,7 @@ final class DefaultServer implements Server, RequestCallback {
     public void stop() {
         state = State.STOPPING;
         socketConnector.stop();
-        serviceManager.shutdown();
+        serviceManager.stop();
         state = State.TERMINATED;
     }
     

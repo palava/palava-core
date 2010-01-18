@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -37,10 +36,8 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.session.HttpSessionManager;
 
 /**
@@ -59,7 +56,6 @@ public class Server extends Thread {
 
     private Boolean shutdown = false;
 
-    private Properties config;
     public Properties alias;
     
     public String directoryName;
@@ -73,8 +69,6 @@ public class Server extends Thread {
 
     private boolean interactive;
     
-    private Injector injector;
-
     public Server() {
         jobInterceptors = ImmutableSet.copyOf(ServiceLoader.load(JobInterceptor.class));
     }
@@ -82,7 +76,6 @@ public class Server extends Thread {
     public Server(Properties config, Properties alias, boolean interactive) {
         this();
         // inititate config
-        this.config = config;
         this.alias = alias;
         this.interactive = interactive;
         
@@ -122,10 +115,9 @@ public class Server extends Thread {
             }
             final Element root = new SAXBuilder().build(components_conf).getRootElement();
             
-            final GuiceComponentManager<Object> manager = GuiceComponentManager.create(root, this);
+            final ComponentManager manager = new DefaultComponentManager(new File(components_conf), this);
             components = manager;
             components.initialize();
-            injector = Guice.createInjector(new CoreModule(), manager);
             
         } catch (Exception e) {
             log.fatal("Cannot initialize components!", e);
@@ -140,7 +132,7 @@ public class Server extends Thread {
         this.setPriority(NORM_PRIORITY + 1);
         
         // server.sessions
-        sessions = getInjector().getInstance(HttpSessionManager.class);
+        sessions = null;//getInjector().getInstance(HttpSessionManager.class);
         
         // server.jobs
         jobs = new JobManager(this);
@@ -276,8 +268,4 @@ public class Server extends Thread {
         return jobInterceptors;
     }
 
-    public Injector getInjector() {
-        return injector;
-    }
-    
 }

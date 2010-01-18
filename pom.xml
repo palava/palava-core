@@ -43,6 +43,17 @@
       <id>jahia</id>
       <url>http://maven.jahia.org/maven2</url>
     </repository>
+    <repository>
+      <id>guiceyfruit.release</id>
+      <name>GuiceyFruit Release Repository</name>
+      <url>http://guiceyfruit.googlecode.com/svn/repo/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -123,45 +134,60 @@
         <artifactId>commons-dbcp</artifactId>
     </dependency>
     <dependency>
-    	<groupId>com.google.collections</groupId>
-    	<artifactId>google-collections</artifactId>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.cosmocode</groupId>
-    	<artifactId>cosmocode-patterns</artifactId>
+      <groupId>de.cosmocode</groupId>
+      <artifactId>cosmocode-patterns</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.cosmocode</groupId>
-    	<artifactId>cosmocode-json</artifactId>
-    	<version>1.0-SNAPSHOT</version>
+      <groupId>de.cosmocode</groupId>
+      <artifactId>cosmocode-json</artifactId>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>com.google.inject</groupId>
-    	<artifactId>guice</artifactId>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
     </dependency>
     <dependency>
-    	<groupId>args4j</groupId>
-    	<artifactId>args4j</artifactId>
-    	<version>2.0.12</version>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>2.0.12</version>
     </dependency>
     <dependency>
-    	<groupId>junit</groupId>
-    	<artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-    	<groupId>de.cosmocode</groupId>
-    	<artifactId>log4j-config</artifactId>
-    	<scope>test</scope>
+      <groupId>de.cosmocode</groupId>
+      <artifactId>log4j-config</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>com.google.inject.extensions</groupId>
-    	<artifactId>guice-servlet</artifactId>
-    	<version>2.0</version>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-servlet</artifactId>
+      <version>2.0</version>
     </dependency>
     <dependency>
-    	<groupId>de.cosmocode</groupId>
-    	<artifactId>cosmocode-commons</artifactId>
-    	<version>1.3-SNAPSHOT</version>
+      <groupId>de.cosmocode</groupId>
+      <artifactId>cosmocode-commons</artifactId>
+      <version>1.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-assisted-inject</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-multibindings</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.guiceyfruit</groupId>
+      <artifactId>guiceyfruit-core</artifactId>
+      <version>2.0-beta-7</version>
     </dependency>
   </dependencies>
 </project>

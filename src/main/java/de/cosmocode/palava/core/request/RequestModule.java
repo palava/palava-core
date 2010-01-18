@@ -21,7 +21,6 @@ package de.cosmocode.palava.core.request;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.servlet.RequestScoped;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.request} package.
@@ -32,9 +31,7 @@ public final class RequestModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        final RequestScope scope = new RequestScope();
-        binder.bindScope(RequestScoped.class, scope);
-        binder.bind(RequestScope.class).toInstance(scope);
+        
     }
-
+    
 }

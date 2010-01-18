@@ -30,9 +30,9 @@ import de.cosmocode.palava.MimeType;
 import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.assets.Asset;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.DataRequest;
 import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 

@@ -27,6 +27,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
@@ -36,6 +39,8 @@ import com.google.inject.Inject;
  * @author Willi Schoenborn
  */
 final class DefaultExecutorBuilder implements ExecutorBuilder {
+    
+    private static final Logger log = LoggerFactory.getLogger(DefaultExecutorBuilder.class);
 
     private final ThreadFactoryProvider provider;
     
@@ -98,6 +103,12 @@ final class DefaultExecutorBuilder implements ExecutorBuilder {
     
     @Override
     public ExecutorService build() {
+        log.debug("Creating executor with min size {}, max size {} and a keep alive time of {} {}", new Object[] {
+            minPoolSize,
+            maxPoolSize,
+            keepAliveTime,
+            keepAliveTimeUnit.name().toLowerCase(),
+        });
         return new ThreadPoolExecutor(
             minPoolSize,
             maxPoolSize,

@@ -25,8 +25,8 @@ import org.json.JSONObject;
 
 import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.JSONRequest;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;

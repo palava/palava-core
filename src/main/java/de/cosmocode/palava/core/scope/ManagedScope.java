@@ -32,12 +32,32 @@ import com.google.inject.Scope;
  */
 public interface ManagedScope extends Scope {
 
+    /**
+     * Enters the scope.
+     */
     void enter();
     
+    /**
+     * Seeds an instance initially using a key.
+     * 
+     * @param <T> the key type parameter
+     * @param key the key
+     * @param value the value
+     */
     <T> void seed(Key<T> key, T value);
     
-    public <T> void seed(Class<T> type, T value);
+    /**
+     * Seeds an instance initially using a class.
+     * 
+     * @param <T> the generic class type
+     * @param type the type
+     * @param value the value
+     */
+    <T> void seed(Class<T> type, T value);
     
+    /**
+     * Exits the scope.
+     */
     void exit();
     
 }

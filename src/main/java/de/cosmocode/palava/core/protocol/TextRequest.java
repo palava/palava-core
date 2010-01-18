@@ -32,7 +32,7 @@ import de.cosmocode.palava.RequestHeader;
  * 
  * @author Tobias Sarnowski
  */
-public class TextRequest extends AbstractRequest {
+public class TextRequest extends AbstractCall {
     
     private String text;
 

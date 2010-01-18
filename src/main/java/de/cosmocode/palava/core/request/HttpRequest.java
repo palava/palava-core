@@ -42,6 +42,8 @@ public interface HttpRequest extends Destroyable {
     
     <K, V> void set(K key, V value);
     
+    <K> boolean contains(K key);
+    
     <K, V> V get(K key);
     
 }

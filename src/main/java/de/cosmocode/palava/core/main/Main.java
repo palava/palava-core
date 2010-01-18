@@ -20,32 +20,25 @@
 package de.cosmocode.palava.core.main;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Properties;
 
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Module;
-import com.google.inject.internal.Sets;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import de.cosmocode.palava.core.server.Server;
-import de.cosmocode.palava.core.service.lifecycle.Config;
-import de.cosmocode.palava.core.service.lifecycle.Configs;
 
 /**
  * Application entry point.
@@ -56,30 +49,28 @@ public final class Main {
     
     private static final Logger log = LoggerFactory.getLogger(Main.class);
     
-    private static final String NAME = "name";
-    private static final String CONFIGURATION = "configuration";
-
-    @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to modules.xml")
-    private File configFile;
+    @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
+    private File settings;
     
     private Main() {
         
     }
     
-    private void run(String[] args) throws CmdLineException {
+    private void run(String[] args) {
         final CmdLineParser parser = new CmdLineParser(this);
         
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
-            throw e;
+            throw new IllegalArgumentException(e);
         }
         
-        final Collection<Module> modules = configure();
-        log.info("Found {} core modules. Binding...", modules.size());
-        final Injector injector = Guice.createInjector(modules);
-        log.info("Binding complete");
+        Preconditions.checkNotNull(settings, "Settings file not set");
+        Preconditions.checkState(settings.exists(), "Settings file does not exist");
+        
+        final Module module = configure();
+        final Injector injector = Guice.createInjector(module);
         
         final Server server = injector.getInstance(Server.class);
         log.debug("Created server {}", server);
@@ -89,63 +80,41 @@ public final class Main {
         log.info("Server successfully stopped");
     }
     
-    private Collection<Module> configure() {
-        final Set<Module> modules = Sets.newHashSet();
-        final Element root;
+    private Module configure() {
+        final Module module;
+        
+        final Properties properties = new Properties();
         
         try {
-            root = new SAXBuilder().build(configFile).getRootElement();
-        } catch (JDOMException e) {
-            throw new IllegalArgumentException(e);
+            properties.load(new FileReader(settings));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
         
-        @SuppressWarnings("unchecked")
-        final List<Element> children = root.getChildren();
-        
-        for (final Element child : children) {
-            final String moduleName = child.getAttributeValue(NAME);
-            log.info("Found module {}", moduleName);
-            
-            try {
-                final Class<? extends Module> moduleClass = Class.forName(moduleName).asSubclass(Module.class);
-                final Module module = moduleClass.newInstance();
-                
-                log.debug("Created new module instance: {}", module);
-                
-                final Element configuration = child.getChild(CONFIGURATION);
-                
-                if (configuration == null) {
-                    log.debug("No configuration found for {}", module);
-                    modules.add(module);
-                } else {
-                    log.debug("Found configuration for {}", module);
-                    
-                    final Named configName = Names.named(moduleClass.getSimpleName());
-                    final Config config = Configs.of(moduleClass);
-                    
-                    modules.add(new Module() {
-                        
-                        @Override
-                        public void configure(Binder binder) {
-                            binder.install(module);
-                            binder.bind(Key.get(Element.class, configName)).toInstance(configuration);
-                            binder.bind(Key.get(Element.class, config)).toInstance(configuration);
-                        }
-                        
-                    });
-                }
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
-            }
+        final String className = properties.getProperty("core.main.module");
+        final Class<? extends Module> moduleClass;
+
+        try {
+            moduleClass = Class.forName(className).asSubclass(Module.class);
+            module = moduleClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
         }
         
-        return modules;
+        return new Module() {
+            
+            @Override
+            public void configure(Binder binder) {
+                Names.bindProperties(binder, properties);
+                binder.bind(Map.class).annotatedWith(Settings.class).toInstance(properties);
+                binder.install(module);
+            }
+            
+        };
     }
     
     /**

@@ -22,6 +22,8 @@ package de.cosmocode.palava.core.command;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import de.cosmocode.palava.core.command.alias.AliasModule;
+
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.command} package.
  *
@@ -31,7 +33,7 @@ public final class CommandModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        
+        binder.install(new AliasModule());
     }
 
 }

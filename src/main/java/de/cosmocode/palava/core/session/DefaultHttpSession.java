@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.google.inject.internal.Maps;
 import com.google.inject.servlet.SessionScoped;
 
@@ -55,13 +57,14 @@ final class DefaultHttpSession implements HttpSession {
     private boolean invalid;
     private ClientData clientData;
 
-    private final Map<String, Object> data = Maps.newHashMap();
+    private final Map<Object, Object> data = Maps.newHashMap();
     
     private Locale locale;
     private NumberFormat format;
     private Collator collator;
     
-    public DefaultHttpSession(String sessionId) {
+    @Inject
+    public DefaultHttpSession(@Assisted String sessionId) {
         this.sessionId = Preconditions.checkNotNull(sessionId, "SessionId");
     }
 
@@ -142,25 +145,30 @@ final class DefaultHttpSession implements HttpSession {
     }
 
     @Override
-    public void set(String key, Object value) {
-        data.put(key, value);
+    public <K> boolean contains(K key) {
+        return data.containsKey(key);
     }
 
     @Override
-    public void putAll(Map<String, Object> map) {
+    @SuppressWarnings("unchecked")
+    public <K, V> V get(K key) {
+        return (V) data.get(key);
+    }
+
+    @Override
+    public <K, V> void putAll(Map<? extends K, ? extends V> map) {
         data.putAll(map);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T get(String key) {
-        return (T) data.get(key);
+    public <K, V> V remove(K key) {
+        return (V) data.get(key);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T remove(String key) {
-        return (T) data.remove(key);
+    public <K, V> void set(K key, V value) {
+        data.put(key, value);
     }
 
     @Override

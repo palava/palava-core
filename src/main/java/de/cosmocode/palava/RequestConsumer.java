@@ -26,9 +26,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.DefaultResponse;
 import de.cosmocode.palava.core.protocol.ErrorContent;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
@@ -115,11 +115,7 @@ public class RequestConsumer {
 	}
 	
 	private void createErrorResponse(Response response, Exception e) {
-		try {
-            response.setContent(new ErrorContent(e));
-        } catch (ConversionException e1) {
-            throw new IllegalArgumentException(e);
-        }
+        response.setContent(new ErrorContent(e));
 	}
 
 }

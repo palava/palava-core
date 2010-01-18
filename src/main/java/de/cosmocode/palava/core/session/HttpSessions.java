@@ -19,6 +19,8 @@
 
 package de.cosmocode.palava.core.session;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Static utitlity class for working with {@link HttpSession}s.
  *
@@ -32,17 +34,13 @@ public final class HttpSessions {
         
     }
     
-    public static HttpSession create(String sessionId) {
-        return new DefaultHttpSession(sessionId);
-    }
-    
-    public static boolean hasCurrentSession() {
+    public static boolean hasCurrent() {
         return CURRENT_SESSION.get() != null;
     }
     
-    public static HttpSession getCurrentSession() {
+    public static HttpSession getCurrent() {
         final HttpSession session = CURRENT_SESSION.get();
-        if (session == null) throw new IllegalStateException("no session found");
+        Preconditions.checkState(session != null, "No session found");
         return session;
     }
     

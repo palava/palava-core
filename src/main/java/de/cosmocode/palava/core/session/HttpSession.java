@@ -39,13 +39,15 @@ public interface HttpSession extends Destroyable, JSONMapable {
 
     String getSessionId();
     
-    void set(String key, Object value);
+    <K, V> void set(K key, V value);
     
-    <T> T get(String key);
+    <K, V> V get(K key);
     
-    <T> T remove(String key);
+    <K> boolean contains(K key);
     
-    void putAll(Map<String, Object> map);
+    <K, V> V remove(K key);
+    
+    <K, V> void putAll(Map<? extends K, ? extends V> map);
     
     ClientData getClientData();
     

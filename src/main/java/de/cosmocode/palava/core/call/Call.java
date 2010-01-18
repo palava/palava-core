@@ -19,22 +19,36 @@
 
 package de.cosmocode.palava.core.call;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
 
+import de.cosmocode.palava.ConnectionLostException;
+import de.cosmocode.palava.RequestHeader;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.HttpRequest;
 
 /**
- * 
+ * A Call represents one single access.
  *
  * @author Willi Schoenborn
  */
 public interface Call {
 
-    Command getCommand();
-    
+    /**
+     * Provide the surrounding {@link HttpRequest}.
+     * 
+     * @return the request
+     */
     HttpRequest getHttpRequest();
     
-    Map<String, Object> getArguments();
+    Command getCommand();
+    
+    InputStream getInputStream();
+    
+    RequestHeader getHeader();
+    
+    int read(byte[] data) throws ConnectionLostException, IOException;
+    
+    void freeInputStream() throws ConnectionLostException, IOException;
     
 }

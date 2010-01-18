@@ -22,6 +22,7 @@ package de.cosmocode.palava.core.protocol;
 import java.io.InputStream;
 
 import de.cosmocode.palava.RequestHeader;
+import de.cosmocode.palava.core.call.Call;
 
 /**
  * Used to create different request types.

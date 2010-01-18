@@ -19,6 +19,9 @@
 
 package de.cosmocode.palava.core.registry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -31,6 +34,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 final class DefaultRegistry implements Registry {
+    
+    private static final Logger log = LoggerFactory.getLogger(DefaultRegistry.class);
 
     private final Multimap<Class<? extends Object>, Object> services = HashMultimap.create();
 
@@ -38,6 +43,7 @@ final class DefaultRegistry implements Registry {
     public <T> void register(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
+        log.debug("Registering {} for {}", listener, type);
         services.put(type, listener);
     }
 
@@ -52,21 +58,22 @@ final class DefaultRegistry implements Registry {
     public <T> void notify(Class<T> type, Procedure<? super T> command) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(command, "Command");
-        for (T listener : getListeners(type)) {
-            command.apply(listener);
-        }
+        log.debug("Notifying all listeners for {} using {}", type, command);
+        Procedures.each(getListeners(type), command);
     }
 
     @Override
     public <T> boolean remove(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
+        log.debug("Removing {} from {}", listener, type);
         return services.remove(type, listener);
     }
 
     @Override
     public <T> boolean remove(T listener) {
         Preconditions.checkNotNull(listener, "Listener");
+        log.debug("Removing {}", listener);
         return services.values().remove(listener);
     }
 
@@ -74,6 +81,7 @@ final class DefaultRegistry implements Registry {
     @SuppressWarnings("unchecked")
     public <T> Iterable<T> removeAll(Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
+        log.debug("Removing all listeners from {}", type);
         return (Iterable<T>) services.removeAll(type);
     }
 

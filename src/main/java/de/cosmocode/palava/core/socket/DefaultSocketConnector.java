@@ -28,19 +28,18 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 import de.cosmocode.commons.State;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.concurrent.ExecutorBuilder;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.service.lifecycle.Config;
 
 /**
  * Default implementation of the {@link SocketConnector} interface.
@@ -51,62 +50,59 @@ import de.cosmocode.palava.core.service.lifecycle.Config;
 final class DefaultSocketConnector implements SocketConnector {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultSocketConnector.class);
-
-    private State state = State.NEW;
-    
-    private final ExecutorService service;
     
     private final int port;
     
-    private final int socketTimeout;
+    private final long socketTimeout;
+
+    private final TimeUnit socketTimeoutUnit;
     
     private final long shutdownTimeout;
-    
+
     private final TimeUnit shutdownTimeoutUnit;
     
-    @Inject
-    public DefaultSocketConnector(ExecutorBuilder builder, @Config(SocketModule.class) Element config) {
-        Preconditions.checkNotNull(builder, "Builder");
+    private ExecutorService service;
     
-        this.port = Integer.parseInt(Preconditions.checkNotNull(
-            config.getChildText("port"), "port"));
+    private State state = State.NEW;
+    
+    @Inject
+    public DefaultSocketConnector(
+        ExecutorBuilder builder,
+        @Named("core.socket.port") int port,
+        @Named("core.socket.timeout") long socketTimeout,
+        @Named("core.socket.timeoutUnit") TimeUnit socketTimeoutUnit,
+        @Named("core.threadpool.minSize") int minPoolSize, 
+        @Named("core.threadpool.maxSize") int maxPoolSize, 
+        @Named("core.threadpool.keepAliveTime") long keepAliveTime,
+        @Named("core.threadpool.keepAliveTimeUnit") TimeUnit keepAliveTimeUnit,
+        @Named("core.threadpool.shutdownTimeout") long shutdownTimeout,
+        @Named("core.threadpool.shutdownTimeoutUnit") TimeUnit shutdownTimeoutUnit) {
         
-        final long timeout = Integer.parseInt(Preconditions.checkNotNull(
-            config.getChildText("socketTimeout"), "socketTimeout"));
-        final TimeUnit socketTimeoutUnit = TimeUnit.valueOf(Preconditions.checkNotNull(
-            config.getChildText("socketTimeoutUnit"), "socketTimeoutUnit").toUpperCase());
+        Preconditions.checkNotNull(builder, "Builder");
         
-        this.socketTimeout = (int) socketTimeoutUnit.toMillis(timeout);
+        Preconditions.checkArgument(port >= 0, "Port must be positive, but was %s", port);
+        this.port = port;
         
-        final int minPoolSize = Integer.parseInt(Preconditions.checkNotNull(
-            config.getChildText("minPoolSize"), "minPoolSize"));
-        final int maxPoolSize = Integer.parseInt(Preconditions.checkNotNull(
-            config.getChildText("maxPoolSize"), "maxPoolSize"));
-        final long keepAliveTime = Long.parseLong(Preconditions.checkNotNull(
-            config.getChildText("keepAliveTime"), "keepAliveTime"));
-        final TimeUnit keepAliveTimeUnit = TimeUnit.valueOf(Preconditions.checkNotNull(
-            config.getChildText("keepAliveTimeUnit"), "keepAliveTimeUnit").toUpperCase());
-        
-        this.shutdownTimeout = Long.parseLong(Preconditions.checkNotNull(
-            config.getChildText("shutdownTimeout"), "shutdownTimeout"));
-        this.shutdownTimeoutUnit = TimeUnit.valueOf(Preconditions.checkNotNull(
-            config.getChildText("shutdownTimeoutUnit"), "shutdownTimeoutUnit").toUpperCase());
+        this.socketTimeout = socketTimeout;
+        this.socketTimeoutUnit = socketTimeoutUnit;
+        this.shutdownTimeout = shutdownTimeout;
+        this.shutdownTimeoutUnit = shutdownTimeoutUnit;
         
         builder.minSize(minPoolSize);
         builder.maxSize(maxPoolSize);
         builder.keepAlive(keepAliveTime, keepAliveTimeUnit);
-        this.service = builder.build(); 
-        
+        this.service = builder.build();
     }
-    
+
     @Override
-    public void run(final RequestCallback callback) throws IOException {
+    public void run(final CallHandler handler) throws IOException {
         log.debug("Starting {}", this);
         state = State.STARTING;
         log.info("Creating socket on port {}", port);
         final ServerSocket socket = new ServerSocket(port);
-        log.info("Setting socket timeout to {}", socketTimeout);
-        socket.setSoTimeout(socketTimeout);
+        log.info("Setting socket timeout to {} {}", socketTimeout, socketTimeoutUnit.name().toLowerCase());
+        final int timeout = (int) socketTimeoutUnit.toMillis(socketTimeout);
+        socket.setSoTimeout(timeout);
         state = State.RUNNING;
         log.debug("{} is running", this);
         
@@ -115,6 +111,7 @@ final class DefaultSocketConnector implements SocketConnector {
             final Socket client;
             
             try {
+                // TODO fix
                 if (this != null) return;
                 client = socket.accept();
             } catch (SocketTimeoutException e) {
@@ -125,19 +122,19 @@ final class DefaultSocketConnector implements SocketConnector {
                 
                 @Override
                 public void run() {
-                    // TODO request scope enter
                     try {
                         final InputStream input = client.getInputStream();
                         final OutputStream output = client.getOutputStream();
                         
                         // TODO protocol parsing here?!
                         
-                        final Call request = null;
+                        final Call call = null;
                         final Response response = null;
-                        callback.incomingRequest(request, response);
+                        handler.incomingCall(call, response);
                     } catch (IOException e) {
                         log.error("Error while reading from/writing to socket", e);
                         try {
+                            // TODO add exception handling
                             client.getInputStream().close();
                             client.shutdownInput();
                             client.getOutputStream().close();
@@ -147,7 +144,6 @@ final class DefaultSocketConnector implements SocketConnector {
                             log.error("Failed to properly close socket", inner);
                         }
                     }
-                    // TODO request scope exit
                 }
                 
             });
@@ -168,8 +164,8 @@ final class DefaultSocketConnector implements SocketConnector {
                 log.warn("Forced shutdown of {}", service);
             }
             state = State.TERMINATED;
-        } catch (InterruptedException ignored) {
-            log.error("Interrupted while shutting down");
+        } catch (InterruptedException e) {
+            log.error("Interrupted while shutting down", e);
             state = State.FAILED;
         }
     }

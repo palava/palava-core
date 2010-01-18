@@ -19,13 +19,26 @@
 
 package de.cosmocode.palava.core.command;
 
-import de.cosmocode.palava.core.protocol.Content;
-import de.cosmocode.palava.core.protocol.Call;
-import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.session.HttpSession;
+import javax.servlet.Servlet;
 
+import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.protocol.Content;
+
+/**
+ * A {@link Command} is very similiar to a {@link Servlet}. It represents
+ * a unit of work which will handle an incoming call.
+ *
+ * @author Willi Schoenborn
+ */
 public interface Command {
 
-    Content execute(Call request, Response response, HttpSession httpSession);
+    /**
+     * Executes an incoming call.
+     * 
+     * @param call the incoming call
+     * @return the produced content
+     * @throws CommandException if an error occurs during execution
+     */
+    Content execute(Call call) throws CommandException;
     
 }

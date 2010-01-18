@@ -29,7 +29,7 @@ import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.hib.ClosableSession;
 import de.cosmocode.palava.components.hib.Hib;
-import de.cosmocode.palava.core.protocol.Call;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 
 public abstract class HibJob implements Job {

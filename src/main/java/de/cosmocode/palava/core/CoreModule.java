@@ -22,12 +22,19 @@ package de.cosmocode.palava.core;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
-import de.cosmocode.palava.core.protocol.ProtocolModule;
+import de.cosmocode.palava.core.command.CommandModule;
+import de.cosmocode.palava.core.concurrent.ConcurrencyModule;
 import de.cosmocode.palava.core.registry.RegistryModule;
+import de.cosmocode.palava.core.request.RequestModule;
+import de.cosmocode.palava.core.scope.ScopeModule;
+import de.cosmocode.palava.core.server.ServerModule;
+import de.cosmocode.palava.core.service.ServiceModule;
 import de.cosmocode.palava.core.session.SessionModule;
+import de.cosmocode.palava.core.socket.SocketModule;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core} package.
+ * The default module which installs the whole palava
+ * core including all default implementations.
  *
  * @author Willi Schoenborn
  */
@@ -35,9 +42,16 @@ public final class CoreModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.install(new ProtocolModule());
+        binder.install(new CommandModule());
+        binder.install(new ConcurrencyModule());
         binder.install(new RegistryModule());
+//        binder.install(new ProtocolModule());
+        binder.install(new RequestModule());
+        binder.install(new ScopeModule());
+        binder.install(new ServerModule());
+        binder.install(new ServiceModule());
         binder.install(new SessionModule());
+        binder.install(new SocketModule());
     }
 
 }

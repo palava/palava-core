@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<services>
-  <service spec="de.cosmocode.palava.components.mail.Mailer" impl="de.cosmocode.palava.components.mail.VelocityMailer">
-    ...
-  </service>
-  <service spec="de.cosmocode.palava.components.cstore.ContentStore" impl="de.cosmocode.palava.components.cstore.FSContentStore" name="FileSystem">
-    ...
-  </service>
-</services>

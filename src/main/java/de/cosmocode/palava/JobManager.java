@@ -50,7 +50,7 @@ public class JobManager {
             name = aliased;
         }
         final Class<? extends Job> jobClass = Class.forName(name).asSubclass(Job.class);
-        return server.getInjector().getInstance(jobClass);
+        return jobClass.newInstance();
     }
 
 }

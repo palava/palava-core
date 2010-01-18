@@ -70,27 +70,24 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         for (HttpSession session : purged) {
             log.debug("purged {}", session.toString());
             session.destroy();
-            // TODO session scope destroy
+            // TODO session scope exit
         }
     }
 
     @Override
-    public HttpSession createSession() {
+    public HttpSession get() {
+        if (HttpSessions.hasCurrent()) return HttpSessions.getCurrent();
+        
         final StringBuilder builder = new StringBuilder();
         final Random rnd = new Random();
         for (int n = 0; n < 64;  n++) {
             builder.append(rnd.nextInt(10));
         }
         final String sessionId = builder.toString();
-        final HttpSession session = create(sessionId);
+        final HttpSession session = new DefaultHttpSession(sessionId);
         // TODO session scope enter
         sessions.put(sessionId, session);
         return session;
     }
     
-    @Override
-    public HttpSession create(String sessionId) {
-        return new DefaultHttpSession(sessionId);
-    }
-
 }

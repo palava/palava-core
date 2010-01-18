@@ -29,8 +29,8 @@ import de.cosmocode.palava.CachableJob;
 import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.JSONContent;
-import de.cosmocode.palava.core.protocol.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.session.HttpSession;
 
