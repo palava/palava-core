@@ -31,7 +31,7 @@ public final class RequestModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        
+        binder.bind(HttpRequestFactory.class).to(DefaultHttpRequestFactory.class);
     }
     
 }

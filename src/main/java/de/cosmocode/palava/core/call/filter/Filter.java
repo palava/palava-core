@@ -20,11 +20,10 @@
 package de.cosmocode.palava.core.call.filter;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.protocol.content.Content;
 
 public interface Filter {
 
-    Content filter(Call call, FilterChain chain) throws FilterException, CommandException;
+    Content filter(Call call, FilterChain chain) throws FilterException;
     
 }

@@ -19,7 +19,10 @@
 
 package de.cosmocode.palava.core.protocol.content;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import com.google.common.base.Preconditions;
+import com.sun.activation.registries.MimeTypeFile;
 
 import de.cosmocode.palava.MimeType;
 

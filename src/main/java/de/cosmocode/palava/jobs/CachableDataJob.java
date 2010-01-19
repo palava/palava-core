@@ -52,25 +52,30 @@ public abstract class CachableDataJob extends CachableJob {
     
     // methods implemented from UtilityJob
 
+    @Override
     public String getMandatory(String key) throws MissingArgumentException {
         if (args.containsKey(key)) return args.get(key);
         else throw new MissingArgumentException(this, key);
     }
 
+    @Override
     public String getMandatory(String key, String argumentType) throws MissingArgumentException {
         if (args.containsKey(key)) return args.get(key);
         else throw new MissingArgumentException(this, key, argumentType);
     }
 
+    @Override
     public String getOptional(String key) {
         return args.get(key);
     }
 
+    @Override
     public String getOptional(String key, String defaultValue) {
         if (args.containsKey(key)) return args.get(key);
         else return defaultValue;
     }
 
+    @Override
     public boolean hasArgument(String key) {
         return args.containsKey(key);
     }

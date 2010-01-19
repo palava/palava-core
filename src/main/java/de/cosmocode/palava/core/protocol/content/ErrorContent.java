@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import com.google.common.base.Preconditions;
+
 import de.cosmocode.palava.MimeType;
 
 /**
@@ -36,7 +38,7 @@ public class ErrorContent extends AbstractContent {
     
     private final byte [] bytes;
 
-    public ErrorContent(Exception e) {
+    private ErrorContent(Exception e) {
         super(MimeType.ERROR);
         
 		// FIXME php is good enough to create the html itself, it's ugly here
@@ -70,6 +72,11 @@ public class ErrorContent extends AbstractContent {
     @Override
     public void write(OutputStream out) throws IOException {
         out.write(bytes, 0, bytes.length);
+    }
+    
+    public static ErrorContent create(Exception exception) {
+        Preconditions.checkNotNull(exception, "Exception");
+        return new ErrorContent(exception);
     }
 
 }

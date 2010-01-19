@@ -20,14 +20,17 @@
 package de.cosmocode.palava.core.call.filter;
 
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.internal.Lists;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
@@ -41,21 +44,26 @@ final class DefaultFilterChain implements FilterChain {
 
     private final List<Filter> filters;
     
+    private final FilterChain proceedingChain;
+    
     private int index = -1;
     
-    public DefaultFilterChain(List<Filter> filters) {
-        this.filters = Preconditions.checkNotNull(filters, "Filter");
+    @Inject
+    public DefaultFilterChain(Set<Filter> filters, @Assisted FilterChain proceedingChain) {
+        // TODO preserve ordering
+        this.filters = Lists.newArrayList(Preconditions.checkNotNull(filters, "Filter"));
+        this.proceedingChain = Preconditions.checkNotNull(proceedingChain, "ProceedingChain");
     }
 
     @Override
-    public Content filter(Call call) throws FilterException, CommandException {
+    public Content filter(Call call) throws FilterException {
         index++;
         if (index < filters.size()) {
             final Filter filter = filters.get(index);
             log.debug("Running filter {}", filter);
             return filter.filter(call, this);
         } else {
-            return call.getCommand().execute(call);
+            return proceedingChain.filter(call);
         }
     }
 

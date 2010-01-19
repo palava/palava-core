@@ -64,26 +64,31 @@ public abstract class CachableJSONJob extends CachableJob {
 
     // methods implemented from UtilityJob
 
+    @Override
     public String getMandatory(String key) throws MissingArgumentException, JSONException {
         if (json.has(key)) return json.getString(key);
         else throw new MissingArgumentException(this, key);
     }
 
+    @Override
     public String getMandatory(String key, String argumentType) throws MissingArgumentException, JSONException {
         if (json.has(key)) return json.getString(key);
         else throw new MissingArgumentException(this, key, argumentType);
     }
 
+    @Override
     public String getOptional(String key) {
         if (json.has(key)) return json.optString(key);
         else return null;
     }
 
+    @Override
     public String getOptional(String key, String defaultValue) {
         if (json.has(key)) return json.optString(key);
         else return defaultValue;
     }
 
+    @Override
     public boolean hasArgument(String key) {
         return json.has(key);
     }

@@ -32,6 +32,7 @@ public final class SocketModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(SocketConnector.class).to(DefaultSocketConnector.class);
+        binder.bind(Communicator.class).to(DefaultCommunicator.class);
     }
 
 }

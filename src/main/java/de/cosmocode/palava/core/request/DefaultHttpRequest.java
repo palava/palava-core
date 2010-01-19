@@ -19,7 +19,6 @@
 
 package de.cosmocode.palava.core.request;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,8 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.internal.Maps;
+import com.google.inject.internal.Nullable;
 
 import de.cosmocode.commons.Patterns;
 import de.cosmocode.palava.core.session.HttpSession;
@@ -49,17 +48,17 @@ final class DefaultHttpRequest implements HttpRequest {
     
     private final Map<Object, Object> context = Maps.newHashMap();
     
-    // TODO fill
-    private final Map<String, String> serverSuperGlobal = Maps.newHashMap();
+    private final Map<String, String> serverVariable = Maps.newHashMap();
     
-    @Inject
-    public DefaultHttpRequest(HttpSession httpSession) {
-        this.httpSession = Preconditions.checkNotNull(httpSession, "HttpSession");
+    public DefaultHttpRequest(@Nullable HttpSession httpSession, Map<String, String> serverVariable) {
+        this.httpSession = httpSession;
+        Preconditions.checkNotNull(serverVariable, "SserverVariable");
+        this.serverVariable.putAll(serverVariable);
     }
 
     @Override
     public URI getRequestUri() {
-        final String uri = serverSuperGlobal.get(REQUEST_URI);
+        final String uri = serverVariable.get(REQUEST_URI);
         Preconditions.checkState(uri != null, "%s not found", REQUEST_URI);
         try {
             return new URI(uri);
@@ -70,7 +69,7 @@ final class DefaultHttpRequest implements HttpRequest {
     
     @Override
     public InetAddress getRemoteAddress() {
-        final String address = serverSuperGlobal.get(REMOTE_ADDR);
+        final String address = serverVariable.get(REMOTE_ADDR);
         Preconditions.checkState(address != null, "%s not found", REMOTE_ADDR);
         final byte[] bytes = new byte[4];
         final Matcher matcher = Patterns.INTERNET_ADDRESS.matcher(address);
@@ -79,7 +78,7 @@ final class DefaultHttpRequest implements HttpRequest {
             bytes[i] = Byte.parseByte(matcher.group(i));
         }
         try {
-            return Inet4Address.getByAddress(bytes);
+            return InetAddress.getByAddress(bytes);
         } catch (UnknownHostException e) {
             throw new IllegalStateException(e);
         }
@@ -87,7 +86,7 @@ final class DefaultHttpRequest implements HttpRequest {
 
     @Override
     public String getUserAgent() {
-        final String agent = serverSuperGlobal.get(HTTP_USER_AGENT);
+        final String agent = serverVariable.get(HTTP_USER_AGENT);
         Preconditions.checkState(agent != null, "%s not found", HTTP_USER_AGENT);
         return agent;
     }
@@ -116,8 +115,7 @@ final class DefaultHttpRequest implements HttpRequest {
     @Override
     public void destroy() {
         context.clear();
-        // TODO all?
-        serverSuperGlobal.clear();
+        serverVariable.clear();
     }
 
 }

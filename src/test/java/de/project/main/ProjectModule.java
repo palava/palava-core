@@ -31,7 +31,6 @@ import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.FilterChain;
 import de.cosmocode.palava.core.call.filter.FilterException;
-import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
 import de.cosmocode.palava.core.protocol.content.Content;
 
@@ -46,13 +45,13 @@ public final class ProjectModule extends AbstractApplicationModule {
     protected void configureApplication() {
         install(new CoreModule());
 
-        serve(Key.get(ContentStore.class, Names.named("FileSystem"))).with(FSContentStore.class);
         serve(Mailer.class).with(VelocityMailer.class);
+        serve(Key.get(ContentStore.class, Names.named("FileSystem"))).with(FSContentStore.class);
         
         filter("*").through(new Filter() {
             
             @Override
-            public Content filter(Call call, FilterChain chain) throws FilterException, CommandException {
+            public Content filter(Call call, FilterChain chain) throws FilterException {
                 return chain.filter(call);
             }
             

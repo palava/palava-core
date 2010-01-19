@@ -21,12 +21,9 @@ package de.cosmocode.palava.core.server;
 
 import de.cosmocode.commons.Service;
 import de.cosmocode.palava.core.service.ServiceManager;
-import de.cosmocode.palava.core.session.HttpSessionManager;
 
 public interface Server extends Service {
 
     ServiceManager getServiceManager();
-    
-    HttpSessionManager getHttpSessionManager();
     
 }

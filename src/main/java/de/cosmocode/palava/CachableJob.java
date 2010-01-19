@@ -133,7 +133,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * Process the job as it normally would be.
      * ATTENTION: parameters server and session are flipped in the signature
      */
-    public abstract void process (Call request,
+    public abstract void process(Call request,
             Response response, 
             Server server, 
             HttpSession session, 
@@ -156,7 +156,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * @throws Exception: in case something went wrong
      * @throws UncachableException: if the given request isn't supported
      */
-    protected Object getArguments (Call request) throws Exception, UncachableException {
+    protected Object getArguments(Call request) throws Exception, UncachableException {
         if (request instanceof DataCall) {
             return ((DataCall) request).getArguments();
         } else if (request instanceof TextCall) {
@@ -169,7 +169,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
     /**
      * Returns the CacheItem for the job-call or null if caching is not supported.
      */
-    protected CacheItem getCacheItem (Call request, HttpSession session, Server server, Map<String, Object> caddy) throws Exception {
+    protected CacheItem getCacheItem(Call request, HttpSession session, Server server, Map<String, Object> caddy) throws Exception {
         final String language = session == null ? null : (String) session.get("lang");
         
         // we need a language for caching
@@ -190,7 +190,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * @param cacheItem a wrapper for the cacheItem
      * @return true if this job is cached, false otherwise
      */
-    protected boolean isCached (CacheItem cacheItem) {
+    protected boolean isCached(CacheItem cacheItem) {
         return cacheItem != null && cache.containsKey(cacheItem);
     }
     
@@ -202,7 +202,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * @param content the response-content
      * @throws UncachableException thrown to indicate that we cannot cache; should not be thrown excessively, as it is catched by "process"
      */
-    protected void putIntoCache (final CacheItem cacheItem, final Content content) throws UncachableException {
+    protected void putIntoCache(final CacheItem cacheItem, final Content content) throws UncachableException {
         if (cacheItem != null && content != null) {
             // just an approximation ...
             final long tmpCalculated = 2*(

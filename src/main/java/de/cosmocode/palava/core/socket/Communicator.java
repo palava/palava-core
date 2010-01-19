@@ -19,11 +19,11 @@
 
 package de.cosmocode.palava.core.socket;
 
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public interface CallHandler {
+public interface Communicator {
 
-    void incomingCall(Call call, Response response);
+    void communicate(InputStream input, OutputStream output);
     
 }

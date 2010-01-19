@@ -19,12 +19,14 @@
 
 package de.cosmocode.palava.core.session;
 
+import com.google.inject.Provider;
+
 /**
  * A manager for {@link HttpSession}s.
  *
  * @author Willi Schoenborn
  */
-public interface HttpSessionManager {
+public interface HttpSessionManager extends Provider<HttpSession> {
 
     /**
      * Purge all sessions.
@@ -39,7 +41,5 @@ public interface HttpSessionManager {
      *         with the given id
      */
     HttpSession get(String sessionId);
-    
-    HttpSession get();
     
 }

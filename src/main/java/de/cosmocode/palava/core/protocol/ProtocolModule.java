@@ -31,7 +31,7 @@ public final class ProtocolModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(ProtocolManager.class).to(DefaultProtocolManager.class);
+        binder.bind(ProtocolAlgorithm.class).to(DefaultProtocolAlgorithm.class);
     }
 
 }

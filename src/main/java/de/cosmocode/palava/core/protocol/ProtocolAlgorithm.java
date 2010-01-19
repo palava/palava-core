@@ -17,13 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.request;
+package de.cosmocode.palava.core.protocol;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public final class DefaultHttpRequestManager implements HttpRequestManager {
+import de.cosmocode.palava.core.protocol.content.Content;
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultHttpRequestManager.class);
+public interface ProtocolAlgorithm {
 
+    Header read(InputStream input);
+    
+    void sendTo(Content content, OutputStream output) throws IOException;
+    
 }

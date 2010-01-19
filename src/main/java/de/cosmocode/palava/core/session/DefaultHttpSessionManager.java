@@ -32,6 +32,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.inject.Singleton;
 
+import de.cosmocode.palava.core.scope.Scopes;
+
 /**
  * Manages all sessions.
  * 
@@ -70,13 +72,13 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         for (HttpSession session : purged) {
             log.debug("purged {}", session.toString());
             session.destroy();
-            // TODO session scope exit
         }
     }
 
     @Override
     public HttpSession get() {
-        if (HttpSessions.hasCurrent()) return HttpSessions.getCurrent();
+        final HttpSession cached = Scopes.getCurrentSession();
+        if (cached != null) return cached;
         
         final StringBuilder builder = new StringBuilder();
         final Random rnd = new Random();
@@ -85,7 +87,6 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         }
         final String sessionId = builder.toString();
         final HttpSession session = new DefaultHttpSession(sessionId);
-        // TODO session scope enter
         sessions.put(sessionId, session);
         return session;
     }

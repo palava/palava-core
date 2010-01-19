@@ -70,6 +70,24 @@ public enum CallType {
             return new BinaryCall(header, stream);
         }
         
+    },
+    
+    OPEN {
+        
+        @Override
+        public Call createCall(Header header, InputStream stream) {
+            return new JsonCall(header, stream);
+        }
+        
+    },
+    
+    CLOSE {
+        
+        @Override
+        public Call createCall(Header header, InputStream stream) {
+            throw new UnsupportedOperationException();
+        }
+        
     };
     
     /**

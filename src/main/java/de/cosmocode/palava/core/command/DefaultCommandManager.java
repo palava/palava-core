@@ -63,23 +63,23 @@ final class DefaultCommandManager implements CommandManager {
         Preconditions.checkNotNull(aliasedName, "AliasedName");
         final String realName = realName(aliasedName);
         
-        try {
-            final Class<?> type;
-            final Class<?> cached = cache.get(realName);
-            if (cached == null) {
+        final Class<?> type;
+        final Class<?> cached = cache.get(realName);
+        if (cached == null) {
+            try {
                 type = Class.forName(realName);
-                cache.put(realName, type);
-            } else {
-                type = cached;
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(e);
             }
-            if (Job.class.isAssignableFrom(type)) {
-                final Job job = injector.getInstance(type.asSubclass(Job.class));
-                return new JobCommand(server, job);
-            } else {
-                return injector.getInstance(type.asSubclass(Command.class));
-            }
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
+            cache.put(realName, type);
+        } else {
+            type = cached;
+        }
+        if (Job.class.isAssignableFrom(type)) {
+            final Job job = injector.getInstance(type.asSubclass(Job.class));
+            return new JobCommand(server, job);
+        } else {
+            return injector.getInstance(type.asSubclass(Command.class));
         }
     }
 

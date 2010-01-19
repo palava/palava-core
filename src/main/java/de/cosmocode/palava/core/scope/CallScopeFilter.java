@@ -30,7 +30,6 @@ import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.FilterChain;
 import de.cosmocode.palava.core.call.filter.FilterException;
-import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
@@ -51,7 +50,7 @@ final class CallScopeFilter implements Filter {
     }
     
     @Override
-    public Content filter(Call call, FilterChain chain) throws FilterException, CommandException {
+    public Content filter(Call call, FilterChain chain) throws FilterException {
         log.debug("Entering call scope");
         Scopes.setCurrentCall(call);
         scope.enter();

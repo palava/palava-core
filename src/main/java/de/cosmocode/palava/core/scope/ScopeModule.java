@@ -20,16 +20,12 @@
 package de.cosmocode.palava.core.scope;
 
 import com.google.inject.Module;
-import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.SessionScoped;
 
-import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
-import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
-import de.cosmocode.palava.core.session.HttpSession;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.scope} package.
@@ -60,34 +56,34 @@ public final class ScopeModule extends AbstractApplicationModule {
         binder().bind(SessionScope.class).toInstance(sessionScope);
     }
     
-    /**
-     * Provides the current call.
-     * 
-     * @return the current call
-     */
-    @Provides
-    Call provideCall() {
-        return Scopes.getCurrentCall();
-    }
-    
-    /**
-     * Provides the current request.
-     * 
-     * @return the current request
-     */
-    @Provides
-    HttpRequest provideHttpRequest() {
-        return Scopes.getCurrentRequest();
-    }
-    
-    /**
-     * Provides the current session.
-     * 
-     * @return the current session
-     */
-    @Provides
-    HttpSession provideHttpSession() {
-        return Scopes.getCurrentSession();
-    }
+//    /**
+//     * Provides the current call.
+//     * 
+//     * @return the current call
+//     */
+//    @Provides
+//    Call provideCall() {
+//        return Scopes.getCurrentCall();
+//    }
+//    
+//    /**
+//     * Provides the current request.
+//     * 
+//     * @return the current request
+//     */
+//    @Provides
+//    HttpRequest provideHttpRequest() {
+//        return Scopes.getCurrentRequest();
+//    }
+//    
+//    /**
+//     * Provides the current session.
+//     * 
+//     * @return the current session
+//     */
+//    @Provides
+//    HttpSession provideHttpSession() {
+//        return Scopes.getCurrentSession();
+//    }
 
 }

@@ -1,37 +1,26 @@
-/**
- * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 package de.cosmocode.palava.core.protocol;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
- * Static utility class which encapsulates the protocol header
- * parsing algorithm.
+ * Default protocol algorithm.
  * 
- * TODO should be non-static
- * TODO should be package private
- *
+ * @author Oliver Lorenz
  * @author Willi Schoenborn
  */
-public final class Protocol {
+final class DefaultProtocolAlgorithm implements ProtocolAlgorithm {
+    
+    private static final Logger log = LoggerFactory.getLogger(DefaultProtocolAlgorithm.class);
 
     /**
      * Identifies the different parts of the protocol structure.
@@ -148,10 +137,6 @@ public final class Protocol {
         
     }
 
-    private Protocol() {
-        
-    }
-    
     /**
      * Parses the palava protocol:
      * 
@@ -169,11 +154,11 @@ public final class Protocol {
      * @throws ProtocolException if the supplied stream does not contain a valid input
      * @throws ConnectionLostException if connection to the socket broke up during reading
      */
-    public static Header parse(InputStream input) {
+    public Header read(InputStream input) {
         final StringBuilder type = new StringBuilder(6);
         final StringBuilder aliasedName = new StringBuilder(50);
-        final StringBuilder sessionId = new StringBuilder(32);
-        final StringBuilder contentLength = new StringBuilder();
+        final StringBuilder sessionId = new StringBuilder(64);
+        final StringBuilder contentLength = new StringBuilder(6);
         
         Part part = Part.TYPE;
         
@@ -227,7 +212,7 @@ public final class Protocol {
         
     }
     
-    private static char readFrom(InputStream input) {
+    private char readFrom(InputStream input) {
         try {
             final char c = (char) input.read();
             if (c == -1) {
@@ -238,5 +223,22 @@ public final class Protocol {
             throw new ConnectionLostException(e);
         }
     }
-    
+
+    @Override
+    public void sendTo(Content content, OutputStream output) throws IOException {
+        Preconditions.checkNotNull(content, "Content");
+        Preconditions.checkNotNull(output, "Output");
+        final BufferedOutputStream buffered = new BufferedOutputStream(output);
+
+        // write header
+        final String header = String.format("%s://(%s)?", content.getMimeType(), content.getLength());
+        log.debug("Writing header: {}", header);
+        buffered.write(header.getBytes());
+
+        // write body
+        log.debug("Writing content: {}", content);
+        content.write(buffered);
+        buffered.flush();
+    }
+
 }

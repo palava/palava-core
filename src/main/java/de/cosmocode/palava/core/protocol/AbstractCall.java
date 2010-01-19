@@ -93,7 +93,7 @@ abstract class AbstractCall implements Call {
     }
 
     @Override
-    public void close() throws ConnectionLostException, IOException {
+    public final void discard() throws ConnectionLostException, IOException {
         if (totalBytesRead < header.getContentLength()) {
             read(new byte[header.getContentLength() - totalBytesRead]);
         }

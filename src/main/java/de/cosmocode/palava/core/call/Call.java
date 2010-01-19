@@ -43,10 +43,11 @@ public interface Call {
     
     Command getCommand();
     
+    // TODO blocking?
     InputStream getInputStream();
     
     Header getHeader();
     
-    void close() throws ConnectionLostException, IOException;
+    void discard() throws ConnectionLostException, IOException;
     
 }

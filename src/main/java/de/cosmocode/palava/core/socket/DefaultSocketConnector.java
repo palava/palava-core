@@ -22,10 +22,12 @@ package de.cosmocode.palava.core.socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -37,11 +39,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import de.cosmocode.commons.State;
-import de.cosmocode.palava.CloseConnection;
-import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.concurrent.ExecutorBuilder;
-import de.cosmocode.palava.core.protocol.ProtocolManager;
-import de.cosmocode.palava.core.protocol.Response;
 
 /**
  * Default implementation of the {@link SocketConnector} interface.
@@ -49,11 +47,11 @@ import de.cosmocode.palava.core.protocol.Response;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultSocketConnector implements SocketConnector {
+final class DefaultSocketConnector implements SocketConnector, ThreadFactory, UncaughtExceptionHandler {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultSocketConnector.class);
     
-    private final ProtocolManager manager;
+    private final Communicator communicator;
     
     private final int port;
     
@@ -71,7 +69,7 @@ final class DefaultSocketConnector implements SocketConnector {
     
     @Inject
     public DefaultSocketConnector(
-        ProtocolManager manager,
+        Communicator communicator,
         ExecutorBuilder builder,
         @Named("core.socket.port") int port,
         @Named("core.socket.timeout") long socketTimeout,
@@ -83,7 +81,7 @@ final class DefaultSocketConnector implements SocketConnector {
         @Named("core.threadpool.shutdownTimeout") long shutdownTimeout,
         @Named("core.threadpool.shutdownTimeoutUnit") TimeUnit shutdownTimeoutUnit) {
         
-        this.manager = Preconditions.checkNotNull(manager, "ProtocolManager");
+        this.communicator = Preconditions.checkNotNull(communicator, "Communicator");
         
         Preconditions.checkNotNull(builder, "Builder");
         
@@ -98,11 +96,24 @@ final class DefaultSocketConnector implements SocketConnector {
         builder.minSize(minPoolSize);
         builder.maxSize(maxPoolSize);
         builder.keepAlive(keepAliveTime, keepAliveTimeUnit);
+        builder.threadFactory(this);
         this.service = builder.build();
     }
 
     @Override
-    public void run(final CallHandler handler) throws IOException {
+    public Thread newThread(Runnable r) {
+        final Thread thread = new Thread(r);
+        thread.setUncaughtExceptionHandler(this);
+        return thread;
+    }
+    
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        log.error("Uncaught exception during connection", e);
+    }
+    
+    @Override
+    public void run() throws IOException {
         log.debug("Starting {}", this);
         state = State.STARTING;
         log.info("Creating socket on port {}", port);
@@ -123,38 +134,38 @@ final class DefaultSocketConnector implements SocketConnector {
             } catch (SocketTimeoutException e) {
                 continue;
             }
-            
+
             service.execute(new Runnable() {
                 
                 @Override
                 public void run() {
+                    final InputStream input;
+                    final OutputStream output;
+                    
                     try {
-                        final InputStream input = client.getInputStream();
-                        final OutputStream output = client.getOutputStream();
-                        
-                        while (true) {
-                            final Call call = manager.createCall(input);
-                            final Response response = manager.createResponse(output);
-                            handler.incomingCall(call, response);
-                            log.debug("Handler returned");
-                        }
+                        input = client.getInputStream();
+                        output = client.getOutputStream();
                     } catch (IOException e) {
-                        log.error("Error while reading from/writing to socket", e);
+                        throw new IllegalStateException(e);
+                    }
+
+                    try {
+                        communicator.communicate(input, output);
                     } finally {
                         try {
-                            // TODO add exception handling
 //                            client.getInputStream().close();
 //                            client.shutdownInput();
 //                            client.getOutputStream().close();
 //                            client.shutdownOutput();
                             client.close();
-                        } catch (IOException inner) {
-                            log.error("Failed to properly close socket", inner);
+                        } catch (IOException e) {
+                            log.warn("Closing socket failed", e);
                         }
                     }
                 }
                 
             });
+            
             
         }
     }

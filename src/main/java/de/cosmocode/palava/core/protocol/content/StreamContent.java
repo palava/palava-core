@@ -19,11 +19,13 @@
 
 package de.cosmocode.palava.core.protocol.content;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.CountingInputStream;
 
 import de.cosmocode.palava.MimeType;
 
@@ -63,8 +65,35 @@ public class StreamContent extends AbstractContent {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        // TODO use length
-        IOUtils.copy(stream, out);
+        IOUtils.copy(new BlockingInputStream(stream), out);
+    }
+    
+    private class BlockingInputStream extends InputStream {
+
+        private final CountingInputStream stream;
+        
+        public BlockingInputStream(InputStream in) {
+            this.stream = new CountingInputStream(in);
+        }
+        
+        @Override
+        public int read() throws IOException {
+            if (stream.getCount() >= length) return -1;
+            return stream.read();
+        }
+        
+        @Override
+        public int read(byte[] b) throws IOException {
+            if (stream.getCount() >= length) return -1;
+            return stream.read(b);
+        }
+        
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (stream.getCount() >= length) return -1;
+            return stream.read(b, off, len);
+        }
+        
     }
     
 }

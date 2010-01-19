@@ -39,10 +39,10 @@ public class TextCall extends AbstractCall {
 
     public String getText() throws ConnectionLostException, IOException {
         if (text == null) {
-            byte[] buffer = new byte[(int) getHeader().getContentLength()];
+            final byte[] buffer = new byte[getHeader().getContentLength()];
             read(buffer);
             final ByteBuffer bb = ByteBuffer.wrap(buffer);
-            final CharBuffer cb = CHARSET.decode(bb) ;
+            final CharBuffer cb = CHARSET.decode(bb);
             text = cb.toString();
         }
         return text;

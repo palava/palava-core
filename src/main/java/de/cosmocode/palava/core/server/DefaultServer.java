@@ -29,16 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
-import de.cosmocode.palava.CloseConnection;
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.CommandException;
-import de.cosmocode.palava.core.command.CommandManager;
-import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.content.Content;
-import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.service.ServiceManager;
-import de.cosmocode.palava.core.session.HttpSessionManager;
-import de.cosmocode.palava.core.socket.CallHandler;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
 /**
@@ -47,74 +38,35 @@ import de.cosmocode.palava.core.socket.SocketConnector;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServer implements Server, CallHandler {
+final class DefaultServer implements Server {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
 
     private final ServiceManager serviceManager;
     
-    private final HttpSessionManager sessionManager;
-    
     private final SocketConnector socketConnector;
-    
-    private final CommandManager commandManager;
     
     private State state = State.NEW;
     
     @Inject
-    public DefaultServer(ServiceManager serviceManager, HttpSessionManager sessionManager,
-        SocketConnector connector, CommandManager commandManager) {
+    public DefaultServer(ServiceManager serviceManager, SocketConnector connector) {
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
-        this.sessionManager = Preconditions.checkNotNull(sessionManager, "SessionManager");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
-        this.commandManager = Preconditions.checkNotNull(commandManager, "CommandManager");
     }
     
     @Override
     public void start() {
         state = State.STARTING;
         addHook();
-        log.debug("ServiceManager: {}", serviceManager);
-        log.debug("SessionManager: {}", sessionManager);
-        log.debug("SocketConnector: {}", socketConnector);
 
         state = State.RUNNING;
         
         try {
-            socketConnector.run(this);
+            socketConnector.run();
         } catch (IOException e) {
             log.error("Socket error", e);
             stop();
             state = State.FAILED;
-        }
-    }
-    
-    @Override
-    public void incomingCall(Call call, Response response) {
-        log.debug("Incoming call {}", call);
-        final Content content;
-        try {
-            content = commandManager.forName(call.getHeader().getAliasedName()).execute(call);
-            log.debug("Command completed successfully");
-            response.setContent(content);
-            log.debug("Reading bytes left from input");
-            call.close();
-            log.info("Sending response");
-            response.send();
-            log.info("Response sent");
-        } catch (CloseConnection e) {
-            log.info("Closing connection");
-            try {
-                response.setContent(PhpContent.OK);
-                response.send();
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                log.error(e1.toString(), e1);
-            }
-        } catch (CommandException e) {
-            log.error(e.toString(), e);
-        } catch (IOException e) {
-            log.error(e.toString(), e);
         }
     }
     
@@ -133,11 +85,6 @@ final class DefaultServer implements Server, CallHandler {
     @Override
     public ServiceManager getServiceManager() {
         return serviceManager;
-    }
-    
-    @Override
-    public HttpSessionManager getHttpSessionManager() {
-        return sessionManager;
     }
     
     @Override

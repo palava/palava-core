@@ -38,75 +38,77 @@ import de.cosmocode.palava.core.protocol.content.StreamContent;
 import de.cosmocode.palava.core.server.Server;
 
 public class FSContentStore implements ContentStore, Component {
-	
-	File dir;
-	
-	private static final Logger logger = Logger.getLogger( FSContentStore.class );
-	@Override
-	public StreamContent load(String key) throws Exception {
-        File file = mkFile(key);
+    
+    private static final Logger log = Logger.getLogger(FSContentStore.class);
+    
+    private File dir;
+    
+    @Override
+    public StreamContent load(String key) throws Exception {
+        final File file = mkFile(key);
 
-        if ( ! file.exists() ) return null;
-		return new FileContent( file );
-	}
-	String generateFilename(MimeType mimeType) {
-		return DigestUtils.md5Hex( ""+ System.currentTimeMillis() ) + "." + mimeType.getMinor();
-	}
-
-    private File mkFile( String name ) {
-        return new File(dir, name );
+        if (!file.exists()) return null;
+        return new FileContent(file);
+    }
+    
+    private String generateFilename(MimeType mimeType) {
+        return DigestUtils.md5Hex(Long.toString(System.currentTimeMillis())) + "." + mimeType.getMinor();
     }
 
-	@Override
-	public String store(Content content) throws Exception {
-		
-		String name = generateFilename(content.getMimeType());
-		File file = mkFile(name);
-		
-		FileOutputStream out = new FileOutputStream(file);
-		content.write(out);
-		out.flush();
-		out.close();
-		return name;
-	}
-	
-	public String store( InputStream in, MimeType mimeType ) throws Exception {
-		String name = generateFilename(mimeType);
-		File file = mkFile(name);
-		
-		FileOutputStream out = new FileOutputStream(file);
-		
-		IOUtils.copy(in, out);
-		out.flush();
-		out.close();
-		return name;
-		
-	}
+    private File mkFile(String name) {
+        return new File(dir, name);
+    }
 
-	@Override
-	public void compose(ComponentManager manager) throws ComponentException {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public String store(Content content) throws Exception {
+        
+        final String name = generateFilename(content.getMimeType());
+        final File file = mkFile(name);
+        
+        final FileOutputStream out = new FileOutputStream(file);
+        content.write(out);
+        out.flush();
+        out.close();
+        return name;
+    }
+    
+    public String store( InputStream in, MimeType mimeType ) throws Exception {
+        final String name = generateFilename(mimeType);
+        final File file = mkFile(name);
+        
+        final FileOutputStream out = new FileOutputStream(file);
+        
+        IOUtils.copy(in, out);
+        out.flush();
+        out.close();
+        return name;
+        
+    }
 
-	@Override
-	public void configure(Element root, Server server)
-			throws ComponentException {
-		dir = new File(root.getChildText("root"));		
-	}
+    @Override
+    public void compose(ComponentManager manager) throws ComponentException {
+        // TODO Auto-generated method stub
+        
+    }
 
-	@Override
-	public void initialize() {
-		
-	}
-	@Override
-	public void remove(String key) {
-		File file = mkFile(key);
-		
-		if ( ! file.delete() )
-			logger.error("cannot delete " + file.getAbsolutePath());
-		
-		
-	}
+    @Override
+    public void configure(Element root, Server server)
+            throws ComponentException {
+        dir = new File(root.getChildText("root"));        
+    }
+
+    @Override
+    public void initialize() {
+        
+    }
+    @Override
+    public void remove(String key) {
+        File file = mkFile(key);
+        
+        if ( ! file.delete() )
+            log.error("cannot delete " + file.getAbsolutePath());
+        
+        
+    }
 
 }
