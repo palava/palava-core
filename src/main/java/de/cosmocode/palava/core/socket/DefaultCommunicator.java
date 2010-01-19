@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -46,7 +45,6 @@ import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.command.CommandManager;
 import de.cosmocode.palava.core.protocol.CallType;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Header;
 import de.cosmocode.palava.core.protocol.JsonCall;
 import de.cosmocode.palava.core.protocol.ProtocolAlgorithm;
@@ -57,7 +55,6 @@ import de.cosmocode.palava.core.protocol.content.JsonContent;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.request.HttpRequestFactory;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
-import de.cosmocode.palava.core.scope.Scopes;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.core.session.HttpSessionManager;
 
@@ -102,10 +99,10 @@ final class DefaultCommunicator implements Communicator {
         if (header.getCallType() == CallType.OPEN) {
             final String sessionId = header.getSessionId();
             final HttpSession session = sessionManager.get(sessionId);
-            if (StringUtils.isNotBlank(sessionId)) {
-                if (session != null) {
-                    session.updateAccessTime();
-                }
+            log.debug("Session found for id {}: {}", sessionId, session);
+            if (session != null) {
+                log.debug("Updating access time for {}", sessionId);
+                session.updateAccessTime();
             }
             final Call call = header.getCallType().createCall(header, input);
             final JsonCall jsonCall = JsonCall.class.cast(call);
@@ -115,7 +112,7 @@ final class DefaultCommunicator implements Communicator {
             try {
                 object = jsonCall.getJSONObject();
                 call.discard();
-                JsonContent.EMPTY.write(output);
+                algorithm.sendTo(JsonContent.EMPTY, output);
             } catch (JSONException e) {
                 throw new ProtocolException(e);
             } catch (IOException e) {
@@ -125,8 +122,7 @@ final class DefaultCommunicator implements Communicator {
             final Map<String, String> serverVariable = Maps.transformValues(
                 JSON.asMap(object), Functions.toStringFunction()
             );
-            final HttpRequest request = requestFactory.create(session, serverVariable);
-            return request;
+            return requestFactory.create(session, serverVariable);
         } else {
             throw new ProtocolException("First call must be of type OPEN");
         }
@@ -143,7 +139,9 @@ final class DefaultCommunicator implements Communicator {
         final HttpRequest request = parse(input, output);
         before(request);
         while (true) {
+            log.debug("Reading header");
             final Header header = algorithm.read(input);
+            log.debug("Incoming call {}", header.getCallType());
             if (header.getCallType() == CallType.CLOSE) break;
             
             final Call call = header.getCallType().createCall(header, input);

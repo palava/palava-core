@@ -23,12 +23,12 @@ import com.google.inject.Key;
 
 import de.cosmocode.palava.core.call.filter.Filter;
 
-public interface FilterBinder<F extends Filter> {
+public interface FilterBinder {
 
-    void through(Class<? extends F> filterKey);
+    void through(Class<? extends Filter> filterKey);
     
-    void through(Key<? extends F> filterKey);
+    void through(Key<? extends Filter> filterKey);
     
-    void through(F filter);
+    void through(Filter filter);
     
 }

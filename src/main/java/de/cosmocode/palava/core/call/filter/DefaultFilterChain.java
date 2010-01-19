@@ -20,7 +20,6 @@
 package de.cosmocode.palava.core.call.filter;
 
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.google.inject.internal.Lists;
 
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.content.Content;
@@ -49,9 +47,8 @@ final class DefaultFilterChain implements FilterChain {
     private int index = -1;
     
     @Inject
-    public DefaultFilterChain(Set<Filter> filters, @Assisted FilterChain proceedingChain) {
-        // TODO preserve ordering
-        this.filters = Lists.newArrayList(Preconditions.checkNotNull(filters, "Filter"));
+    public DefaultFilterChain(List<Filter> filters, @Assisted FilterChain proceedingChain) {
+        this.filters = Preconditions.checkNotNull(filters, "Filter");
         this.proceedingChain = Preconditions.checkNotNull(proceedingChain, "ProceedingChain");
     }
 

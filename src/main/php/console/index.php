@@ -44,13 +44,12 @@ if (!$starterror)
 	// load palava
 	$palava = new Palava($config['palavaconf']);
 
-	if ($palava->established())
+	if ($palava->established()) {
 		$palava->session_start();
-	else
+	} else {
 		$starterror = implode("<br />", $palava->errors());
+	}
 }
-
-
 
 echo '<?xml version="1.0" encoding="UTF-8" ?>'; ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

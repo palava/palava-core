@@ -20,6 +20,7 @@
 package de.project.main;
 
 import com.google.inject.Key;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
 import de.cosmocode.palava.components.cstore.ContentStore;
@@ -27,12 +28,8 @@ import de.cosmocode.palava.components.cstore.FSContentStore;
 import de.cosmocode.palava.components.mail.Mailer;
 import de.cosmocode.palava.components.mail.VelocityMailer;
 import de.cosmocode.palava.core.CoreModule;
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.call.filter.Filter;
-import de.cosmocode.palava.core.call.filter.FilterChain;
-import de.cosmocode.palava.core.call.filter.FilterException;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
-import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.request.HttpRequestFilter;
 
 /**
  * Mock implementation which adds service bindings.
@@ -48,14 +45,9 @@ public final class ProjectModule extends AbstractApplicationModule {
         serve(Mailer.class).with(VelocityMailer.class);
         serve(Key.get(ContentStore.class, Names.named("FileSystem"))).with(FSContentStore.class);
         
-        filter("*").through(new Filter() {
-            
-            @Override
-            public Content filter(Call call, FilterChain chain) throws FilterException {
-                return chain.filter(call);
-            }
-            
-        });
+        filter("de.cosmocode.palava.system.version").through(LogFilter.class);
+        
+        Multibinder.newSetBinder(binder(), HttpRequestFilter.class).addBinding().to(LogRequestFilter.class);
         
         alias("de.project.commands").as("@project");
         

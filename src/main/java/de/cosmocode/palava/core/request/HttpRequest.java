@@ -19,7 +19,6 @@
 
 package de.cosmocode.palava.core.request;
 
-import java.net.InetAddress;
 import java.net.URI;
 
 import de.cosmocode.palava.core.session.Destroyable;
@@ -34,7 +33,7 @@ public interface HttpRequest extends Destroyable {
 
     URI getRequestUri();
     
-    InetAddress getRemoteAddress();
+    String getRemoteAddress();
     
     String getUserAgent();
     

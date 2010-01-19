@@ -58,5 +58,10 @@ final class FilterDefinitionAdapter implements Filter {
             return chain.filter(call);
         }
     }
+
+    @Override
+    public String toString() {
+        return filter.toString();
+    }
     
 }

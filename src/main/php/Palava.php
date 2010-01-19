@@ -120,6 +120,9 @@ class Palava
             $this->connect_linear();
         }
         @socket_clear_error($this->besocket);
+        
+        $this->send_request('open', '', array(json_encode($_SERVER)));
+        $this->receive_response();
     }
 
     /**
@@ -168,8 +171,9 @@ class Palava
     {
         if ($this->established())
         {
-            $this->call('@palava.system.close');
-
+            
+//            $this->call('@palava.system.close');
+            $this->send_request('close', '', array('{}'));
             socket_close($this->besocket);
             $this->besocket = null;
         }
@@ -671,25 +675,19 @@ class Palava
         // more information at http://palava.cosmocode.de/wiki/protocol
 
         // body_len
-        if ($type == 'data')
-        {
-            // form the body
+        if ($type == 'data') {
             $params = array();
-            foreach($request as $i => $paramarr)
-            {
-                if (is_array($paramarr))
-                {
+            foreach($request as $i => $paramarr) {
+                if (is_array($paramarr)) {
                     foreach ($paramarr as $key => $param) {
-			// escapeing...
-			$key = $this->escapeString($key);
-			$param = $this->escapeString($param);
-                        $params[] = "$key=$param";
-		    }
+                        $params[$key] = $param;
+        		    }
+                } else {
+                    $splitted = explode('=', $paramarr);
+                    $params[$splitted[0]] = $splitted[1];
                 }
-                else
-                    $params[] = $paramarr;
             }
-            $body = implode("&", $params);
+            $body = json_encode($params);
             $body_len = strlen($body);
         }
         elseif ($type == 'text')
@@ -697,7 +695,7 @@ class Palava
             $body = $request[0];
             $body_len = strlen($body);
         }
-        elseif ($type == 'json')
+        elseif ($type == 'json' || $type == 'open' || $type == 'close')
         {
             $body = $request[0];
             $body_len = strlen($body);
@@ -710,7 +708,7 @@ class Palava
 
         // session_id
         $session_id = "";
-        if ($this->session_started)
+        if (TRUE OR $this->session_started)
         {
             if ($this->getSessionID() == "")
             {

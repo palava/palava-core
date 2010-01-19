@@ -50,7 +50,7 @@ import de.cosmocode.palava.core.service.Service;
 public abstract class AbstractApplicationModule extends AbstractModule {
     
     private final List<FilterDefinition> filterDefinitions = Lists.newArrayList();
-    private final Map<Key<Filter>, Filter> filterInstances = Maps.newHashMap();
+    private final Map<Key<Filter>, Filter> filterInstances = Maps.newLinkedHashMap();
     
     @Override
     protected final void configure() {
@@ -99,29 +99,27 @@ public abstract class AbstractApplicationModule extends AbstractModule {
     /**
      * Binds a filter.
      * 
-     * @param <F> the generic filter type
      * @param pattern the name pattern the filter will be applied on
      * @param patterns additional patterns
      * @return a {@link FilterBinder}
      */
-    protected <F extends Filter> FilterBinder<F> filter(String pattern, String... patterns) {
+    protected FilterBinder filter(String pattern, String... patterns) {
         final List<String> list = Lists.newArrayList(pattern);
         Collections.addAll(list, patterns);
-        return new InternalFilterBinder<F>(list, NamePatternType.SIMPLE);
+        return new InternalFilterBinder(list, NamePatternType.SIMPLE);
     }
     
     /**
      * Binds a filter.
      * 
-     * @param <F> the generic filter type
      * @param pattern the name pattern the filter will be applied on
      * @param patterns additional patterns
      * @return a {@link FilterBinder}
      */
-    protected <F extends Filter> FilterBinder<F> filterRegex(String pattern, String... patterns) {
+    protected FilterBinder filterRegex(String pattern, String... patterns) {
         final List<String> list = Lists.newArrayList(pattern);
         Collections.addAll(list, patterns);
-        return new InternalFilterBinder<F>(list, NamePatternType.REGEX);
+        return new InternalFilterBinder(list, NamePatternType.REGEX);
     }
     
     /**
@@ -174,7 +172,7 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      * @author Willi Schoenborn
      * @param <F> the generic filter type
      */
-    private class InternalFilterBinder<F extends Filter> implements FilterBinder<F> {
+    private class InternalFilterBinder implements FilterBinder {
         
         private final List<String> patterns;
         
@@ -186,12 +184,12 @@ public abstract class AbstractApplicationModule extends AbstractModule {
         }
         
         @Override
-        public void through(Class<? extends F> type) {
+        public void through(Class<? extends Filter> type) {
             through(Key.get(type));
         }
         
         @Override
-        public void through(Key<? extends F> filterKey) {
+        public void through(Key<? extends Filter> filterKey) {
             for (String pattern : patterns) {
                 final FilterDefinition definition = new InternalFilterDefinition(pattern, filterKey);
                 filterDefinitions.add(definition);
@@ -232,6 +230,7 @@ public abstract class AbstractApplicationModule extends AbstractModule {
             Preconditions.checkNotNull(filter, "Filter");
             final Key<Filter> key = Key.get(Filter.class, UniqueAnnotations.create());
             filterInstances.put(key, filter);
+            through(key);
         }
         
     }

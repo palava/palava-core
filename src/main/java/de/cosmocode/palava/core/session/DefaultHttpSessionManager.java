@@ -87,6 +87,7 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         }
         final String sessionId = builder.toString();
         final HttpSession session = new DefaultHttpSession(sessionId);
+        log.debug("Created new session with id {}", sessionId);
         sessions.put(sessionId, session);
         return session;
     }

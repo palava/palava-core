@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.internal.Maps;
@@ -33,6 +35,7 @@ import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.request.HttpRequest;
+import de.cosmocode.palava.core.scope.Scopes;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.patterns.Adapter;
@@ -44,6 +47,8 @@ import de.cosmocode.patterns.Adapter;
  */
 @Adapter(Command.class)
 final class JobCommand implements Command {
+    
+    private static final Logger log = LoggerFactory.getLogger(JobCommand.class); 
 
     private final Server server;
         
@@ -58,12 +63,15 @@ final class JobCommand implements Command {
     public Content execute(Call call) throws CommandException {
         
         final Response response = new DummyResponse();
-        final HttpRequest request = call.getHttpRequest();
-        final HttpSession session = null;
+        final HttpRequest request = Scopes.getCurrentRequest();
+        log.debug("Local request: {}", request);
+        final HttpSession session = request.getHttpSession();
+        log.debug("Local session: {}", session);
         
         final String key = DigestUtils.md5Hex(Long.toString(System.nanoTime()));
         Map<String, Object> caddy = Maps.newHashMap();
         
+        // TODO fix
         if (caddy == null) {
             caddy = Maps.newHashMap();
             request.set(key, caddy);

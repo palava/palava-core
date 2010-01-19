@@ -19,18 +19,14 @@
 
 package de.cosmocode.palava.core.request;
 
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.internal.Maps;
 import com.google.inject.internal.Nullable;
 
-import de.cosmocode.commons.Patterns;
 import de.cosmocode.palava.core.session.HttpSession;
 
 /**
@@ -68,20 +64,10 @@ final class DefaultHttpRequest implements HttpRequest {
     }
     
     @Override
-    public InetAddress getRemoteAddress() {
+    public String getRemoteAddress() {
         final String address = serverVariable.get(REMOTE_ADDR);
         Preconditions.checkState(address != null, "%s not found", REMOTE_ADDR);
-        final byte[] bytes = new byte[4];
-        final Matcher matcher = Patterns.INTERNET_ADDRESS.matcher(address);
-        Preconditions.checkState(matcher.matches(), "%s is no valid internet address", address);
-        for (int i = 1; i <= 4; i++) {
-            bytes[i] = Byte.parseByte(matcher.group(i));
-        }
-        try {
-            return InetAddress.getByAddress(bytes);
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException(e);
-        }
+        return address;
     }
 
     @Override
