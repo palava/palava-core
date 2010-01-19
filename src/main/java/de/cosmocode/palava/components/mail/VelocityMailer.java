@@ -41,7 +41,7 @@ import org.jdom.input.SAXBuilder;
 import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 
 public class VelocityMailer implements Mailer, Component {
 
@@ -65,9 +65,9 @@ public class VelocityMailer implements Mailer, Component {
 			final String name = child.getAttributeValue("name");
 			String value = child.getText();
 	
-			if (name.equals("file.resource.loader.path") && !value.startsWith(File.separator)) {
-				value = server.getFilename(value);
-			}
+//			if (name.equals("file.resource.loader.path") && !value.startsWith(File.separator)) {
+//				value = server.getFilename(value);
+//			}
 			
 			properties.put(name, value);
 		}

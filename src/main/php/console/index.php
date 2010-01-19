@@ -65,7 +65,6 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>'; ?>
 	</head>
 
 	<body>
-
 		<div id="main">
 
 

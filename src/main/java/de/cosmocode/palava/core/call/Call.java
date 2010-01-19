@@ -22,9 +22,9 @@ package de.cosmocode.palava.core.call;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.RequestHeader;
 import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.protocol.Header;
 import de.cosmocode.palava.core.request.HttpRequest;
 
 /**
@@ -45,10 +45,8 @@ public interface Call {
     
     InputStream getInputStream();
     
-    RequestHeader getHeader();
+    Header getHeader();
     
-    int read(byte[] data) throws ConnectionLostException, IOException;
-    
-    void freeInputStream() throws ConnectionLostException, IOException;
+    void close() throws ConnectionLostException, IOException;
     
 }

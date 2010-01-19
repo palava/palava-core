@@ -56,6 +56,9 @@ final class DefaultServiceManager implements ServiceManager {
         this.injector = Preconditions.checkNotNull(injector, "Injector");
         this.services = Preconditions.checkNotNull(services, "Services");
         log.info("Found {} services", services.size());
+        for (Service service : services) {
+            log.debug("Created {}", service);
+        }
         start();
     }
     

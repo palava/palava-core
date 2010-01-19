@@ -26,15 +26,15 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.assets.Asset;
 import de.cosmocode.palava.components.assets.Directory;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.DataRequest;
-import de.cosmocode.palava.core.protocol.JSONContent;
+import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.JsonContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
@@ -44,10 +44,10 @@ public class getDirectoryLong extends HibJob {
 	public void process(Call req, Response response, HttpSession session, Server server, 
 			Map<String, Object> caddy, org.hibernate.Session hibSession) throws Exception {
 		
-        ImageStore store = server.components.lookup(ImageStore.class);
+        ImageStore store = server.getServiceManager().lookup(ImageStore.class);
         if ( hibSession == null ) hibSession = createHibSession(server,caddy);
 
-        DataRequest request = (DataRequest) req;
+        DataCall request = (DataCall) req;
         final Map<String, String> map = request.getArguments();
 
         String dirID = map.get("id");
@@ -74,6 +74,6 @@ public class getDirectoryLong extends HibJob {
         }
         json.endArray();
         
-        response.setContent(new JSONContent(json));
+        response.setContent(new JsonContent(json));
 	}
 }

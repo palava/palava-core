@@ -5,7 +5,7 @@
 
 // Path to the Palava Library
 $config['palavalib'] = '../Palava.php';
-$config['palavaconf'] = '../../../palava.conf';
+$config['palavaconf'] = 'localhost:2010';
 
 
 $config['palavatypes'] = array('data', 'text', 'json');

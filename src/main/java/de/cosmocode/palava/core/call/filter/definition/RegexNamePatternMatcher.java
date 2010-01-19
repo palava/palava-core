@@ -33,11 +33,8 @@ final class RegexNamePatternMatcher implements NamePatternMatcher {
     private final Pattern pattern;
     
     public RegexNamePatternMatcher(String pattern) {
-        this(Pattern.compile(pattern));
-    }
-    
-    public RegexNamePatternMatcher(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "Pattern");
+        Preconditions.checkNotNull(pattern, "Pattern");
+        this.pattern = Pattern.compile(pattern);
     }
     
     @Override

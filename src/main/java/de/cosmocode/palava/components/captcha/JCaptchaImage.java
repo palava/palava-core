@@ -35,7 +35,7 @@ import com.sun.image.codec.jpeg.ImageFormatException;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.service.lifecycle.Initializable;
 import de.cosmocode.palava.core.service.lifecycle.Lifecycle;
 

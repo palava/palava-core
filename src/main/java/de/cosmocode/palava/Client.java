@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import de.cosmocode.palava.core.server.Server;
+
 
 /**
  * an internal client class for the palava protocol
@@ -62,7 +64,8 @@ public class Client
 	public Client(Server server)
 	{
 		host = "localhost";
-		port = server.getListenPort();
+		// TODO fixme
+		port = 2010;//server.getListenPort();
 
 		connect();
 	}

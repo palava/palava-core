@@ -24,13 +24,13 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.hib.ClosableSession;
 import de.cosmocode.palava.components.hib.Hib;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.server.Server;
 
 public abstract class HibJob implements Job {
     
@@ -47,7 +47,7 @@ public abstract class HibJob implements Job {
 	
 	public static org.hibernate.Session createHibSession(Server server, Map<String, Object> caddy)  {
 		
-		Hib hib = server.components.lookup(Hib.class);
+		Hib hib = server.getServiceManager().lookup(Hib.class);
 		Session session = hib.getSessionFactory().openSession();
 		caddy.put(CADDY_HIBSESSION, new ClosableSession(session));
 		

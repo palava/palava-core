@@ -21,6 +21,8 @@ package de.cosmocode.palava;
 
 import org.jdom.Element;
 
+import de.cosmocode.palava.core.server.Server;
+
 /**
  * Deprecated version of {@link Service}. 
  * 

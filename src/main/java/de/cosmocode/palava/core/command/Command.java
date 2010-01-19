@@ -22,7 +22,7 @@ package de.cosmocode.palava.core.command;
 import javax.servlet.Servlet;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.Content;
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * A {@link Command} is very similiar to a {@link Servlet}. It represents

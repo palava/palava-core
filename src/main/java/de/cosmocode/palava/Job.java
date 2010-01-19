@@ -22,7 +22,9 @@ package de.cosmocode.palava;
 import java.util.Map;
 
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 
@@ -43,6 +45,6 @@ public interface Job
 	 * @throws Exception
 	 */
 	public void process(Call call, Response response, HttpSession session, Server server, 
-        Map<String,Object> caddy) throws Exception;
+        Map<String, Object> caddy) throws Exception;
 
 }

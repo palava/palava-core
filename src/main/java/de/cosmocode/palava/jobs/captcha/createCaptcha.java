@@ -22,14 +22,14 @@ package de.cosmocode.palava.jobs.captcha;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.captcha.Captcha;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.StreamContent;
+import de.cosmocode.palava.core.protocol.content.StreamContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public class createCaptcha implements Job {
@@ -39,7 +39,7 @@ public class createCaptcha implements Job {
 			Server server, Map<String, Object> caddy)
 			throws ConnectionLostException, Exception {
 
-		Captcha captcha = server.components.lookup(Captcha.class);
+		Captcha captcha = server.getServiceManager().lookup(Captcha.class);
 		
 		byte [] bytes = captcha.getJpegCapchta(session.getSessionId());
 		

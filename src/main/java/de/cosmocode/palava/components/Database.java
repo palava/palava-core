@@ -31,7 +31,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 
 
 /**

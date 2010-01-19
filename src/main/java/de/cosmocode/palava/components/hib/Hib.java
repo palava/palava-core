@@ -30,7 +30,7 @@ import org.jdom.Element;
 import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 
 public class Hib implements Component {
 
@@ -45,9 +45,8 @@ public class Hib implements Component {
         if (hibernateConfiguration == null ) throw new NullPointerException("missing config entry 'hibernateConfiguration'");
         
         
-        hibernateConfiguration = server.getFilename( hibernateConfiguration );
         if ( ! hibernateSchema.startsWith("file://") ) {
-            hibernateSchema = "file://" + server.getFilename( hibernateSchema );
+            hibernateSchema = "file://" + hibernateSchema;
         }
 
         AnnotationConfiguration cfg = new AnnotationConfiguration();

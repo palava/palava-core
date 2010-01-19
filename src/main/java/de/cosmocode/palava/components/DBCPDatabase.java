@@ -28,7 +28,7 @@ import org.jdom.Element;
 import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 
 
 /**

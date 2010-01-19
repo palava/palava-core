@@ -30,10 +30,10 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
-import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.Server;
-import de.cosmocode.palava.core.protocol.JSONContent;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.JsonContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.CachableJSONJob;
 
@@ -68,7 +68,7 @@ public class parseDate extends CachableJSONJob {
             key("date").value(returnValue).
         endObject();
         
-        response.setContent(new JSONContent(out));
+        response.setContent(new JsonContent(out));
         
     }
 

@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core.scope;
 
-import com.google.common.base.Preconditions;
-
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.session.HttpSession;
@@ -32,8 +30,8 @@ import de.cosmocode.palava.core.session.HttpSession;
  */
 public final class Scopes {
     
-    private static final ThreadLocal<Call> CALLS = new ThreadLocal<Call>();
-    private static final ThreadLocal<HttpRequest> REQUESTS = new ThreadLocal<HttpRequest>();
+    private static final ThreadLocal<Call> CALL = new ThreadLocal<Call>();
+    private static final ThreadLocal<HttpRequest> REQUEST = new ThreadLocal<HttpRequest>();
 
     private Scopes() {
         
@@ -45,7 +43,7 @@ public final class Scopes {
      * @param call the new current call
      */
     static void setCurrentCall(Call call) {
-        CALLS.set(call);
+        CALL.set(call);
     }
     
     /**
@@ -54,9 +52,7 @@ public final class Scopes {
      * @return the current call.
      */
     public static Call getCurrentCall() {
-        final Call call = CALLS.get();
-        Preconditions.checkState(call != null, "No call found");
-        return call;
+        return CALL.get();
     }
     
     /**
@@ -65,7 +61,7 @@ public final class Scopes {
      * @param request the new current request
      */
     static void setCurrentRequest(HttpRequest request) {
-        REQUESTS.set(request);
+        REQUEST.set(request);
     }
     
     /**
@@ -74,13 +70,13 @@ public final class Scopes {
      * @return the current request
      */
     public static HttpRequest getCurrentRequest() {
-        final HttpRequest request = REQUESTS.get();
-        Preconditions.checkState(request != null, "No request found");
-        return request;
+        return REQUEST.get();
     }
     
     public static HttpSession getCurrentSession() {
-        return getCurrentRequest().getHttpSession();
+        final HttpRequest request = getCurrentRequest();
+        if (request == null) return null;
+        return request.getHttpSession();
     }
     
 }

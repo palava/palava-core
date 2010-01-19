@@ -26,12 +26,12 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
 import de.cosmocode.palava.CachableJob;
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.JSONContent;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.JsonContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public class statistics implements Job {
@@ -61,7 +61,7 @@ public class statistics implements Job {
             key("items").value(CachableJob.getItemCount())
             ;
         out.endObject();
-        response.setContent(new JSONContent(out));
+        response.setContent(new JsonContent(out));
     }
 
 }

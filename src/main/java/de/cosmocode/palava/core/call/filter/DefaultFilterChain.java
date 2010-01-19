@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * Default implementation of the {@link FilterChain} interface.
@@ -47,12 +48,14 @@ final class DefaultFilterChain implements FilterChain {
     }
 
     @Override
-    public void filter(Call request, Response response) throws FilterException {
+    public Content filter(Call call) throws FilterException, CommandException {
         index++;
         if (index < filters.size()) {
             final Filter filter = filters.get(index);
             log.debug("Running filter {}", filter);
-            filter.filter(request, response, this);
+            return filter.filter(call, this);
+        } else {
+            return call.getCommand().execute(call);
         }
     }
 

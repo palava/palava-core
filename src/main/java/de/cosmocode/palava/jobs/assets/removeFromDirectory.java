@@ -22,13 +22,13 @@ package de.cosmocode.palava.jobs.assets;
 import java.util.Map;
 
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.DataRequest;
-import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
@@ -39,10 +39,10 @@ public class removeFromDirectory extends HibJob {
 			Server server, Map<String, Object> caddy,
 			org.hibernate.Session hibSession) throws Exception {
 		
-        ImageStore ist = server.components.lookup(ImageStore.class);
+        ImageStore ist = server.getServiceManager().lookup(ImageStore.class);
         if ( hibSession == null ) hibSession = createHibSession(server,caddy);
 
-        DataRequest request = (DataRequest) req;
+        DataCall request = (DataCall) req;
         final Map<String, String> map = request.getArguments();
 
         String dirId = map.get("dirId");
@@ -55,7 +55,7 @@ public class removeFromDirectory extends HibJob {
 
         Boolean done = im.removeAssetFromDirectory(Long.parseLong(dirId),Long.parseLong(assetId));
 
-		resp.setContent( new PHPContent(done) );
+		resp.setContent( new PhpContent(done) );
 	}
 
 	

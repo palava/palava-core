@@ -23,10 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 
-import de.cosmocode.palava.ConnectionLostException;
-import de.cosmocode.palava.RequestHeader;
 import de.cosmocode.palava.UncloseableInputStream;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.command.Command;
@@ -40,18 +41,19 @@ import de.cosmocode.palava.core.request.HttpRequest;
  */
 abstract class AbstractCall implements Call {
     
+    private final Logger log = LoggerFactory.getLogger(AbstractCall.class);
+    
     protected static final Charset CHARSET = Charset.forName("UTF-8");
 
-    private final RequestHeader header;
+    private final Header header;
     private final InputStream stream;
-    private long read;
+    private int totalBytesRead;
 
-    public AbstractCall(RequestHeader header, InputStream stream) {
+    public AbstractCall(Header header, InputStream stream) {
         Preconditions.checkNotNull(header, "Header");
         Preconditions.checkNotNull(stream, "Stream");
         this.stream = new UncloseableInputStream(stream);
         this.header = header;
-        this.read = header.getContentLength();
     }
 
     @Override
@@ -60,38 +62,40 @@ abstract class AbstractCall implements Call {
     }
     
     @Override
-    public RequestHeader getHeader() {
+    public Header getHeader() {
         return header;
     }
 
-    @Override
-    public int read(byte[] data) throws ConnectionLostException, IOException {
+    protected final int read(byte[] data) throws ConnectionLostException, IOException {
         final long max = header.getContentLength();
-        if (max - read - data.length < 0) {
+        log.debug("Max bytes available: {}", max);
+        log.debug("Already read: {}", totalBytesRead);
+        log.debug("Attempting to read {} bytes", data.length);
+        
+        if (totalBytesRead >= max) {
             throw new IOException("not allowed to read enough bytes, content-length reached");
         }
 
-        int written;
+        int read;
         
         try {
-            written = stream.read(data, 0, data.length);
+            read = stream.read(data, 0, data.length);
         } catch (IOException ioe) {
             throw new ConnectionLostException();
         }
         
-        if (written == -1) {
+        if (read == -1) {
             throw new ConnectionLostException();
         }
 
-        read = read + written;
-        return written;
+        totalBytesRead += read;
+        return read;
     }
 
     @Override
-    public void freeInputStream() throws ConnectionLostException, IOException {
-        final byte[] buffer = new byte[1];
-        while (read < header.getContentLength()) {
-            read(buffer);
+    public void close() throws ConnectionLostException, IOException {
+        if (totalBytesRead < header.getContentLength()) {
+            read(new byte[header.getContentLength() - totalBytesRead]);
         }
     }
     

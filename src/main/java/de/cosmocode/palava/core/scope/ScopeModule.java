@@ -26,7 +26,7 @@ import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.SessionScoped;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.inject.ApplicationModule;
+import de.cosmocode.palava.core.inject.AbstractApplicationModule;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
 import de.cosmocode.palava.core.session.HttpSession;
@@ -36,10 +36,10 @@ import de.cosmocode.palava.core.session.HttpSession;
  *
  * @author Willi Schoenborn
  */
-public final class ScopeModule extends ApplicationModule {
+public final class ScopeModule extends AbstractApplicationModule {
 
     @Override
-    protected void configure() {
+    protected void configureApplication() {
         final CallScope callScope = new CallScope();
         binder().requestInjection(callScope);
         binder().bindScope(CallScoped.class, callScope);

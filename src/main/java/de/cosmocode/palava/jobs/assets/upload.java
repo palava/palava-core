@@ -21,16 +21,16 @@ package de.cosmocode.palava.jobs.assets;
 
 import java.util.Map;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.assets.Asset;
 import de.cosmocode.palava.components.assets.ImageManager;
 import de.cosmocode.palava.components.assets.ImageStore;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.PHPContent;
-import de.cosmocode.palava.core.protocol.RequestContent;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.protocol.content.StreamContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
@@ -41,7 +41,7 @@ public class upload extends HibJob {
 			Server server, Map<String, Object> caddy, org.hibernate.Session hibSession)
 			throws ConnectionLostException, Exception {
 		
-        ImageStore ist = server.components.lookup(ImageStore.class);
+        ImageStore ist = server.getServiceManager().lookup(ImageStore.class);
 
         if ( hibSession == null ) hibSession = createHibSession(server,caddy);
 
@@ -50,13 +50,15 @@ public class upload extends HibJob {
         MimeType mimetype = (MimeType) caddy.get("mimetype");
 
         // just use the request data as the content
-        asset.setContent( new RequestContent(request, mimetype) );
+        asset.setContent(new StreamContent(
+            request.getInputStream(), request.getHeader().getContentLength(), mimetype)
+        );
 
         ImageManager im = ist.createImageManager(hibSession);
 
         im.createAsset(asset);
 
-		response.setContent( new PHPContent(asset.getId()) );
+		response.setContent( new PhpContent(asset.getId()) );
 	}
 
 }

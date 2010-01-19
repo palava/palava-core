@@ -41,7 +41,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
 
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
-import de.cosmocode.palava.Server;
+import de.cosmocode.palava.core.server.Server;
 
 
 public class PalavaGimpyEngine extends ListImageCaptchaEngine implements de.cosmocode.palava.Component {

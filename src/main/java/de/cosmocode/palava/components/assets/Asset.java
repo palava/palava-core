@@ -42,7 +42,7 @@ import de.cosmocode.palava.Convertible;
 import de.cosmocode.palava.KeyValueState;
 import de.cosmocode.palava.MimeType;
 import de.cosmocode.palava.components.logging.NoObjectContext;
-import de.cosmocode.palava.core.protocol.StreamContent;
+import de.cosmocode.palava.core.protocol.content.StreamContent;
 
 @Entity
 public class Asset implements JSONEncoder, NoObjectContext, Convertible {

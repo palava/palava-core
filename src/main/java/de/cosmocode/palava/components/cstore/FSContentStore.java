@@ -32,10 +32,10 @@ import de.cosmocode.palava.Component;
 import de.cosmocode.palava.ComponentException;
 import de.cosmocode.palava.ComponentManager;
 import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.Server;
-import de.cosmocode.palava.core.protocol.Content;
-import de.cosmocode.palava.core.protocol.FileContent;
-import de.cosmocode.palava.core.protocol.StreamContent;
+import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.FileContent;
+import de.cosmocode.palava.core.protocol.content.StreamContent;
+import de.cosmocode.palava.core.server.Server;
 
 public class FSContentStore implements ContentStore, Component {
 	
@@ -92,7 +92,7 @@ public class FSContentStore implements ContentStore, Component {
 	@Override
 	public void configure(Element root, Server server)
 			throws ComponentException {
-		dir = new File( server.getFilename( root.getChildText("root") ) );		
+		dir = new File(root.getChildText("root"));		
 	}
 
 	@Override

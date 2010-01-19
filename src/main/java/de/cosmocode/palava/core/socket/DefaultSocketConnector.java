@@ -37,8 +37,10 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import de.cosmocode.commons.State;
+import de.cosmocode.palava.CloseConnection;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.concurrent.ExecutorBuilder;
+import de.cosmocode.palava.core.protocol.ProtocolManager;
 import de.cosmocode.palava.core.protocol.Response;
 
 /**
@@ -51,6 +53,8 @@ final class DefaultSocketConnector implements SocketConnector {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultSocketConnector.class);
     
+    private final ProtocolManager manager;
+    
     private final int port;
     
     private final long socketTimeout;
@@ -61,12 +65,13 @@ final class DefaultSocketConnector implements SocketConnector {
 
     private final TimeUnit shutdownTimeoutUnit;
     
-    private ExecutorService service;
+    private final ExecutorService service;
     
     private State state = State.NEW;
     
     @Inject
     public DefaultSocketConnector(
+        ProtocolManager manager,
         ExecutorBuilder builder,
         @Named("core.socket.port") int port,
         @Named("core.socket.timeout") long socketTimeout,
@@ -77,6 +82,8 @@ final class DefaultSocketConnector implements SocketConnector {
         @Named("core.threadpool.keepAliveTimeUnit") TimeUnit keepAliveTimeUnit,
         @Named("core.threadpool.shutdownTimeout") long shutdownTimeout,
         @Named("core.threadpool.shutdownTimeoutUnit") TimeUnit shutdownTimeoutUnit) {
+        
+        this.manager = Preconditions.checkNotNull(manager, "ProtocolManager");
         
         Preconditions.checkNotNull(builder, "Builder");
         
@@ -112,7 +119,6 @@ final class DefaultSocketConnector implements SocketConnector {
             
             try {
                 // TODO fix
-                if (this != null) return;
                 client = socket.accept();
             } catch (SocketTimeoutException e) {
                 continue;
@@ -126,19 +132,21 @@ final class DefaultSocketConnector implements SocketConnector {
                         final InputStream input = client.getInputStream();
                         final OutputStream output = client.getOutputStream();
                         
-                        // TODO protocol parsing here?!
-                        
-                        final Call call = null;
-                        final Response response = null;
-                        handler.incomingCall(call, response);
+                        while (true) {
+                            final Call call = manager.createCall(input);
+                            final Response response = manager.createResponse(output);
+                            handler.incomingCall(call, response);
+                            log.debug("Handler returned");
+                        }
                     } catch (IOException e) {
                         log.error("Error while reading from/writing to socket", e);
+                    } finally {
                         try {
                             // TODO add exception handling
-                            client.getInputStream().close();
-                            client.shutdownInput();
-                            client.getOutputStream().close();
-                            client.shutdownOutput();
+//                            client.getInputStream().close();
+//                            client.shutdownInput();
+//                            client.getOutputStream().close();
+//                            client.shutdownOutput();
                             client.close();
                         } catch (IOException inner) {
                             log.error("Failed to properly close socket", inner);

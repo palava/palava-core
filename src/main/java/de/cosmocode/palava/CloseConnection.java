@@ -26,7 +26,7 @@ package de.cosmocode.palava;
  * 
  * @author Tobias Sarnowski
  */
-public final class CloseConnection extends Exception {
+public final class CloseConnection extends RuntimeException {
     
     private static final long serialVersionUID = 6642833065438659444L;
     

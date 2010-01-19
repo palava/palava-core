@@ -23,7 +23,12 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
+
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * sends a content object to the palava frontend.
@@ -33,15 +38,17 @@ import com.google.common.base.Preconditions;
  */
 // TODO package private
 public final class DefaultResponse implements Response {
+    
+    private static final Logger log = LoggerFactory.getLogger(DefaultResponse.class);
 
-    private final OutputStream out;
+    private final OutputStream output;
 
     private Content content;
 
     private boolean sent;
 
-    public DefaultResponse(OutputStream out) {
-        this.out = Preconditions.checkNotNull(out);
+    public DefaultResponse(OutputStream output) {
+        this.output = Preconditions.checkNotNull(output);
     }
 
     @Override
@@ -63,13 +70,15 @@ public final class DefaultResponse implements Response {
     public void send() throws IOException {
         Preconditions.checkNotNull(content, "Content");
         Preconditions.checkState(!sent, "Already sent");
-        final BufferedOutputStream buffered = new BufferedOutputStream(out);
+        final BufferedOutputStream buffered = new BufferedOutputStream(output);
 
         // header
         final String header = String.format("%s://(%s)?", content.getMimeType(), content.getLength());
+        log.debug("Writing header: {}", header);
         buffered.write(header.getBytes());
 
         // body
+        log.debug("Writing content: {}", content);
         content.write(buffered);
         buffered.flush();
 

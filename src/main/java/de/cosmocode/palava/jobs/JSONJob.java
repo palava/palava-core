@@ -23,13 +23,13 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.JSONRequest;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.protocol.JsonCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public abstract class JSONJob implements Job {
@@ -40,7 +40,7 @@ public abstract class JSONJob implements Job {
 	public final void process(Call request, Response response, HttpSession session, Server server, 
 		Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
-		JSONRequest jRequest = (JSONRequest) request;
+		JsonCall jRequest = (JsonCall) request;
 		json = jRequest.getJSONObject();
 		
 		process(json, response, session, server, caddy);

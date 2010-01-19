@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import de.cosmocode.palava.components.cstore.ContentStore;
 import de.cosmocode.palava.components.logging.Operation;
 import de.cosmocode.palava.components.logging.PalavaLogger;
-import de.cosmocode.palava.core.protocol.Content;
-import de.cosmocode.palava.core.protocol.StreamContent;
+import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.StreamContent;
 
 public class AssetManager  {
     

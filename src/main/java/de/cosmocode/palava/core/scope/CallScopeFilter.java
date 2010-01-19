@@ -30,7 +30,8 @@ import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.FilterChain;
 import de.cosmocode.palava.core.call.filter.FilterException;
-import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * A {@link Filter} which handles {@link CallScope} entering/exiting.
@@ -50,15 +51,14 @@ final class CallScopeFilter implements Filter {
     }
     
     @Override
-    public void filter(Call call, Response response, FilterChain chain) throws FilterException {
+    public Content filter(Call call, FilterChain chain) throws FilterException, CommandException {
         log.debug("Entering call scope");
         Scopes.setCurrentCall(call);
         scope.enter();
         scope.seed(Call.class, call);
-        scope.seed(Response.class, response);
 
         try {
-            chain.filter(call, response);
+            return chain.filter(call);
         } finally {
             log.debug("Exiting call scope");
             scope.exit();

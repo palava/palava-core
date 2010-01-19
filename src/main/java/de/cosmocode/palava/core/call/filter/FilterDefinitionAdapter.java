@@ -27,7 +27,8 @@ import com.google.inject.Injector;
 
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
-import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * 
@@ -49,13 +50,13 @@ final class FilterDefinitionAdapter implements Filter {
     }
 
     @Override
-    public void filter(Call call, Response response, FilterChain chain) throws FilterException {
+    public Content filter(Call call, FilterChain chain) throws FilterException, CommandException {
         if (definition.appliesTo(call.getClass().getName())) {
             log.debug("Filtering {} using {}", call, filter);
-            filter.filter(call, response, chain);
+            return filter.filter(call, chain);
         } else {
             log.debug("Skipping filter executing of {} for {}", filter, call);
-            chain.filter(call, response);
+            return chain.filter(call);
         }
     }
     

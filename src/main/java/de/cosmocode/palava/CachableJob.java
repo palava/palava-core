@@ -32,13 +32,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.Content;
-import de.cosmocode.palava.core.protocol.DataRequest;
-import de.cosmocode.palava.core.protocol.JSONContent;
-import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.TextContent;
-import de.cosmocode.palava.core.protocol.TextRequest;
+import de.cosmocode.palava.core.protocol.TextCall;
+import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.JsonContent;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.protocol.content.TextContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.utils.ObjectSizeCalculator;
 
@@ -155,10 +157,10 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      * @throws UncachableException: if the given request isn't supported
      */
     protected Object getArguments (Call request) throws Exception, UncachableException {
-        if (request instanceof DataRequest) {
-            return ((DataRequest) request).getArguments();
-        } else if (request instanceof TextRequest) {
-            return ((TextRequest)request).getText();
+        if (request instanceof DataCall) {
+            return ((DataCall) request).getArguments();
+        } else if (request instanceof TextCall) {
+            return ((TextCall)request).getText();
         } else {
             throw new UncachableException("unsupported request of type: " + request.getClass().getCanonicalName());
         }
@@ -287,8 +289,8 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
             }
             if (logger.isTraceEnabled()) {
                 if (content instanceof TextContent ||
-                    content instanceof PHPContent ||
-                    content instanceof JSONContent) {
+                    content instanceof PhpContent ||
+                    content instanceof JsonContent) {
                     final ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     content.write(stream);
                     logger.trace(stream);

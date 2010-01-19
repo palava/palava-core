@@ -22,12 +22,12 @@ package de.cosmocode.palava.jobs.cache;
 import java.util.Map;
 
 import de.cosmocode.palava.CachableJob;
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.TextContent;
+import de.cosmocode.palava.core.protocol.content.TextContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public class clear implements Job {

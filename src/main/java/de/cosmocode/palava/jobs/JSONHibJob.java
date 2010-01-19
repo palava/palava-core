@@ -24,10 +24,10 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.JSONRequest;
+import de.cosmocode.palava.core.protocol.JsonCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
@@ -39,7 +39,7 @@ public abstract class JSONHibJob extends HibJob {
 	public final void process(Call request, Response response, HttpSession s, Server server, 
 		Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
 
-		JSONRequest jRequest = (JSONRequest) request;
+		JsonCall jRequest = (JsonCall) request;
 		json = jRequest.getJSONObject();
 		
 		if (session == null) session = createHibSession(server, caddy);

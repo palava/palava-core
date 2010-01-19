@@ -29,8 +29,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
+import de.cosmocode.palava.CloseConnection;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.command.CommandManager;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.session.HttpSessionManager;
 import de.cosmocode.palava.core.socket.CallHandler;
@@ -52,14 +57,17 @@ final class DefaultServer implements Server, CallHandler {
     
     private final SocketConnector socketConnector;
     
+    private final CommandManager commandManager;
+    
     private State state = State.NEW;
     
     @Inject
     public DefaultServer(ServiceManager serviceManager, HttpSessionManager sessionManager,
-        SocketConnector connector) {
+        SocketConnector connector, CommandManager commandManager) {
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
         this.sessionManager = Preconditions.checkNotNull(sessionManager, "SessionManager");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
+        this.commandManager = Preconditions.checkNotNull(commandManager, "CommandManager");
     }
     
     @Override
@@ -82,9 +90,32 @@ final class DefaultServer implements Server, CallHandler {
     }
     
     @Override
-    public void incomingCall(Call request, Response response) {
-        // TODO Auto-generated method stub
-        
+    public void incomingCall(Call call, Response response) {
+        log.debug("Incoming call {}", call);
+        final Content content;
+        try {
+            content = commandManager.forName(call.getHeader().getAliasedName()).execute(call);
+            log.debug("Command completed successfully");
+            response.setContent(content);
+            log.debug("Reading bytes left from input");
+            call.close();
+            log.info("Sending response");
+            response.send();
+            log.info("Response sent");
+        } catch (CloseConnection e) {
+            log.info("Closing connection");
+            try {
+                response.setContent(PhpContent.OK);
+                response.send();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                log.error(e1.toString(), e1);
+            }
+        } catch (CommandException e) {
+            log.error(e.toString(), e);
+        } catch (IOException e) {
+            log.error(e.toString(), e);
+        }
     }
     
     private void addHook() {
@@ -97,6 +128,16 @@ final class DefaultServer implements Server, CallHandler {
             }
             
         }));
+    }
+    
+    @Override
+    public ServiceManager getServiceManager() {
+        return serviceManager;
+    }
+    
+    @Override
+    public HttpSessionManager getHttpSessionManager() {
+        return sessionManager;
     }
     
     @Override

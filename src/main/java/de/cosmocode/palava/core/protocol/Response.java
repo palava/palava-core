@@ -21,6 +21,8 @@ package de.cosmocode.palava.core.protocol;
 
 import java.io.IOException;
 
+import de.cosmocode.palava.core.protocol.content.Content;
+
 
 public interface Response {
 

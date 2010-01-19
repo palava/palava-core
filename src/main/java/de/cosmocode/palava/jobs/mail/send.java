@@ -21,14 +21,14 @@ package de.cosmocode.palava.jobs.mail;
 
 import java.util.Map;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.mail.Mailer;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.DataRequest;
-import de.cosmocode.palava.core.protocol.PHPContent;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 
@@ -40,8 +40,8 @@ public class send implements Job
 
 	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
 	{
-        Mailer mailer = server.components.lookup(Mailer.class);
-        DataRequest req = (DataRequest) request;
+        Mailer mailer = server.getServiceManager().lookup(Mailer.class);
+        DataCall req = (DataCall) request;
         Map<String,Object> args = req.getArgs();
 
         String template = (String) args.get("template");
@@ -49,7 +49,7 @@ public class send implements Job
 
         mailer.sendMessage(template,"en",args,to);
 
-        response.setContent(new PHPContent("ok"));
+        response.setContent(new PhpContent("ok"));
 	}
 
 }

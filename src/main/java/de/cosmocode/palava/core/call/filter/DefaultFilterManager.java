@@ -31,7 +31,8 @@ import com.google.inject.Singleton;
 
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
-import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
  * Default implementation of the {@link FilterManager} interface.
@@ -63,9 +64,9 @@ final class DefaultFilterManager implements FilterManager {
     }
 
     @Override
-    public void filter(Call call, Response response) throws FilterException {
+    public Content filter(Call call) throws FilterException, CommandException {
         // TODO 
-        chain.filter(call, response);
+        return chain.filter(call);
     }
     
 }

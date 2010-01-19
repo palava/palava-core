@@ -28,8 +28,8 @@ import org.hibernate.Session;
 import org.jdom.Element;
 
 import de.cosmocode.palava.ComponentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.components.cstore.FSContentStore;
+import de.cosmocode.palava.core.server.Server;
 
 public class ImageStore extends AssetStore {
 
@@ -51,7 +51,8 @@ public class ImageStore extends AssetStore {
 		super.configure(root, server);
 
 		
-		dir = new File( server.getFilename(root.getChildText("filterdir")) );
+		// TODO test
+		dir = new File(root.getChildText("filterdir"));
 		
 		store = new FSContentStore();
 		store.configure(root.getChild("store"), server);

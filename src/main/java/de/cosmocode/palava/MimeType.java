@@ -47,7 +47,7 @@ public class MimeType {
         this.type = Preconditions.checkNotNull(type, "MimeType");
         final int slash = type.indexOf("/");
         Preconditions.checkArgument(slash >= 0, "Type contains no /");
-        Preconditions.checkArgument(slash == type.length() - 1, "Type ends with /");
+        Preconditions.checkArgument(slash != type.length() - 1, "Type ends with /");
     }
 
     @Override

@@ -21,8 +21,8 @@ package de.cosmocode.palava.core.command;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
 
-import de.cosmocode.palava.core.command.alias.AliasModule;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.command} package.
@@ -33,7 +33,10 @@ public final class CommandModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.install(new AliasModule());
+        Multibinder.newSetBinder(binder, Alias.class).addBinding().toInstance(
+            Aliases.of("@palava", "de.cosmocode.palava.jobs")
+        );
+        binder.bind(CommandManager.class).to(DefaultCommandManager.class);
     }
 
 }

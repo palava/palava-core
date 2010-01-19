@@ -24,10 +24,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.PHPContent;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 
@@ -43,6 +43,6 @@ public class destroy implements Job
     public void process( Call request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception
 	{
 		session.destroy();
-        resp.setContent(new PHPContent(PHPContent.OK)) ;
+        resp.setContent(new PhpContent(PhpContent.OK)) ;
     }
 }

@@ -23,13 +23,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.cosmocode.palava.ConnectionLostException;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.MissingArgumentException;
-import de.cosmocode.palava.Server;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.DataRequest;
+import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
+import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public abstract class DataJob implements Job {
@@ -41,7 +41,7 @@ public abstract class DataJob implements Job {
 	public final void process(Call request, Response response, HttpSession session, Server server, 
 		Map<String, Object> caddy) throws ConnectionLostException, Exception {
 		
-		DataRequest dataRequest = (DataRequest) request;
+		DataCall dataRequest = (DataCall) request;
 		args = dataRequest.getArgs();
 		
 		process(args, response, session, server, caddy);
