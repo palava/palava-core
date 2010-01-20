@@ -22,24 +22,28 @@ package de.cosmocode.palava.core.call.filter.definition;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.Commands;
 
 /**
- * A {@link NamePatternMatcher} which uses a regex matching algorithm.
+ * A {@link CommandMatcher} which uses a regex matching algorithm.
  *
  * @author Willi Schoenborn
  */
-final class RegexNamePatternMatcher implements NamePatternMatcher {
+final class RegexCommandNameMatcher implements Predicate<Command> {
 
     private final Pattern pattern;
     
-    public RegexNamePatternMatcher(String pattern) {
+    public RegexCommandNameMatcher(String pattern) {
         Preconditions.checkNotNull(pattern, "Pattern");
         this.pattern = Pattern.compile(pattern);
     }
     
     @Override
-    public boolean matches(String name) {
-        return pattern.matcher(name).matches();
+    public boolean apply(Command command) {
+        return pattern.matcher(Commands.getConcreteClass(command).getName()).matches();
     }
 
 }

@@ -22,6 +22,8 @@ package de.cosmocode.palava.core.protocol;
 import java.io.InputStream;
 
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
 
 /**
  * Used to create different request types.
@@ -39,8 +41,8 @@ public enum CallType {
     DATA {
         
         @Override
-        public Call createCall(Header header, InputStream stream) {
-            return new DataCall(header, stream);
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
+            return new DataCall(request, command, header, stream);
         }
         
     },
@@ -48,35 +50,35 @@ public enum CallType {
     TEXT {
         
         @Override
-        public Call createCall(Header header, InputStream stream) {
-            return new TextCall(header, stream);
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
+            return new TextCall(request, command, header, stream);
         }
         
     },
     
     JSON {
-        
+
         @Override
-        public Call createCall(Header header, InputStream stream) {
-            return new JsonCall(header, stream);
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
+            return new JsonCall(request, command, header, stream);
         }
         
     },
     
     BINARY {
-        
+
         @Override
-        public Call createCall(Header header, InputStream stream) {
-            return new BinaryCall(header, stream);
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
+            return new BinaryCall(request, command, header, stream);
         }
         
     },
     
     OPEN {
-        
+
         @Override
-        public Call createCall(Header header, InputStream stream) {
-            return new JsonCall(header, stream);
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
+            return new JsonCall(request, command, header, stream);
         }
         
     },
@@ -84,7 +86,7 @@ public enum CallType {
     CLOSE {
         
         @Override
-        public Call createCall(Header header, InputStream stream) {
+        public Call createCall(HttpRequest request, Command command, Header header, InputStream stream) {
             throw new UnsupportedOperationException();
         }
         
@@ -93,10 +95,12 @@ public enum CallType {
     /**
      * Creates a new {@link Call} based on this value.
      * 
+     * @param request the request
+     * @param command the command
      * @param header the header
      * @param stream the stream to read from
      * @return a new {@link Call}
      */
-    public abstract Call createCall(Header header, InputStream stream);
+    public abstract Call createCall(HttpRequest request, Command command, Header header, InputStream stream);
     
 }

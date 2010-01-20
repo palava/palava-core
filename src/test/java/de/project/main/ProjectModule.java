@@ -45,7 +45,8 @@ public final class ProjectModule extends AbstractApplicationModule {
         serve(Mailer.class).with(VelocityMailer.class);
         serve(Key.get(ContentStore.class, Names.named("FileSystem"))).with(FSContentStore.class);
         
-        filter("de.cosmocode.palava.system.version").through(LogFilter.class);
+        filter("*.version").through(LogFilter.class);
+//        filter(CommandMatchers.any()).through(LogFilter.class);
         
         Multibinder.newSetBinder(binder(), HttpRequestFilter.class).addBinding().to(LogRequestFilter.class);
         

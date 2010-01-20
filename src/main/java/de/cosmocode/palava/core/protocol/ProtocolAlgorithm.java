@@ -22,11 +22,31 @@ package de.cosmocode.palava.core.protocol;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 import de.cosmocode.palava.core.protocol.content.Content;
 
 public interface ProtocolAlgorithm {
+    
+    Map<String, String> open(Header header, InputStream input, OutputStream output);
 
+    /**
+     * Parses the palava protocol:
+     * 
+     * <p>
+     *   {@code <type>://<aliasedName>/<sessionId>/(<contentLength>)?<content>}
+     * </p>
+     * 
+     * <p>
+     *   After the header has been parsed, the next byte read from the stream
+     *   is the first byte of the actual content.
+     * </p>
+     * 
+     * @param input the input to read from
+     * @return a parsed Header
+     * @throws ProtocolException if the supplied stream does not contain a valid input
+     * @throws ConnectionLostException if connection to the socket broke up during reading
+     */
     Header read(InputStream input);
     
     void sendTo(Content content, OutputStream output) throws IOException;

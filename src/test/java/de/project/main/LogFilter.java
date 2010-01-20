@@ -7,16 +7,26 @@ import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.FilterChain;
 import de.cosmocode.palava.core.call.filter.FilterException;
+import de.cosmocode.palava.core.command.Commands;
 import de.cosmocode.palava.core.protocol.content.Content;
 
+/**
+ * 
+ *
+ * @author Willi Schoenborn
+ */
 final class LogFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(LogFilter.class);
 
     @Override
     public Content filter(Call call, FilterChain chain) throws FilterException {
-        log.debug("LOGGED {}", call);
-        return chain.filter(call);
+        log.debug("Running command: {}", Commands.getConcreteClass(call.getCommand()));
+        try {
+            return chain.filter(call);
+        } finally {
+            log.debug("Finished command: {}", Commands.getConcreteClass(call.getCommand()));
+        }
     }
 
 }

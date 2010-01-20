@@ -20,14 +20,19 @@
 package de.cosmocode.palava.core.call.filter.definition;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+
+import de.cosmocode.palava.core.call.filter.Filterable;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.Commands;
 
 /**
- * A {@link NamePatternMatcher} which uses a servlet style like
+ * A {@link CommandMatcher} which uses a servlet style like
  * matching algorithm.
  *
  * @author Willi Schoenborn
  */
-final class SimpleNamePatternMatcher implements NamePatternMatcher {
+final class SimpleCommandNameMatcher implements Predicate<Command> {
 
     /**
      * A {@link PatternType} describes the kind of a simple name pattern.
@@ -71,7 +76,7 @@ final class SimpleNamePatternMatcher implements NamePatternMatcher {
     
     private final PatternType patternType;
     
-    public SimpleNamePatternMatcher(String pattern) {
+    public SimpleCommandNameMatcher(String pattern) {
         Preconditions.checkNotNull(pattern, "Pattern");
         
         if (pattern.startsWith("*")) {
@@ -87,9 +92,8 @@ final class SimpleNamePatternMatcher implements NamePatternMatcher {
     }
     
     @Override
-    public boolean matches(String name) {
-        if (name == null) return false;
-        return patternType.matches(pattern, name);
+    public boolean apply(Command command) {
+        return patternType.matches(pattern, Commands.getConcreteClass(command).getName());
     }
 
 }

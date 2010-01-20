@@ -23,13 +23,21 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Functions;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 
+import de.cosmocode.json.JSON;
+import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.JsonContent;
 
 /**
  * Default protocol algorithm.
@@ -156,23 +164,27 @@ final class DefaultProtocolAlgorithm implements ProtocolAlgorithm {
         
     }
 
-    /**
-     * Parses the palava protocol:
-     * 
-     * <p>
-     *   {@code <type>://<aliasedName>/<sessionId>/(<contentLength>)?<content>}
-     * </p>
-     * 
-     * <p>
-     *   After the header has been parsed, the next byte read from the stream
-     *   is the first byte of the actual content.
-     * </p>
-     * 
-     * @param input the input to read from
-     * @return a parsed Header
-     * @throws ProtocolException if the supplied stream does not contain a valid input
-     * @throws ConnectionLostException if connection to the socket broke up during reading
-     */
+    @Override
+    public Map<String, String> open(Header header, InputStream input, OutputStream output) {
+        final Call call = header.getCallType().createCall(null, null, header, input);
+        final JsonCall jsonCall = JsonCall.class.cast(call);
+        
+        final JSONObject object;
+        
+        try {
+            object = jsonCall.getJSONObject();
+            call.discard();
+            sendTo(JsonContent.EMPTY, output);
+        } catch (JSONException e) {
+            throw new ProtocolException(e);
+        } catch (IOException e) {
+            throw new ProtocolException(e);
+        }
+        
+        return  Maps.transformValues(JSON.asMap(object), Functions.toStringFunction());
+    }
+    
+    @Override
     public Header read(InputStream input) {
         final StringBuilder type = new StringBuilder(6);
         final StringBuilder aliasedName = new StringBuilder(50);

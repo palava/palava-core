@@ -21,15 +21,18 @@ package de.cosmocode.palava.core.protocol;
 
 import java.io.InputStream;
 
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
+
 /**
  * Incoming stream data.
  * 
  * @author Tobias Sarnowski
  */
 public final class BinaryCall extends AbstractCall {
-    
-    public BinaryCall(Header header, InputStream in) {
-        super(header, in);
+
+    BinaryCall(HttpRequest request, Command command, Header header, InputStream stream) {
+        super(request, command, header, stream);
     }
 
 }

@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
+
 /**
  * parse the request content as one big plain text.
  * 
@@ -33,8 +36,8 @@ public class TextCall extends AbstractCall {
     
     private String text;
 
-    public TextCall(Header header, InputStream in) {
-        super(header, in);
+    TextCall(HttpRequest request, Command command, Header header, InputStream stream) {
+        super(request, command, header, stream);
     }
 
     public String getText() throws ConnectionLostException, IOException {

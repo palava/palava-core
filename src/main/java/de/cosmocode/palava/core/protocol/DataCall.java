@@ -32,6 +32,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import de.cosmocode.json.JSON;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
 
 /**
  * parses the content of a datarequest into a map.
@@ -47,8 +49,8 @@ public final class DataCall extends JsonCall {
 
     private Map<String, String> arguments;
 
-    public DataCall(Header header, InputStream stream) {
-        super(header, stream);
+    DataCall(HttpRequest request, Command command, Header header, InputStream stream) {
+        super(request, command, header, stream);
     }
 
     @Deprecated

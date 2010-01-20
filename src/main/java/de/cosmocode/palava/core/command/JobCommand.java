@@ -29,6 +29,7 @@ import com.google.common.collect.Maps;
 
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.call.filter.Filterable;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.request.HttpRequest;
@@ -43,7 +44,7 @@ import de.cosmocode.patterns.Adapter;
  * @author Willi Schoenborn
  */
 @Adapter(Command.class)
-final class JobCommand implements Command {
+final class JobCommand implements Command, Filterable {
     
     private static final Logger log = LoggerFactory.getLogger(JobCommand.class); 
 
@@ -99,6 +100,11 @@ final class JobCommand implements Command {
             return content != null;
         }
 
+    }
+    
+    @Override
+    public Class<?> getConcreteClass() {
+        return job.getClass();
     }
     
 }

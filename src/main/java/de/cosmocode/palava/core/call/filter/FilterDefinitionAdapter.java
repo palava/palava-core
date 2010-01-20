@@ -52,7 +52,7 @@ final class FilterDefinitionAdapter implements Filter {
 
     @Override
     public Content filter(Call call, FilterChain chain) throws FilterException {
-        if (definition.appliesTo(call.getClass().getName())) {
+        if (definition.appliesTo(call.getCommand())) {
             log.debug("Filtering {} using {}", call, filter);
             return filter.filter(call, chain);
         } else {

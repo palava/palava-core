@@ -19,13 +19,17 @@
 
 package de.cosmocode.palava.core.call.filter.definition;
 
+import com.google.common.base.Predicate;
+
+import de.cosmocode.palava.core.command.Command;
+
 /**
- * An enum style factory which creates concrete {@link NamePatternMatcher}
+ * An enum style factory which creates concrete {@link CommandMatcher}
  * instances based on their specific semantics.
  *
  * @author Willi Schoenborn
  */
-public enum NamePatternType {
+enum NamePatternType {
 
     /**
      * Defines simple servlet style name pattern matching
@@ -34,8 +38,8 @@ public enum NamePatternType {
     SIMPLE {
         
         @Override
-        public NamePatternMatcher matcher(String pattern) {
-            return new SimpleNamePatternMatcher(pattern);
+        public Predicate<Command> matcher(String pattern) {
+            return new SimpleCommandNameMatcher(pattern);
         }
         
     },
@@ -46,19 +50,19 @@ public enum NamePatternType {
     REGEX {
         
         @Override
-        public NamePatternMatcher matcher(String pattern) {
-            return new RegexNamePatternMatcher(pattern);
+        public Predicate<Command> matcher(String pattern) {
+            return new RegexCommandNameMatcher(pattern);
         }
         
     };
     
     /**
-     * Creates a new {@link NamePatternMatcher} using the semantics
+     * Creates a new {@link Predicate} using the semantics
      * of this {@link NamePatternType}.
      * 
      * @param pattern the name pattern
-     * @return a new {@link NamePatternMatcher}
+     * @return a new {@link Predicate}
      */
-    public abstract NamePatternMatcher matcher(String pattern);
+    public abstract Predicate<Command> matcher(String pattern);
     
 }

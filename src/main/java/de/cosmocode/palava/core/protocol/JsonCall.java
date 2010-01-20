@@ -25,6 +25,9 @@ import java.io.InputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.request.HttpRequest;
+
 /**
  * parse the request content as a json object.
  * 
@@ -34,8 +37,8 @@ public class JsonCall extends TextCall {
     
     private JSONObject json;
 
-    public JsonCall(Header header, InputStream in) {
-        super(header, in);
+    JsonCall(HttpRequest request, Command command, Header header, InputStream stream) {
+        super(request, command, header, stream);
     }
 
     public JSONObject getJSONObject() throws ConnectionLostException, IOException, JSONException {

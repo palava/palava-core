@@ -25,18 +25,13 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Functions;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import de.cosmocode.json.JSON;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.FilterChain;
 import de.cosmocode.palava.core.call.filter.FilterChainFactory;
@@ -46,12 +41,10 @@ import de.cosmocode.palava.core.command.CommandException;
 import de.cosmocode.palava.core.command.CommandManager;
 import de.cosmocode.palava.core.protocol.CallType;
 import de.cosmocode.palava.core.protocol.Header;
-import de.cosmocode.palava.core.protocol.JsonCall;
 import de.cosmocode.palava.core.protocol.ProtocolAlgorithm;
 import de.cosmocode.palava.core.protocol.ProtocolException;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.ErrorContent;
-import de.cosmocode.palava.core.protocol.content.JsonContent;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.request.HttpRequestFactory;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
@@ -94,7 +87,7 @@ final class DefaultCommunicator implements Communicator {
         this.chainFactory = Preconditions.checkNotNull(chainFactory, "ChainFactory");
     }
     
-    private HttpRequest parse(InputStream input, OutputStream output) {
+    private HttpRequest open(InputStream input, OutputStream output) {
         final Header header = algorithm.read(input);
         if (header.getCallType() == CallType.OPEN) {
             final String sessionId = header.getSessionId();
@@ -104,24 +97,8 @@ final class DefaultCommunicator implements Communicator {
                 log.debug("Updating access time for {}", sessionId);
                 session.updateAccessTime();
             }
-            final Call call = header.getCallType().createCall(header, input);
-            final JsonCall jsonCall = JsonCall.class.cast(call);
             
-            final JSONObject object;
-            
-            try {
-                object = jsonCall.getJSONObject();
-                call.discard();
-                algorithm.sendTo(JsonContent.EMPTY, output);
-            } catch (JSONException e) {
-                throw new ProtocolException(e);
-            } catch (IOException e) {
-                throw new ProtocolException(e);
-            }
-            
-            final Map<String, String> serverVariable = Maps.transformValues(
-                JSON.asMap(object), Functions.toStringFunction()
-            );
+            final Map<String, String> serverVariable = algorithm.open(header, input, output);
             return requestFactory.create(session, serverVariable);
         } else {
             throw new ProtocolException("First call must be of type OPEN");
@@ -136,7 +113,7 @@ final class DefaultCommunicator implements Communicator {
     
     @Override
     public void communicate(InputStream input, OutputStream output) {
-        final HttpRequest request = parse(input, output);
+        final HttpRequest request = open(input, output);
         before(request);
         while (true) {
             log.debug("Reading header");
@@ -144,11 +121,9 @@ final class DefaultCommunicator implements Communicator {
             log.debug("Incoming call {}", header.getCallType());
             if (header.getCallType() == CallType.CLOSE) break;
             
-            final Call call = header.getCallType().createCall(header, input);
-            final Content content = process(call);
+            final Content content = process(request, header, input);
             
             try {
-                call.discard();
                 algorithm.sendTo(content, output);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
@@ -157,8 +132,8 @@ final class DefaultCommunicator implements Communicator {
         after(request);
     }
     
-    private Content process(Call call) {
-        final String aliasedName = call.getHeader().getAliasedName();
+    private Content process(HttpRequest request, Header header, InputStream input) {
+        final String aliasedName = header.getAliasedName();
         
         final Command command;
         
@@ -170,6 +145,7 @@ final class DefaultCommunicator implements Communicator {
         }
         /*CHECKSTYLE:ON*/
         
+        final Call call = header.getCallType().createCall(request, command, header, input);
         return filterAndExecute(command, call);
     }
     
@@ -192,6 +168,12 @@ final class DefaultCommunicator implements Communicator {
             return ErrorContent.create(e);
         } catch (FilterException e) {
             return ErrorContent.create(e);
+        } finally {
+            try {
+                call.discard();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
         /*CHECKSTYLE:ON*/ 
     }

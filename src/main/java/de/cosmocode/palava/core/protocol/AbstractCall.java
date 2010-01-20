@@ -41,19 +41,37 @@ import de.cosmocode.palava.core.request.HttpRequest;
  */
 abstract class AbstractCall implements Call {
     
-    private final Logger log = LoggerFactory.getLogger(AbstractCall.class);
-    
     protected static final Charset CHARSET = Charset.forName("UTF-8");
+    
+    private final Logger log = LoggerFactory.getLogger(AbstractCall.class);
 
+    private final HttpRequest request;
+
+    private final Command command;
+    
     private final Header header;
+    
     private final InputStream stream;
+    
     private int totalBytesRead;
 
-    public AbstractCall(Header header, InputStream stream) {
-        Preconditions.checkNotNull(header, "Header");
-        Preconditions.checkNotNull(stream, "Stream");
-        this.stream = new UncloseableInputStream(stream);
-        this.header = header;
+    AbstractCall(HttpRequest request, Command command, Header header, InputStream stream) {
+//        this.request = Preconditions.checkNotNull(request, "Request");
+//        this.command = Preconditions.checkNotNull(command, "Command");
+        this.request = request;
+        this.command = command;
+        this.stream = new UncloseableInputStream(Preconditions.checkNotNull(stream, "Stream"));
+        this.header = Preconditions.checkNotNull(header, "Header");
+    }
+    
+    @Override
+    public HttpRequest getHttpRequest() {
+        return request;
+    }
+    
+    @Override
+    public Command getCommand() {
+        return command;
     }
 
     @Override
@@ -66,12 +84,16 @@ abstract class AbstractCall implements Call {
         return header;
     }
 
+    /**
+     * 
+     * @param data
+     * @return
+     * @throws ConnectionLostException
+     * @throws IOException
+     */
     protected final int read(byte[] data) throws ConnectionLostException, IOException {
         final long max = header.getContentLength();
-        log.debug("Max bytes available: {}", max);
-        log.debug("Already read: {}", totalBytesRead);
-        log.debug("Attempting to read {} bytes", data.length);
-        
+
         if (totalBytesRead >= max) {
             throw new IOException("not allowed to read enough bytes, content-length reached");
         }
@@ -97,18 +119,6 @@ abstract class AbstractCall implements Call {
         if (totalBytesRead < header.getContentLength()) {
             read(new byte[header.getContentLength() - totalBytesRead]);
         }
-    }
-    
-    @Override
-    public HttpRequest getHttpRequest() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public Command getCommand() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

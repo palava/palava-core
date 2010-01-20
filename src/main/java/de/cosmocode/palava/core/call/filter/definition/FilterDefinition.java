@@ -22,11 +22,12 @@ package de.cosmocode.palava.core.call.filter.definition;
 import com.google.inject.Key;
 
 import de.cosmocode.palava.core.call.filter.Filter;
+import de.cosmocode.palava.core.command.Command;
 
 public interface FilterDefinition {
 
     Key<? extends Filter> getKey();
     
-    boolean appliesTo(String name);
+    boolean appliesTo(Command command);
     
 }

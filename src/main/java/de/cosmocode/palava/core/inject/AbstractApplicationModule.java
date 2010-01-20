@@ -19,11 +19,11 @@
 
 package de.cosmocode.palava.core.inject;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
@@ -36,11 +36,11 @@ import com.google.inject.multibindings.Multibinder;
 
 import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.call.filter.Filter;
+import de.cosmocode.palava.core.call.filter.definition.CommandMatchers;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
-import de.cosmocode.palava.core.call.filter.definition.NamePatternMatcher;
-import de.cosmocode.palava.core.call.filter.definition.NamePatternType;
 import de.cosmocode.palava.core.command.Alias;
 import de.cosmocode.palava.core.command.Aliases;
+import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.service.Service;
 
 /**
@@ -105,9 +105,7 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      * @return a {@link FilterBinder}
      */
     protected FilterBinder filter(String pattern, String... patterns) {
-        final List<String> list = Lists.newArrayList(pattern);
-        Collections.addAll(list, patterns);
-        return new InternalFilterBinder(list, NamePatternType.SIMPLE);
+        return filter(CommandMatchers.named(pattern, patterns));
     }
     
     /**
@@ -118,9 +116,11 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      * @return a {@link FilterBinder}
      */
     protected FilterBinder filterRegex(String pattern, String... patterns) {
-        final List<String> list = Lists.newArrayList(pattern);
-        Collections.addAll(list, patterns);
-        return new InternalFilterBinder(list, NamePatternType.REGEX);
+        return filter(CommandMatchers.regex(pattern, patterns));
+    }
+    
+    protected FilterBinder filter(Predicate<Command> matcher) {
+        return new InternalFilterBinder(matcher);
     }
     
     /**
@@ -175,13 +175,10 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      */
     private class InternalFilterBinder implements FilterBinder {
         
-        private final List<String> patterns;
+        private final Predicate<Command> matcher;
         
-        private final NamePatternType patternType;
-        
-        public InternalFilterBinder(List<String> patterns, NamePatternType patternType) {
-            this.patterns = Preconditions.checkNotNull(patterns, "Patterns");
-            this.patternType = Preconditions.checkNotNull(patternType, "PatternType");
+        public InternalFilterBinder(Predicate<Command> matcher) {
+            this.matcher = Preconditions.checkNotNull(matcher, "Matcher");
         }
         
         @Override
@@ -190,42 +187,21 @@ public abstract class AbstractApplicationModule extends AbstractModule {
         }
         
         @Override
-        public void through(Key<? extends Filter> filterKey) {
-            for (String pattern : patterns) {
-                final FilterDefinition definition = new InternalFilterDefinition(pattern, filterKey);
-                filterDefinitions.add(definition);
-            }
+        public void through(final Key<? extends Filter> filterKey) {
+            filterDefinitions.add(new FilterDefinition() {
+                
+                @Override
+                public Key<? extends Filter> getKey() {
+                    return filterKey;
+                }
+                
+                @Override
+                public boolean appliesTo(Command command) {
+                    return matcher.apply(command);
+                }
+            });
         }
         
-        /**
-         * Super (!) private implementation of the {@link FilterDefinition} interface
-         * which holds a reference to the enclosing {@link Module} to add
-         * bound filters.
-         *
-         * @author Willi Schoenborn
-         */
-        private class InternalFilterDefinition implements FilterDefinition {
-            
-            private final NamePatternMatcher matcher;
-            private final Key<? extends Filter> key;
-            
-            public InternalFilterDefinition(String pattern, Key<? extends Filter> key) {
-                this.matcher = patternType.matcher(pattern);
-                this.key = Preconditions.checkNotNull(key, "Key");
-            }
-            
-            @Override
-            public boolean appliesTo(String name) {
-                return matcher.matches(name);
-            }
-            
-            @Override
-            public Key<? extends Filter> getKey() {
-                return key;
-            }
-            
-        }
-
         @Override
         public void through(Filter filter) {
             Preconditions.checkNotNull(filter, "Filter");
