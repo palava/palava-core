@@ -93,7 +93,7 @@ final class SimpleCommandNameMatcher implements Predicate<Command> {
     
     @Override
     public boolean apply(Command command) {
-        return patternType.matches(pattern, Commands.getConcreteClass(command).getName());
+        return patternType.matches(pattern, Commands.getClass(command).getName());
     }
 
 }

@@ -100,7 +100,7 @@ public final class CommandMatchers {
             
             @Override
             public boolean apply(Command command) {
-                return Commands.getConcreteClass(command).isAnnotationPresent(annotation);
+                return Commands.getClass(command).isAnnotationPresent(annotation);
             }
             
         };
@@ -111,7 +111,7 @@ public final class CommandMatchers {
             
             @Override
             public boolean apply(Command command) {
-                return superClass.isAssignableFrom(Commands.getConcreteClass(command));
+                return superClass.isAssignableFrom(Commands.getClass(command));
             }
             
         };

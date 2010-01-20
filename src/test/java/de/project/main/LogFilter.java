@@ -21,11 +21,11 @@ final class LogFilter implements Filter {
 
     @Override
     public Content filter(Call call, FilterChain chain) throws FilterException {
-        log.debug("Running command: {}", Commands.getConcreteClass(call.getCommand()));
+        log.debug("Running command: {}", Commands.getClass(call.getCommand()));
         try {
             return chain.filter(call);
         } finally {
-            log.debug("Finished command: {}", Commands.getConcreteClass(call.getCommand()));
+            log.debug("Finished command: {}", Commands.getClass(call.getCommand()));
         }
     }
 

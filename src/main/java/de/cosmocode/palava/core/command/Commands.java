@@ -24,7 +24,7 @@ public final class Commands {
         
     };
 
-    public static Class<?> getConcreteClass(Command command) {
+    public static Class<?> getClass(Command command) {
         return GET_CLASS.apply(command);
     }
 

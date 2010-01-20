@@ -27,7 +27,6 @@ import java.util.Map;
 
 import de.cosmocode.json.JSONMapable;
 import de.cosmocode.json.JSONRenderer;
-import de.cosmocode.palava.ClientData;
 
 /**
  * A {@link HttpSession} represents an browser session,
@@ -48,10 +47,6 @@ public interface HttpSession extends Destroyable, JSONMapable {
     <K, V> V remove(K key);
     
     <K, V> void putAll(Map<? extends K, ? extends V> map);
-    
-    ClientData getClientData();
-    
-    void setClientData(ClientData clientData);
     
     Date getAccessTime();
     

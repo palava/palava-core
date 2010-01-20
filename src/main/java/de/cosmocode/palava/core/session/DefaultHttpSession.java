@@ -36,7 +36,6 @@ import com.google.inject.internal.Maps;
 import com.google.inject.servlet.SessionScoped;
 
 import de.cosmocode.json.JSONRenderer;
-import de.cosmocode.palava.ClientData;
 
 /**
  * Default implementation of the {@link HttpSession} interface.
@@ -55,7 +54,6 @@ final class DefaultHttpSession implements HttpSession {
 
     private long accessTime;
     private boolean invalid;
-    private ClientData clientData;
 
     private final Map<Object, Object> data = Maps.newHashMap();
     
@@ -68,16 +66,6 @@ final class DefaultHttpSession implements HttpSession {
         this.sessionId = Preconditions.checkNotNull(sessionId, "SessionId");
     }
 
-    @Override
-    public ClientData getClientData() {
-        return clientData;
-    }
-
-    @Override
-    public void setClientData(ClientData clientData) {
-        this.clientData = clientData;
-    }
-    
     @Override
     public Locale getLocale() {
         final Object langValue = data.get(LANGUAGE_KEY);

@@ -43,7 +43,7 @@ final class RegexCommandNameMatcher implements Predicate<Command> {
     
     @Override
     public boolean apply(Command command) {
-        return pattern.matcher(Commands.getConcreteClass(command).getName()).matches();
+        return pattern.matcher(Commands.getClass(command).getName()).matches();
     }
 
 }

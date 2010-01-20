@@ -21,16 +21,12 @@ package de.cosmocode.palava.jobs.session;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import com.google.inject.Inject;
 
-import de.cosmocode.palava.ClientData;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.content.PhpContent;
+import de.cosmocode.palava.core.protocol.content.TextContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.core.session.HttpSessionManager;
@@ -43,42 +39,22 @@ import de.cosmocode.palava.core.session.HttpSessionManager;
  */
 public class initialize implements Job {
 
-    private static final Logger log = Logger.getLogger(initialize.class);
-
     @Inject
     private HttpSessionManager sessionManager;
 
-	public void process( Call call, Response response, HttpSession session, Server server, 
-            Map<String,Object> caddy ) throws Exception {
+    @Override
+    public void process(Call call, Response response, HttpSession session, Server server, 
+        Map<String, Object> caddy) throws Exception {
         
-        DataCall dRequest = (DataCall) call;
-        Map<String, String> args = dRequest.getArgs();
+        final HttpSession current;
         
-        if ( session != null ) {
-
-            ClientData clientData = session.getClientData() ;
-
-            if ( clientData == null ) {
-                log.error("no clientData");
-                session = null;
-            } else {
-                if (!clientData.isValid(args)) {
-                    log.info("sessions client data differs");
-                    session = null;
-                }
-            }
-        }
-
-        if ( session == null ) {
-            session = sessionManager.get();
-            session.setClientData(new ClientData(args));
+        if (session == null) {
+            current = sessionManager.get();
+        } else {
+            current = session;
         }
         
-        // send current sessionid as response
-        //
-        //
-
-        response.setContent( new PhpContent( session.getSessionId() ) ) ;
+        response.setContent(new TextContent(current.getSessionId()));
 
     }
 }
