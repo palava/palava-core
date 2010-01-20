@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -152,9 +153,9 @@ public class AssetManager  {
             
 
     public void removeAsset( Asset asset ) {
-            session.delete(asset);
-            palava.log(session, asset.getId(), Asset.class, Operation.DELETE);
-            store.remove(asset.getStoreKey());
+        session.delete(asset);
+        palava.log(session, asset.getId(), Asset.class, Operation.DELETE);
+        store.remove(asset.getStoreKey());
     }
 
     public void createDirectory( Directory dir ) throws Exception {
@@ -172,7 +173,7 @@ public class AssetManager  {
     }
     
     /**
-     * get a list of all directories containing a given asset
+     * get a list of all directories containing a given asset.
      * 
      * @param assetId the id of the asset this method is looking for
      * @return an id/name-list of all directories containing
@@ -182,15 +183,15 @@ public class AssetManager  {
 	@SuppressWarnings("unchecked")
 	public Map<Long, String> getDirectoryIdsForAsset(Long assetId) {
     	
-    	Map<Long, String> map = new HashMap<Long, String>();
+    	final Map<Long, String> map = new HashMap<Long, String>();
     	
-    	Query query = session.
+    	final Query query = session.
     		getNamedQuery("directoriesByAssetId").
     		setLong("assetId", assetId);
     	
-    	List<Object[]> list = query.list();
+    	final List<Object[]> list = query.list();
     	
-    	for(Object[] array : list) {
+    	for (final Object[] array : list) {
 			map.put((Long) array[0], (String) array[1]);
     	}
     	
@@ -299,25 +300,34 @@ public class AssetManager  {
      * @return  the used directory
      * @see     useAssetlistForDirectory(java.util.List, long)
      * @see     useAssetlistForDirectory(java.util.List, java.lang.String)
+     * @throws  HibernateException if one of the assets specified by the `assetIds` could not be loaded
      */
-    public Directory useAssetlistForDirectory(List<Long> assetIds, Directory directory) throws Exception
+    public Directory useAssetlistForDirectory(List<Long> assetIds, Directory directory) throws HibernateException
     {
-        List<Asset> assets = new LinkedList<Asset>();
-        for (Iterator<Long> i = assetIds.iterator(); i.hasNext();) {
-            assets.add((Asset)session.load(Asset.class, i.next()));
+        final List<Asset> assets = new LinkedList<Asset>();
+        for (final Iterator<Long> i = assetIds.iterator(); i.hasNext(); ) {
+            assets.add((Asset) session.load(Asset.class, i.next()));
         }
         directory.setAssets(assets);
-        Transaction tx = session.beginTransaction();
+        final Transaction tx = session.beginTransaction();
         try {
             session.save(directory);
             
             for (Long assetID : assetIds) {
-                palava.log(session, directory.getId(), Directory.class, Operation.UPDATE, "adding asset " + assetID, directory);
+                palava.log(session, 
+                    directory.getId(), Directory.class, 
+                    Operation.UPDATE, 
+                    "adding asset " + assetID, 
+                    directory);
             }
-            palava.log(session, directory.getId(), Directory.class, Operation.UPDATE, null, directory);
+            palava.log(session, 
+                directory.getId(), Directory.class, 
+                Operation.UPDATE, 
+                null, 
+                directory);
             session.flush();
             tx.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             tx.rollback();
             throw e;
         }
@@ -332,10 +342,11 @@ public class AssetManager  {
      * @param   directoryId the directory id of the directory to fill in the new Ids
      * @return  the used directory
      * @see     useAssetlistForDirectory(java.util.List, de.cosmocode.palava.components.assets.Directory)
+     * @throws  HibernateException if the directory or one of the assets could not be loaded from the database
      */
-    public Directory useAssetlistForDirectory(List<Long> assetIds, long directoryId) throws Exception
+    public Directory useAssetlistForDirectory(List<Long> assetIds, long directoryId) throws HibernateException
     {
-        Directory directory = (Directory)session.load(Directory.class, directoryId);
+        final Directory directory = (Directory) session.load(Directory.class, directoryId);
         return this.useAssetlistForDirectory(assetIds, directory);
     }
 
@@ -348,17 +359,17 @@ public class AssetManager  {
      * @return  the used directory
      * @see     useAssetlistForDirectory(java.util.List, de.cosmocode.palava.components.assets.Directory)
      */
-    public Directory useAssetlistForDirectory(List<Long> assetIds, String directoryName) throws Exception
+    public Directory useAssetlistForDirectory(List<Long> assetIds, String directoryName) throws HibernateException
     {
-        Directory directory = new Directory();
+        final Directory directory = new Directory();
         directory.setName(directoryName);
-        Transaction tx = session.beginTransaction();
+        final Transaction tx = session.beginTransaction();
         try {
             session.save(directory);
             palava.log(session, directory.getId(), Directory.class, Operation.INSERT, null, directory);
             session.flush();
             tx.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             tx.rollback();
             throw e;
         }
