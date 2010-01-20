@@ -36,7 +36,7 @@ import com.google.inject.multibindings.Multibinder;
 
 import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.call.filter.Filter;
-import de.cosmocode.palava.core.call.filter.definition.CommandMatchers;
+import de.cosmocode.palava.core.call.filter.definition.Matchers;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 import de.cosmocode.palava.core.command.Alias;
 import de.cosmocode.palava.core.command.Aliases;
@@ -105,7 +105,7 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      * @return a {@link FilterBinder}
      */
     protected FilterBinder filter(String pattern, String... patterns) {
-        return filter(CommandMatchers.named(pattern, patterns));
+        return filter(Matchers.named(pattern, patterns));
     }
     
     /**
@@ -116,7 +116,7 @@ public abstract class AbstractApplicationModule extends AbstractModule {
      * @return a {@link FilterBinder}
      */
     protected FilterBinder filterRegex(String pattern, String... patterns) {
-        return filter(CommandMatchers.regex(pattern, patterns));
+        return filter(Matchers.regex(pattern, patterns));
     }
     
     protected FilterBinder filter(Predicate<Command> matcher) {

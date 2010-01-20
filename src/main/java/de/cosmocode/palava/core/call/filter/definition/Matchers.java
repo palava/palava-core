@@ -18,7 +18,7 @@ import de.cosmocode.palava.core.command.Commands;
  *
  * @author Willi Schoenborn
  */
-public final class CommandMatchers {
+public final class Matchers {
 
     private static final Predicate<Command> ANY = new Predicate<Command>() {
         
@@ -29,7 +29,7 @@ public final class CommandMatchers {
         
     };
     
-    private CommandMatchers() {
+    private Matchers() {
         
     }
     
@@ -78,7 +78,7 @@ public final class CommandMatchers {
             }
             
         });
-        return CommandMatchers.ofPredicate(Predicates.or(matchers));
+        return Matchers.ofPredicate(Predicates.or(matchers));
     }
     
     public static Predicate<Command> regex(String pattern, String... patterns) {
@@ -92,7 +92,7 @@ public final class CommandMatchers {
             }
             
         });
-        return CommandMatchers.ofPredicate(Predicates.or(matchers));
+        return Matchers.ofPredicate(Predicates.or(matchers));
     }
     
     public static Predicate<Command> annotatedWith(final Class<? extends Annotation> annotation) {

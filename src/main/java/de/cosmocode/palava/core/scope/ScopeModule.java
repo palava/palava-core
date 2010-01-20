@@ -24,7 +24,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.SessionScoped;
 
-import de.cosmocode.palava.core.call.filter.definition.CommandMatchers;
+import de.cosmocode.palava.core.call.filter.definition.Matchers;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
 
@@ -42,7 +42,7 @@ public final class ScopeModule extends AbstractApplicationModule {
         binder().bindScope(CallScoped.class, callScope);
         binder().bind(CallScope.class).toInstance(callScope);
         
-        filter(CommandMatchers.any()).through(CallScopeFilter.class);
+        filter(Matchers.any()).through(CallScopeFilter.class);
         
         final RequestScope requestScope = new RequestScope();
         binder().requestInjection(requestScope);
