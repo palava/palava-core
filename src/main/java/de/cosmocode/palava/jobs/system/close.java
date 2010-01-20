@@ -40,17 +40,9 @@ public class close implements Job {
 	
 	public void process(Call request, Response response, HttpSession s, Server server, 
 		Map<String,Object> caddy) throws ConnectionLostException, CloseConnection, Exception {
-		
-		response.setContent(PhpContent.OK);
-		response.send();
-		
-		for (Object value : caddy.values()) {
-			if (value instanceof Closable) {
-				Closable.class.cast(value).onClose();
-			}
-		}
-		
-		throw CloseConnection.getInstance();
+
+	    
+	    
 	}
 
 }

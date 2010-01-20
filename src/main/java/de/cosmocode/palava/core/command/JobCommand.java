@@ -19,17 +19,14 @@
 
 package de.cosmocode.palava.core.command;
 
-import java.io.IOException;
 import java.util.Map;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.internal.Maps;
+import com.google.common.collect.Maps;
 
-import de.cosmocode.palava.CloseConnection;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
@@ -62,20 +59,13 @@ final class JobCommand implements Command {
     @Override
     public Content execute(Call call) throws CommandException {
         
-        final Response response = new DummyResponse();
+        final Response response = new DefaultResponse();
         final HttpRequest request = Scopes.getCurrentRequest();
         log.debug("Local request: {}", request);
         final HttpSession session = request.getHttpSession();
         log.debug("Local session: {}", session);
-        
-        final String key = DigestUtils.md5Hex(Long.toString(System.nanoTime()));
-        Map<String, Object> caddy = Maps.newHashMap();
-        
-        // TODO fix
-        if (caddy == null) {
-            caddy = Maps.newHashMap();
-            request.set(key, caddy);
-        }
+
+        final Map<String, Object> caddy = Maps.newHashMap();
         
         try {
             job.process(call, response, session, server, caddy);
@@ -90,13 +80,13 @@ final class JobCommand implements Command {
         return response.getContent();
     }
     
-    private static class DummyResponse implements Response {
-        
+    private final class DefaultResponse implements Response {
+
         private Content content;
-        
+
         @Override
-        public boolean hasContent() {
-            return content != null;
+        public void setContent(Content content) {
+            this.content = content;
         }
         
         @Override
@@ -105,20 +95,10 @@ final class JobCommand implements Command {
         }
 
         @Override
-        public void setContent(Content content) {
-            this.content = content; 
+        public boolean hasContent() {
+            return content != null;
         }
-        
-        @Override
-        public boolean sent() {
-            return false;
-        }
-        
-        @Override
-        public void send() throws IOException {
-            throw CloseConnection.getInstance();
-        }
-        
+
     }
     
 }

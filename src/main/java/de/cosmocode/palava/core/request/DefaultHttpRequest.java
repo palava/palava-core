@@ -99,6 +99,11 @@ final class DefaultHttpRequest implements HttpRequest {
     }
 
     @Override
+    public Map<Object, Object> getAttributes() {
+        return context;
+    }
+    
+    @Override
     public void destroy() {
         context.clear();
         serverVariable.clear();

@@ -20,6 +20,7 @@
 package de.cosmocode.palava.core.request;
 
 import java.net.URI;
+import java.util.Map;
 
 import de.cosmocode.palava.core.session.Destroyable;
 import de.cosmocode.palava.core.session.HttpSession;
@@ -44,5 +45,7 @@ public interface HttpRequest extends Destroyable {
     <K> boolean contains(K key);
     
     <K, V> V get(K key);
+    
+    Map<Object, Object> getAttributes();
     
 }

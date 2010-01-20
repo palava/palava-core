@@ -28,12 +28,14 @@ import com.google.inject.Injector;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.patterns.Adapter;
 
 /**
- * 
+ * Adapts a {@link FilterDefinition} to the {@link Filter} interface. 
  *
  * @author Willi Schoenborn
  */
+@Adapter(Filter.class)
 final class FilterDefinitionAdapter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(FilterDefinitionAdapter.class);

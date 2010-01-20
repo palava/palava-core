@@ -2,9 +2,6 @@ package de.cosmocode.palava.core.call.filter;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -18,10 +15,13 @@ import com.google.inject.TypeLiteral;
 
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 
+/**
+ * Default implementation of the {@link FilterChainFactory} interface.
+ *
+ * @author Willi Schoenborn
+ */
 @Singleton
 final class DefaultFilterChainFactory implements FilterChainFactory {
-
-    private static final Logger log = LoggerFactory.getLogger(DefaultFilterChainFactory.class);
 
     private final ImmutableList<Filter> filters;
     
@@ -33,7 +33,7 @@ final class DefaultFilterChainFactory implements FilterChainFactory {
 
         for (Binding<?> entry : injector.findBindingsByType(new TypeLiteral<List<FilterDefinition>>() { })) {
 
-            //guarded by findBindingsByType()
+            // guarded by findBindingsByType()
             @SuppressWarnings("unchecked")
             final Key<List<FilterDefinition>> key = (Key<List<FilterDefinition>>) entry.getKey();
             builder.addAll(injector.getInstance(key));

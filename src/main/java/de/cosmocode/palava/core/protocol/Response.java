@@ -19,10 +19,7 @@
 
 package de.cosmocode.palava.core.protocol;
 
-import java.io.IOException;
-
 import de.cosmocode.palava.core.protocol.content.Content;
-
 
 public interface Response {
 
@@ -31,9 +28,5 @@ public interface Response {
     Content getContent();
     
     boolean hasContent();
-    
-    void send() throws IOException;
-    
-    boolean sent();
     
 }

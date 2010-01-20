@@ -29,6 +29,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.multibindings.Multibinder;
@@ -145,17 +146,17 @@ public abstract class AbstractApplicationModule extends AbstractModule {
         
         public InternalServiceBinder(Key<S> key) {
             this.key = Preconditions.checkNotNull(key, "Key");
-            Multibinder.newSetBinder(binder(), Service.class).addBinding().to(key);
+            Multibinder.newSetBinder(binder(), Service.class).addBinding().to(key).in(Singleton.class);
         }
         
         @Override
         public void with(Class<? extends S> serviceKey) {
-            binder().bind(key).to(serviceKey);            
+            binder().bind(key).to(serviceKey).in(Singleton.class);            
         }
         
         @Override
         public void with(Key<? extends S> serviceKey) {
-            binder().bind(key).to(serviceKey);       
+            binder().bind(key).to(serviceKey).in(Singleton.class);       
         }
         
         @Override
