@@ -30,6 +30,9 @@ import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.concurrent.ThreadProvider;
+import de.cosmocode.palava.core.registry.Registry;
+import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
+import de.cosmocode.palava.core.server.lifecycle.PreServerStartListener;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
@@ -42,6 +45,8 @@ import de.cosmocode.palava.core.socket.SocketConnector;
 final class DefaultServer implements Server {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
+    
+    private final Registry registry;
 
     private final ServiceManager serviceManager;
     
@@ -52,8 +57,9 @@ final class DefaultServer implements Server {
     private State state = State.NEW;
     
     @Inject
-    public DefaultServer(ServiceManager serviceManager, SocketConnector connector,
-        ThreadProvider threadProvider) {
+    public DefaultServer(Registry registry, ServiceManager serviceManager, 
+        SocketConnector connector, ThreadProvider threadProvider) {
+        this.registry = Preconditions.checkNotNull(registry, "Registry");
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
         this.threadProvider = Preconditions.checkNotNull(threadProvider, "ThreadProvider");
@@ -63,17 +69,18 @@ final class DefaultServer implements Server {
     public void start() {
         state = State.STARTING;
         addHook();
+        registry.notify(PreServerStartListener.class, PreServerStartListener.COMMAND);
         state = State.RUNNING;
         
         try {
             socketConnector.run();
-            serviceManager.stop();
+            registry.notify(PostServerStopListener.class, PostServerStopListener.COMMAND);
             state = State.TERMINATED;
         } catch (IOException e) {
             log.error("Socket error", e);
             stop();
             state = State.FAILED;
-        }
+        } 
     }
     
     private void addHook() {
@@ -108,6 +115,8 @@ final class DefaultServer implements Server {
             log.debug("Stopping server");
             state = State.STOPPING;
             socketConnector.stop();
+        } else {
+            log.info("Can't stop, server is {}", state.name().toLowerCase());
         }
     }
     

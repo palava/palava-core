@@ -29,11 +29,15 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import de.cosmocode.palava.core.registry.Registry;
 import de.cosmocode.palava.core.scope.Scopes;
+import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
 
 /**
  * Manages all sessions.
@@ -42,12 +46,18 @@ import de.cosmocode.palava.core.scope.Scopes;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultHttpSessionManager implements HttpSessionManager {
+final class DefaultHttpSessionManager implements HttpSessionManager, PostServerStopListener {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpSessionManager.class);
-
+    
     private final Map<String, HttpSession> sessions = new HashMap<String, HttpSession>();
 
+    @Inject
+    public DefaultHttpSessionManager(Registry registry) {
+        Preconditions.checkNotNull(registry, "Registry");
+        registry.register(PostServerStopListener.class, this);
+    }
+    
     @Override
     public HttpSession get(String sessionId) {
         synchronized (sessions) {
@@ -64,45 +74,55 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
     public void destroy(long period, TimeUnit periodUnit) {
         final long then = System.currentTimeMillis() - periodUnit.toMillis(period);
         final Date date = new Date(then);
-        final Collection<HttpSession> purged;
+
+        final Predicate<HttpSession> predicate = new Predicate<HttpSession>() {
+            
+            @Override
+            public boolean apply(HttpSession input) {
+                return input.getAccessTime().before(date);
+            }
+            
+        };
         
         synchronized (sessions) {
-            purged = Collections2.filter(sessions.values(), new Predicate<HttpSession>() {
-                
-                @Override
-                public boolean apply(HttpSession input) {
-                    return input.getAccessTime().before(date);
-                }
-                
-            });
-            sessions.values().removeAll(purged);
-        }
-        
-        for (HttpSession session : purged) {
-            log.debug("Destroying {}", session);
-            session.destroy();
+            final Collection<HttpSession> oldSessions = Collections2.filter(sessions.values(), predicate);
+            log.info("Destroying {} sessions", oldSessions.size());
+            for (HttpSession session : oldSessions) {
+                session.destroy();
+            }
+            sessions.values().removeAll(oldSessions);
         }
     }
 
     @Override
     public HttpSession get() {
         final HttpSession cached = Scopes.getCurrentSession();
-        if (cached != null) return cached;
-        
-        final StringBuilder builder = new StringBuilder();
-        final Random rnd = new Random();
-        for (int n = 0; n < 64;  n++) {
-            builder.append(rnd.nextInt(10));
+        if (cached == null) {
+            final StringBuilder builder = new StringBuilder();
+            final Random rnd = new Random();
+            for (int n = 0; n < 64;  n++) {
+                builder.append(rnd.nextInt(10));
+            }
+            final String sessionId = builder.toString();
+            log.debug("Creating new session with id {}", sessionId);
+            final HttpSession session = new DefaultHttpSession(sessionId);
+            
+            synchronized (sessions) {
+                sessions.put(sessionId, session);
+            }
+            
+            log.debug("{} sessions currently in progess", sessions.size());
+            
+            return session;
+        } else {
+            log.debug("Found old session");
+            return cached;
         }
-        final String sessionId = builder.toString();
-        final HttpSession session = new DefaultHttpSession(sessionId);
-        log.debug("Created new session with id {}", sessionId);
-        
-        synchronized (sessions) {
-            sessions.put(sessionId, session);
-        }
-        
-        return session;
+    }
+    
+    @Override
+    public void afterStop() {
+        destroyAll();
     }
     
 }
