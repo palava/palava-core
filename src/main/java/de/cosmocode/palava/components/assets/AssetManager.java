@@ -40,7 +40,7 @@ import de.cosmocode.palava.components.logging.PalavaLogger;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.StreamContent;
 
-public class AssetManager  {
+public class AssetManager {
     
     private final ContentStore store;
     private final Session session;
@@ -227,6 +227,7 @@ public class AssetManager  {
 
         return Boolean.TRUE;
     }
+    
     public Directory addAssetToDirectory ( long directoryId, long assetId) throws Exception {
 
         Directory directory = (Directory) session.load(Directory.class, directoryId);
@@ -239,38 +240,39 @@ public class AssetManager  {
 
         directory.addAsset(asset);
 
-        Transaction tx = session.beginTransaction();
+        final Transaction tx = session.beginTransaction();
 
         try {
             session.saveOrUpdate(directory);
             palava.log(session, directoryId, Directory.class, Operation.UPDATE, "adding asset " + assetId, directory);
             session.flush();
             tx.commit();
-        } catch ( Exception e) {
+        } catch (HibernateException e) {
             tx.rollback();
             throw e;
         }
 
         return directory;
     }
-    public Directory addAssetToDirectory ( Long directoryId, String name, Long assetId) throws Exception {
+    
+    public Directory addAssetToDirectory(Long directoryId, String name, Long assetId) throws Exception {
         Directory directory = null;
         if (directoryId != null)
             directory = (Directory) session.load(Directory.class, directoryId);
 
-        boolean newDir = directory == null;
+        final boolean newDir = directory == null;
         
         if (newDir) {
             directory = new Directory();
             directory.setName(name);
         }
 
-        Asset asset = (Asset) session.get(Asset.class, assetId);
-        if (asset == null)  throw new NullPointerException ("Asset not found");  //createAsset( asset );
+        final Asset asset = (Asset) session.get(Asset.class, assetId);
+        if (asset == null)  throw new NullPointerException("Asset not found");
 
         directory.addAsset(asset);
 
-        Transaction tx = session.beginTransaction();
+        final Transaction tx = session.beginTransaction();
 
         try {
             session.saveOrUpdate(directory);
@@ -280,7 +282,7 @@ public class AssetManager  {
             palava.log(session, directoryId, Directory.class, Operation.UPDATE, "adding asset " + assetId, directory);
             session.flush();
             tx.commit();
-        } catch ( Exception e) {
+        } catch (HibernateException e) {
             tx.rollback();
             throw e;
         }
@@ -359,8 +361,7 @@ public class AssetManager  {
      * @return  the used directory
      * @see     useAssetlistForDirectory(java.util.List, de.cosmocode.palava.components.assets.Directory)
      */
-    public Directory useAssetlistForDirectory(List<Long> assetIds, String directoryName) throws HibernateException
-    {
+    public Directory useAssetlistForDirectory(List<Long> assetIds, String directoryName) {
         final Directory directory = new Directory();
         directory.setName(directoryName);
         final Transaction tx = session.beginTransaction();

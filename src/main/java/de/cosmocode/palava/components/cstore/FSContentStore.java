@@ -21,36 +21,34 @@ package de.cosmocode.palava.components.cstore;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
-import de.cosmocode.palava.Component;
-import de.cosmocode.palava.ComponentException;
-import de.cosmocode.palava.ComponentManager;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import de.cosmocode.palava.MimeType;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.FileContent;
 import de.cosmocode.palava.core.protocol.content.StreamContent;
-import de.cosmocode.palava.core.server.Server;
 
-public class FSContentStore implements ContentStore, Component {
+/**
+ * 
+ *
+ * @author Willi Schoenborn
+ */
+public class FSContentStore implements ContentStore {
     
     private static final Logger log = Logger.getLogger(FSContentStore.class);
     
     private File dir;
     
-    @Override
-    public StreamContent load(String key) throws Exception {
-        final File file = mkFile(key);
-
-        if (!file.exists()) return null;
-        return new FileContent(file);
+    @Inject
+    public FSContentStore(@Named("content.store.root") String root) {
+        dir = new File(root);
     }
-    
+
     private String generateFilename(MimeType mimeType) {
         return DigestUtils.md5Hex(Long.toString(System.currentTimeMillis())) + "." + mimeType.getMinor();
     }
@@ -59,6 +57,14 @@ public class FSContentStore implements ContentStore, Component {
         return new File(dir, name);
     }
 
+    @Override
+    public StreamContent load(String key) throws Exception {
+        final File file = mkFile(key);
+
+        if (!file.exists()) return null;
+        return new FileContent(file);
+    }
+    
     @Override
     public String store(Content content) throws Exception {
         
@@ -71,44 +77,24 @@ public class FSContentStore implements ContentStore, Component {
         out.close();
         return name;
     }
-    
-    public String store( InputStream in, MimeType mimeType ) throws Exception {
-        final String name = generateFilename(mimeType);
-        final File file = mkFile(name);
-        
-        final FileOutputStream out = new FileOutputStream(file);
-        
-        IOUtils.copy(in, out);
-        out.flush();
-        out.close();
-        return name;
-        
-    }
 
-    @Override
-    public void compose(ComponentManager manager) throws ComponentException {
-        // TODO Auto-generated method stub
-        
-    }
+//    public String store(InputStream in, MimeType mimeType) throws Exception {
+//        final String name = generateFilename(mimeType);
+//        final File file = mkFile(name);
+//        
+//        final FileOutputStream out = new FileOutputStream(file);
+//        
+//        IOUtils.copy(in, out);
+//        out.flush();
+//        out.close();
+//        
+//        return name;
+//    }
 
-    @Override
-    public void configure(Element root, Server server)
-            throws ComponentException {
-        dir = new File(root.getChildText("root"));        
-    }
-
-    @Override
-    public void initialize() {
-        
-    }
     @Override
     public void remove(String key) {
-        File file = mkFile(key);
-        
-        if ( ! file.delete() )
-            log.error("cannot delete " + file.getAbsolutePath());
-        
-        
+        final File file = mkFile(key);
+        if (!file.delete()) log.error("cannot delete " + file.getAbsolutePath());
     }
 
 }

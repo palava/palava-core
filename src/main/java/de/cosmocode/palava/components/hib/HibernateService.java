@@ -17,34 +17,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.command;
+package de.cosmocode.palava.components.hib;
 
-import com.google.common.base.Function;
+import java.io.File;
+import java.net.URL;
 
-import de.cosmocode.palava.core.call.filter.Filterable;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
+
+import com.google.inject.name.Named;
+
+import de.cosmocode.palava.core.service.Service;
 
 /**
- * Static utility class for working with {@link Command}s.
+ * 
  *
  * @author Willi Schoenborn
  */
-public final class Commands {
-    
-    private static final Function<Command, Class<?>> GET_CLASS = new Function<Command, Class<?>>() {
-        
-        @Override
-        public Class<?> apply(Command command) {
-            if (command instanceof Filterable) {
-                return Filterable.class.cast(command).getConcreteClass();
-            } else {
-                return command.getClass();
-            }
-        }
-        
-    };
+public class HibernateService implements Service {
 
-    public static Class<?> getClass(Command command) {
-        return GET_CLASS.apply(command);
+    private final SessionFactory sessionFactory;
+
+    public HibernateService(@Named("hibernate.cfg") File cfg, @Named("hibernate.schema") URL schema) {
+        final Configuration configuration = new AnnotationConfiguration();
+        configuration.addURL(schema);
+        configuration.configure(cfg);
+        this.sessionFactory = configuration.buildSessionFactory();
+    }
+    
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
 }
+

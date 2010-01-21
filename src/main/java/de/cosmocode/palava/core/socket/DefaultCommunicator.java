@@ -159,14 +159,17 @@ final class DefaultCommunicator implements Communicator {
                     try {
                         return command.execute(call);
                     } catch (CommandException e) {
+                        log.error("Command execution failed", e);
                         return ErrorContent.create(e);
                     }
                 }
                 
             }).filter(call);
         } catch (RuntimeException e) {
+            log.error("Command execution failed", e);
             return ErrorContent.create(e);
         } catch (FilterException e) {
+            log.error("Filtering failed", e);
             return ErrorContent.create(e);
         } finally {
             try {

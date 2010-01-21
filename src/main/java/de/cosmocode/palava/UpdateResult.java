@@ -310,25 +310,25 @@ public class UpdateResult implements Convertible, JSONEncoder {
         if (hasError(field)) return password;
         return validatePassword(field,password,minLength) ? password : null;
     }
-    public String lookupString(JSONObject json, String field, JSONPath path) {
+    
+    public String lookupString(JSONObject json, String field) {
         try {
-            String value = json.getString(field);
-            return value;
-        } catch ( JSONException e ) {
-            addError(ERR_NULL,path.field(field).toString());
+            return json.getString(field);
+        } catch (JSONException e) {
+            addError(ERR_NULL, field);
             return null;
         }
     }
-    public Long lookupLong(JSONObject json, String field, JSONPath path) {
-        if ( path == null ) throw new NullPointerException("path");
+    
+    public Long lookupLong(JSONObject json, String field) {
         try {
             Long value = json.getLong(field);
             return value;
         } catch ( NullPointerException e ) {
-            addError(ERR_NULL,path.field(field).toString());
+            addError(ERR_NULL, field);
             return null;
         } catch ( JSONException e ) {
-            addError(ERR_FORMAT,path.field(field).toString());
+            addError(ERR_FORMAT, field);
             return null;
         }
     }

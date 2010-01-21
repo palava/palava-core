@@ -17,25 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.components.captcha;
 
-import org.jdom.Element;
-
-import de.cosmocode.palava.core.server.Server;
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
- * Deprecated version of {@link Service}. 
  * 
- * @author Detlef Hüttemann
- * @deprecated use lifecycle interfaces
+ *
+ * @author Willi Schoenborn
  */
-@Deprecated
-public interface Component {
-    
-    public void configure(Element root, Server server) throws ComponentException;
-    
-    public void compose(ComponentManager manager) throws ComponentException;
-    
-    public void initialize() throws ComponentException;
-    
+public final class CaptchaModule implements Module {
+
+    @Override
+    public void configure(Binder binder) {
+        binder.bind(ImageCaptchaService.class).to(CaptchaService.class);
+    }
+
 }

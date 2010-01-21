@@ -24,10 +24,9 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import de.cosmocode.palava.Component;
 import de.cosmocode.palava.core.service.Service;
 
-public interface Mailer extends Component, Service {
+public interface MailService extends Service {
 
 	@Deprecated
 	public MimeMessage sendMessage(String template, String lang, Map<String, ?> params,  String... to) throws Exception;

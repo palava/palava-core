@@ -20,66 +20,39 @@
 package de.cosmocode.palava.components.assets;
 
 import java.io.File;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.hibernate.Session;
-import org.jdom.Element;
 
-import de.cosmocode.palava.ComponentException;
-import de.cosmocode.palava.components.cstore.FSContentStore;
-import de.cosmocode.palava.core.server.Server;
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
-public class ImageStore extends AssetStore {
+import de.cosmocode.palava.components.cstore.ContentStore;
+import de.cosmocode.palava.core.service.lifecycle.Initializable;
 
-	File dir;
-	private static final String PATTERN = "[a-zA-Z0-9]+";
-	Pattern validFilterName = Pattern.compile(PATTERN);
+public class ImageStore implements Initializable {
 
-	public File getFile( String storeKey, String filterName ){
-		return new File(dir,filterName + "/" + storeKey);
-	}
-	
-	public ImageManager createImageManager(Session session){
-		return new ImageManager(this,store,session);
-	}
+    private final ContentStore store;
+    
+    private final File filterDirectory;
+    
+    @Inject
+    public ImageStore(@ImageContentStore ContentStore store, File filterDirectory) {
+        this.store = Preconditions.checkNotNull(store, "Store");
+        this.filterDirectory = Preconditions.checkNotNull(filterDirectory);
+    }
+
+    public File getFile(String storeKey, String filterName){
+        return new File(filterDirectory, filterName + "/" + storeKey);
+    }
+    
+    public ImageManager createImageManager(Session session){
+        return new ImageManager(this, store, session);
+    }
+    
     @Override
-	public void configure(Element root, Server server)
-			throws ComponentException {
-	
-		super.configure(root, server);
-
-		
-		// TODO test
-		dir = new File(root.getChildText("filterdir"));
-		
-		store = new FSContentStore();
-		store.configure(root.getChild("store"), server);
-				
-		@SuppressWarnings("unchecked")
-		List<Element> children = root.getChild("filters").getChildren("filter");
-		
-		for ( Element filter : children ) {
-			String name = filter.getAttributeValue("name");
-			
-			// test name
-			
-			Matcher m = validFilterName.matcher(name);
-			if (!m.matches()) {
-			    throw new ComponentException(
-		            "bad filter name " + name + " : should match " + validFilterName.pattern());
-			}
-			
-		}
-	}
-	
-	@Override
-	public void initialize() {
-		super.initialize();
-		if ( ! dir.exists() )
-			dir.mkdirs();
-	}
+    public void initialize() {
+        filterDirectory.mkdirs();
+    }
 
 
 }

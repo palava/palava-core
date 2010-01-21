@@ -25,6 +25,7 @@ import com.google.inject.Module;
 import de.cosmocode.palava.core.call.filter.FilterModule;
 import de.cosmocode.palava.core.command.CommandModule;
 import de.cosmocode.palava.core.concurrent.ConcurrencyModule;
+import de.cosmocode.palava.core.inject.InjectionModule;
 import de.cosmocode.palava.core.protocol.ProtocolModule;
 import de.cosmocode.palava.core.registry.RegistryModule;
 import de.cosmocode.palava.core.request.RequestModule;
@@ -45,10 +46,11 @@ public final class CoreModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.install(new CommandModule());
-        binder.install(new FilterModule());
         binder.install(new ConcurrencyModule());
-        binder.install(new RegistryModule());
+        binder.install(new FilterModule());
+        binder.install(new InjectionModule());
         binder.install(new ProtocolModule());
+        binder.install(new RegistryModule());
         binder.install(new RequestModule());
         binder.install(new ScopeModule());
         binder.install(new ServerModule());

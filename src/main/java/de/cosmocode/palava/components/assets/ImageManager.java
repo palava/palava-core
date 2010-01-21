@@ -29,18 +29,24 @@ import org.slf4j.LoggerFactory;
 import de.cosmocode.palava.components.cstore.ContentStore;
 import de.cosmocode.palava.core.protocol.content.StreamContent;
 
+/**
+ * TODO make it a service (using {@code Provider<Session>})
+ * 
+ * @author Willi Schoenborn
+ * @author Oliver Lorenz
+ */
 public class ImageManager extends AssetManager {
-	
+    
     private static final Logger log = LoggerFactory.getLogger(ImageManager.class);
     
-	private final ImageStore imst;
-	
-	public ImageManager(ImageStore imst, ContentStore store, Session session) {
-		super(store, session);
-		this.imst = imst;
-	}
-	
-	/** returns the (image) asset with content.
+    private final ImageStore imst;
+    
+    public ImageManager(ImageStore imst, ContentStore store, Session session) {
+        super(store, session);
+        this.imst = imst;
+    }
+    
+    /** returns the (image) asset with content.
      * content is filtered according to the filtername
      * if the filterName is null, the original image will be returned.
      * 
@@ -49,19 +55,19 @@ public class ImageManager extends AssetManager {
      * @return
      * @throws Exception 
      */
-	public Asset getImage(Asset asset, String filterName) throws Exception {
-	    
-	    if (asset == null) throw new NullPointerException("asset must not be null");
+    public Asset getImage(Asset asset, String filterName) throws Exception {
+        
+        if (asset == null) throw new NullPointerException("asset must not be null");
 
-	    if (asset.getContent() == null) {
-	        loadAssetContent(asset);
-	    }
+        if (asset.getContent() == null) {
+            loadAssetContent(asset);
+        }
 
-        if ( filterName == null ) return asset;
+        if (filterName == null) return asset;
 
         final StreamContent content = asset.getContent();
     
-        File filteredFile = imst.getFile(asset.getStoreKey(),filterName);
+        final File filteredFile = imst.getFile(asset.getStoreKey(), filterName);
         
         log.info("filteredFile=" + filteredFile);
         
@@ -90,26 +96,26 @@ public class ImageManager extends AssetManager {
         asset.setContent(filteredContent);
         
         return asset;
-	}
+    }
 
-	/** returns the (image) asset with content.
-	 * content is filtered according to the filtername
+    /** returns the (image) asset with content.
+     * content is filtered according to the filtername
      * if the filterName is null, the original image will be returned.
-	 * 
-	 * @param id
-	 * @param filterName - may be null.
-	 * @return
-	 * @throws Exception 
-	 */
-	public Asset getImage(Long id, String filterName) throws Exception {
-	    final Asset asset = getAsset(id, true);
+     * 
+     * @param id
+     * @param filterName - may be null.
+     * @return
+     * @throws Exception 
+     */
+    public Asset getImage(Long id, String filterName) throws Exception {
+        final Asset asset = getAsset(id, true);
 
         if (asset == null ) {
             log.error("error: asset not found {}", id);
             return null;
         }
-	    
-		return getImage(asset, filterName);
-	}
+        
+        return getImage(asset, filterName);
+    }
     
 }

@@ -19,11 +19,15 @@
 
 package de.cosmocode.palava.core.server;
 
-import de.cosmocode.commons.Service;
+import de.cosmocode.commons.Stateful;
 import de.cosmocode.palava.core.service.ServiceManager;
 
-public interface Server extends Service {
+public interface Server extends Stateful {
 
     ServiceManager getServiceManager();
+
+    void start();
+    
+    void stop();
     
 }

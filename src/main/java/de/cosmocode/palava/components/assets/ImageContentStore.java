@@ -17,34 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.components.assets;
 
-import org.jdom.Element;
+import com.google.inject.BindingAnnotation;
 
-import de.cosmocode.palava.core.server.Server;
-
-/**
- * A abstract skeleton implementation of the {@link Component} interface.
- *
- * @author Willi Schoenborn
- * @deprecated use {@link AbstractService} instead
- */
-@Deprecated
-public class AbstractComponent implements Component {
-
-    @Override
-    public void compose(ComponentManager manager) throws ComponentException {
-
-    }
-
-    @Override
-    public void configure(Element root, Server server) throws ComponentException {
-
-    }
-
-    @Override
-    public void initialize() throws ComponentException {
-
-    }
+@BindingAnnotation
+public @interface ImageContentStore {
 
 }

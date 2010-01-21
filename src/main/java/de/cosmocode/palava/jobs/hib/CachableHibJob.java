@@ -25,7 +25,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import de.cosmocode.palava.CachableJob;
-import de.cosmocode.palava.components.hib.Hib;
+import de.cosmocode.palava.components.hib.HibernateService;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
@@ -47,7 +47,7 @@ public abstract class CachableHibJob extends CachableJob {
 	
 	public static org.hibernate.Session createHibSession(Server server, Map<String, Object> caddy)  {
 		
-		Hib hib = server.getServiceManager().lookup(Hib.class);
+		HibernateService hib = server.getServiceManager().lookup(HibernateService.class);
 		Session session = hib.getSessionFactory().openSession();
 		caddy.put(CADDY_HIBSESSION, session);
 		

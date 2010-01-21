@@ -22,7 +22,7 @@ package de.cosmocode.palava.jobs.mail;
 import java.util.Map;
 
 import de.cosmocode.palava.Job;
-import de.cosmocode.palava.components.mail.Mailer;
+import de.cosmocode.palava.components.mail.MailService;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.DataCall;
@@ -40,7 +40,7 @@ public class send implements Job
 
 	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
 	{
-        Mailer mailer = server.getServiceManager().lookup(Mailer.class);
+        MailService mailer = server.getServiceManager().lookup(MailService.class);
         DataCall req = (DataCall) request;
         Map<String,Object> args = req.getArgs();
 

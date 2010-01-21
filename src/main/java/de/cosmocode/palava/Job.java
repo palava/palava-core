@@ -22,29 +22,38 @@ package de.cosmocode.palava;
 import java.util.Map;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
+import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
- * every job has to have a process() function
+ * Legacy {@linkplain Command command}-style interface.
+ * 
+ * @deprecated <strong>Use {@link Command}!</strong>
+ * 
  * @author Tobias Sarnowski
+ * @author Oliver Lorenz 
+ * @author Willi Schoenborn
  */
-public interface Job
-{
+@Deprecated
+public interface Job {
 
-	/**
-	 * @param call the request of this job. contains the invoking args
-	 * @param response the container for the results 
-	 * @param session a session (may be null). available across different frontent/http requests
-	 * @param server the server structure - basically for the components lookup
-	 * @param caddy a container available across all jobs of the <strong>same</strong> frontend/http request
-	 * @throws ConnectionLostException
-	 * @throws Exception
-	 */
-	public void process(Call call, Response response, HttpSession session, Server server, 
+    /**
+     * Executes this job.
+     * 
+     * @deprecated <strong>Use {@link Command}!</strong>
+     * 
+     * @param call the request of this job. contains the invoking args
+     * @param response the container for the results 
+     * @param session a session (may be null). available across different frontent/http requests
+     * @param server the server structure - basically for the components lookup
+     * @param caddy a container available across all jobs of the <strong>same</strong> frontend/http request
+     * @throws Exception if execution failed
+     */
+    @Deprecated
+    void process(Call call, Response response, HttpSession session, Server server, 
         Map<String, Object> caddy) throws Exception;
 
 }
