@@ -28,8 +28,7 @@ package de.cosmocode.palava.core.session;
 public interface Destroyable {
     
     /**
-     * Runs when the corresponding {@link HttpSession#destroy()} is
-     * executed.  
+     * Runs when the corresponding context gets destroyed.
      */
     void destroy();
     

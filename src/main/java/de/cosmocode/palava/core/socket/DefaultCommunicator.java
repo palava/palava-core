@@ -185,6 +185,7 @@ final class DefaultCommunicator implements Communicator {
         for (HttpRequestFilter filter : requestFilters) {
             filter.after(request);
         }
+        request.destroy();
     }
     
 }
