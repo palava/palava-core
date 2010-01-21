@@ -66,7 +66,7 @@ public abstract class PalavaLogger {
      * @param message
      */
     public void log(Session session, Long objectID, Class<?> objectType, Enum<? extends LogOperation> operation, String message) {
-    	log(session, objectID, objectType, operation, message, null);
+        log(session, objectID, objectType, operation, message, null);
     }
 
     /**

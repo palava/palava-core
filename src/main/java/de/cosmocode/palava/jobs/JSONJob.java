@@ -33,30 +33,30 @@ import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 public abstract class JSONJob implements Job {
-	
-	private JSONObject json;
+    
+    private JSONObject json;
 
-	@Override
-	public final void process(Call request, Response response, HttpSession session, Server server, 
-		Map<String, Object> caddy) throws ConnectionLostException, Exception {
+    @Override
+    public final void process(Call request, Response response, HttpSession session, Server server, 
+        Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
-		JsonCall jRequest = (JsonCall) request;
-		json = jRequest.getJSONObject();
-		
-		process(json, response, session, server, caddy);
-	}
-	
-	protected final void require(String... keys) throws MissingArgumentException {
-		require(json, keys);
-	}
-	
-	protected final void require(JSONObject json, String... keys) throws MissingArgumentException {
-		for (String key : keys) {
-			if (!json.has(key)) throw new MissingArgumentException(key);
-		}
-	}
-	
-	protected abstract void process(JSONObject json, Response response, HttpSession session, Server server, 
-		Map<String, Object> caddy) throws ConnectionLostException, Exception;
-	
+        JsonCall jRequest = (JsonCall) request;
+        json = jRequest.getJSONObject();
+        
+        process(json, response, session, server, caddy);
+    }
+    
+    protected final void require(String... keys) throws MissingArgumentException {
+        require(json, keys);
+    }
+    
+    protected final void require(JSONObject json, String... keys) throws MissingArgumentException {
+        for (String key : keys) {
+            if (!json.has(key)) throw new MissingArgumentException(key);
+        }
+    }
+    
+    protected abstract void process(JSONObject json, Response response, HttpSession session, Server server, 
+        Map<String, Object> caddy) throws ConnectionLostException, Exception;
+    
 }

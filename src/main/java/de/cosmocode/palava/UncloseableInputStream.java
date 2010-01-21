@@ -29,17 +29,17 @@ import java.io.InputStream;
  */
 public class UncloseableInputStream extends InputStream
 {
-	private InputStream in;
+    private InputStream in;
 
-	public UncloseableInputStream(InputStream in)
-	{
-		this.in = in;
-	}
+    public UncloseableInputStream(InputStream in)
+    {
+        this.in = in;
+    }
 
-	public void close() { /* do nothing! */ }
+    public void close() { /* do nothing! */ }
 
-	public int read() throws IOException
-	{
-		return in.read();
-	}
+    public int read() throws IOException
+    {
+        return in.read();
+    }
 }

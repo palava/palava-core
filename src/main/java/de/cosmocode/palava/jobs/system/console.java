@@ -45,79 +45,79 @@ import de.cosmocode.palava.core.session.HttpSession;
 public class console implements Job
 {
 
-	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
-	{
-		// get the code
-		String jscode = ((TextCall)request).getText();
+    public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+    {
+        // get the code
+        String jscode = ((TextCall)request).getText();
 
-		// initialize our world
-		Context context = Context.enter();
-		Scriptable scope = context.initStandardObjects();
+        // initialize our world
+        Context context = Context.enter();
+        Scriptable scope = context.initStandardObjects();
 
-		// give him all our important objects
-		StringWriter sout = new StringWriter();
-		Object jsOut = Context.javaToJS(sout, scope);
-		ScriptableObject.putProperty(scope, "out", jsOut);
+        // give him all our important objects
+        StringWriter sout = new StringWriter();
+        Object jsOut = Context.javaToJS(sout, scope);
+        ScriptableObject.putProperty(scope, "out", jsOut);
 
-		Object jsRequest = Context.javaToJS(request, scope);
-		ScriptableObject.putProperty(scope, "request", jsRequest);
+        Object jsRequest = Context.javaToJS(request, scope);
+        ScriptableObject.putProperty(scope, "request", jsRequest);
 
-		Object jsResponse = Context.javaToJS(response, scope);
-		ScriptableObject.putProperty(scope, "response", jsResponse);
+        Object jsResponse = Context.javaToJS(response, scope);
+        ScriptableObject.putProperty(scope, "response", jsResponse);
 
-		Object jsSession = Context.javaToJS(session, scope);
-		ScriptableObject.putProperty(scope, "session", jsSession);
+        Object jsSession = Context.javaToJS(session, scope);
+        ScriptableObject.putProperty(scope, "session", jsSession);
 
-		Object jsClient = Context.javaToJS(new Client(), scope);
-		ScriptableObject.putProperty(scope, "Client", jsClient);
+        Object jsClient = Context.javaToJS(new Client(), scope);
+        ScriptableObject.putProperty(scope, "Client", jsClient);
 
-		Object jsServer = Context.javaToJS(server, scope);
-		ScriptableObject.putProperty(scope, "server", jsServer);
+        Object jsServer = Context.javaToJS(server, scope);
+        ScriptableObject.putProperty(scope, "server", jsServer);
 
-		// prepare the code
-		Script script = context.compileString(jscode, "console", 1, null);
+        // prepare the code
+        Script script = context.compileString(jscode, "console", 1, null);
 
-		// execute it!
-		// FIXME use a real ScriptReturnObject to transmit the results
-		//       this is also ugly, let php or the binclient do the formating
-		try {
-			Object returned = script.exec(context, scope);
-			if (returned != null && returned.toString().length() > 0 && ! (returned instanceof org.mozilla.javascript.Undefined))
-				sout.write("\n%%GREEN+%%" + returned.toString() + "%%+GREEN%%");
-			sout.write("\n%%GREY+%%Script successful executed.%%+GREY%%");
-		} catch (Exception e) {
-			String msg = e.getMessage();
-			if (msg == null)
-				msg = e.toString();
-			sout.write("\n%%RED+%%" + htmlspecialchars(msg) + "%%+RED%%");
-		}
-		finally {
-			context.exit();
-		}
+        // execute it!
+        // FIXME use a real ScriptReturnObject to transmit the results
+        //       this is also ugly, let php or the binclient do the formating
+        try {
+            Object returned = script.exec(context, scope);
+            if (returned != null && returned.toString().length() > 0 && ! (returned instanceof org.mozilla.javascript.Undefined))
+                sout.write("\n%%GREEN+%%" + returned.toString() + "%%+GREEN%%");
+            sout.write("\n%%GREY+%%Script successful executed.%%+GREY%%");
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            if (msg == null)
+                msg = e.toString();
+            sout.write("\n%%RED+%%" + htmlspecialchars(msg) + "%%+RED%%");
+        }
+        finally {
+            context.exit();
+        }
 
-		// send the output
-		if (!response.hasContent())
-	        response.setContent(new TextContent(sout.toString()));
-	}
+        // send the output
+        if (!response.hasContent())
+            response.setContent(new TextContent(sout.toString()));
+    }
 
-	private String htmlspecialchars(String text)
-	{
-		text = str_replace(text, "<", "&lt;");
-		text = str_replace(text, ">", "&gt;");
+    private String htmlspecialchars(String text)
+    {
+        text = str_replace(text, "<", "&lt;");
+        text = str_replace(text, ">", "&gt;");
 
-		return text;
-	}
+        return text;
+    }
 
-	private String str_replace(String text, String search, String replace)
-	{
-		int pos = text.indexOf(search);
-		while (pos >= 0) {
-			String start = text.substring(0, pos);
-			String end = text.substring(pos + search.length());
-			text = start + replace + end;
-			pos = text.indexOf(search);
-		}
+    private String str_replace(String text, String search, String replace)
+    {
+        int pos = text.indexOf(search);
+        while (pos >= 0) {
+            String start = text.substring(0, pos);
+            String end = text.substring(pos + search.length());
+            text = start + replace + end;
+            pos = text.indexOf(search);
+        }
 
-		return text;
-	}
+        return text;
+    }
 }

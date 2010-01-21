@@ -42,18 +42,18 @@ import de.cosmocode.palava.Closable;
 
 public class ClosableSession implements Session, Closable {
 
-	private static final long serialVersionUID = -1998276322962471556L;
-	
-	private final Session session;
-	
+    private static final long serialVersionUID = -1998276322962471556L;
+    
+    private final Session session;
+    
     public ClosableSession(Session session) {
-		this.session = session;
-	}
-	
-	@Override
-	public void onClose() {
-	    if (session.isOpen()) session.close();
-	}
+        this.session = session;
+    }
+    
+    @Override
+    public void onClose() {
+        if (session.isOpen()) session.close();
+    }
 
     @Override
     public Transaction beginTransaction() throws HibernateException {
@@ -392,5 +392,5 @@ public class ClosableSession implements Session, Closable {
     public void update(String entityName, Object object) throws HibernateException {
         session.update(entityName, object);
     }
-	
+    
 }

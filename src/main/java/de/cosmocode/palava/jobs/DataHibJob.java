@@ -32,29 +32,29 @@ import de.cosmocode.palava.jobs.hib.HibJob;
 
 public abstract class DataHibJob extends HibJob {
 
-	private Map<String, String> args;
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public final void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server, 
-		Map<String, Object> caddy, Session session) throws Exception {
+    private Map<String, String> args;
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public final void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server, 
+        Map<String, Object> caddy, Session session) throws Exception {
 
-		DataCall dataRequest = (DataCall) request;
-		args = dataRequest.getArgs();
-		
-		if (session == null) session = createHibSession(server, caddy);
-		
-		process(args, response, s, server, caddy, session);
-		session.flush();
-	}
-	
-	protected final void validate(String... keys) throws MissingArgumentException {
-		for (String key : keys) {
-			if (!args.containsKey(key)) throw new MissingArgumentException(key);
-		}
-	}
-	
-	protected abstract void process(Map<String, String> args, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
-		Map<String, Object> caddy, Session session) throws Exception;
-	
+        DataCall dataRequest = (DataCall) request;
+        args = dataRequest.getArgs();
+        
+        if (session == null) session = createHibSession(server, caddy);
+        
+        process(args, response, s, server, caddy, session);
+        session.flush();
+    }
+    
+    protected final void validate(String... keys) throws MissingArgumentException {
+        for (String key : keys) {
+            if (!args.containsKey(key)) throw new MissingArgumentException(key);
+        }
+    }
+    
+    protected abstract void process(Map<String, String> args, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
+        Map<String, Object> caddy, Session session) throws Exception;
+    
 }

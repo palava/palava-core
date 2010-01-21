@@ -34,27 +34,27 @@ import de.cosmocode.palava.core.server.Server;
 
 public abstract class HibJob implements Job {
     
-	public static final String CADDY_HIBSESSION = "HibSession";
-	
-	@Override
-	public final void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
-			Map<String, Object> caddy) throws ConnectionLostException, Exception {
+    public static final String CADDY_HIBSESSION = "HibSession";
+    
+    @Override
+    public final void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
+            Map<String, Object> caddy) throws ConnectionLostException, Exception {
 
-		Session session = (Session) caddy.get(CADDY_HIBSESSION);
-		process(request, response, s, server, caddy, session);
+        Session session = (Session) caddy.get(CADDY_HIBSESSION);
+        process(request, response, s, server, caddy, session);
 
-	}
-	
-	public static org.hibernate.Session createHibSession(Server server, Map<String, Object> caddy)  {
-		
-		HibernateService hib = server.getServiceManager().lookup(HibernateService.class);
-		Session session = hib.getSessionFactory().openSession();
-		caddy.put(CADDY_HIBSESSION, new ClosableSession(session));
-		
-		return session;
-	}
-	
-	public final void flush (Session session) throws Exception {
+    }
+    
+    public static org.hibernate.Session createHibSession(Server server, Map<String, Object> caddy)  {
+        
+        HibernateService hib = server.getServiceManager().lookup(HibernateService.class);
+        Session session = hib.getSessionFactory().openSession();
+        caddy.put(CADDY_HIBSESSION, new ClosableSession(session));
+        
+        return session;
+    }
+    
+    public final void flush (Session session) throws Exception {
         Transaction tx = session.beginTransaction();
         try {
             session.flush();
@@ -63,10 +63,10 @@ public abstract class HibJob implements Job {
             tx.rollback();
             throw e;
         }
-	}
+    }
 
 
-	public abstract void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
+    public abstract void process(Call request, Response response, de.cosmocode.palava.core.session.HttpSession s, Server server,
         Map<String, Object> caddy, Session session) throws Exception;
 
 }

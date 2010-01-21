@@ -32,29 +32,29 @@ import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.HibJob;
 
 public abstract class JSONHibJob extends HibJob {
-	
-	private JSONObject json;
+    
+    private JSONObject json;
 
-	@Override
-	public final void process(Call request, Response response, HttpSession s, Server server, 
-		Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
+    @Override
+    public final void process(Call request, Response response, HttpSession s, Server server, 
+        Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
 
-		JsonCall jRequest = (JsonCall) request;
-		json = jRequest.getJSONObject();
-		
-		if (session == null) session = createHibSession(server, caddy);
+        JsonCall jRequest = (JsonCall) request;
+        json = jRequest.getJSONObject();
+        
+        if (session == null) session = createHibSession(server, caddy);
 
-		process(json, response, s, server, caddy, session);
-		session.flush();
-	}
-	
-	protected final void require(String... keys) throws MissingArgumentException {
+        process(json, response, s, server, caddy, session);
+        session.flush();
+    }
+    
+    protected final void require(String... keys) throws MissingArgumentException {
         for (String key : keys) {
             if (!json.has(key)) throw new MissingArgumentException(key);
         }
-	}
-	
-	protected abstract void process(JSONObject json, Response response, HttpSession s, Server server,
-		Map<String, Object> caddy, org.hibernate.Session session) throws Exception;
+    }
+    
+    protected abstract void process(JSONObject json, Response response, HttpSession s, Server server,
+        Map<String, Object> caddy, org.hibernate.Session session) throws Exception;
 
 }

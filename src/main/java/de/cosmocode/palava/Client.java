@@ -35,193 +35,193 @@ import de.cosmocode.palava.core.server.Server;
 public class Client
 {
 
-	private String host;
-	private int port;
+    private String host;
+    private int port;
 
-	private Socket socket;
-
-
-	private String sessionid = null;
+    private Socket socket;
 
 
-
-	public static Client openConnection(Server server)
-	{
-		return new Client(server);
-	}
-
-	public static Client openConnection(String host, int port)
-	{
-		return new Client(host, port);
-	}
-
-	public Client()
-	{
-		// do nothing, provide the static methods to the script engine
-	}
+    private String sessionid = null;
 
 
-	public Client(Server server)
-	{
-		host = "localhost";
-		// TODO fixme
-		port = 2010;//server.getListenPort();
 
-		connect();
-	}
+    public static Client openConnection(Server server)
+    {
+        return new Client(server);
+    }
 
-	public Client(String host, int port)
-	{
-		this.host = host;
-		this.port = port;
+    public static Client openConnection(String host, int port)
+    {
+        return new Client(host, port);
+    }
 
-		connect();
-	}
-
-
-	private void connect()
-	{
-
-		try {
-			socket = new Socket(host, port);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public Client()
+    {
+        // do nothing, provide the static methods to the script engine
+    }
 
 
-	public String send(String rawdata) throws Exception
-	{
-		OutputStream out = socket.getOutputStream();
-		out.write(rawdata.getBytes());
-		out.flush();
-		return receive();
-	}
+    public Client(Server server)
+    {
+        host = "localhost";
+        // TODO fixme
+        port = 2010;//server.getListenPort();
 
-	public String sendRequest(String type, String job, String sessionid, String data) throws Exception
-	{
-		if (sessionid == null)
-			sessionid = "";
+        connect();
+    }
 
-		String rawdata = type + "://" + job + "/" + sessionid + "/(" + data.length() + ")?";
+    public Client(String host, int port)
+    {
+        this.host = host;
+        this.port = port;
 
-		rawdata = rawdata + data;
-		return send(rawdata);
-	}
-
-	public String sendRequest(String type, String job, String data) throws Exception
-	{
-		return sendRequest(type, job, sessionid, data);
-	}
-
-	public String sendRequest(String type, String job) throws Exception
-	{
-		return sendRequest(type, job, "");
-	}
-
-	public String sendRequest(String job) throws Exception
-	{
-		return sendRequest("data", job);
-	}
+        connect();
+    }
 
 
-	private String receive() throws Exception
-	{
-		InputStream in = socket.getInputStream();
-		
+    private void connect()
+    {
 
-		// read the header
+        try {
+            socket = new Socket(host, port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		String mimetype = "";
-		String contentlength = "";
 
-		int part = 0;
-		boolean end = false;
-		while (!end) {
-			int result = 0;
-			while (result <= 0) {
-				result = in.read();
-			}
-			char data = (char)result;
+    public String send(String rawdata) throws Exception
+    {
+        OutputStream out = socket.getOutputStream();
+        out.write(rawdata.getBytes());
+        out.flush();
+        return receive();
+    }
 
-			switch (part) {
-				case 0:
-						if (data == ':')
-							part++;
-						else
-							mimetype = mimetype + data;
-						break;
-				case 1:
-				case 2:
-						if (data == '/')
-							part++;
-						else
-							throw new Exception("protocol error 1");
-						break;
-				case 3:
-						if (data == '(')
-							part++;
-						else
-							throw new Exception("protocol error 2");
-						break;
-				case 4:
-						if (data == ')')
-							part++;
-						else
-							contentlength = contentlength + data;
-						break;
-				case 5:
-						if (data == '?')
-							end = true;
-						else
-							throw new Exception("protocol error 3");
-			}
-		}
+    public String sendRequest(String type, String job, String sessionid, String data) throws Exception
+    {
+        if (sessionid == null)
+            sessionid = "";
 
-		// read the content
-		String content = "";
+        String rawdata = type + "://" + job + "/" + sessionid + "/(" + data.length() + ")?";
 
-		long length = Long.parseLong(contentlength);
-		for (long n = 0; n < length; n++) {
-			int result = 0;
-			while (result <= 0) {
-				result = in.read();
-			}
-			content = content + (char)result;
-		}
-		return content;
-	}
+        rawdata = rawdata + data;
+        return send(rawdata);
+    }
 
-	public String startSession(String sessionid) throws Exception
-	{
-		sessionid = sendRequest("data", "@palava.session.initialize", sessionid, "ip=" + socket.getLocalAddress() + "&ua=Palava Server");
-		sessionid = stripPHP(sessionid);
-		this.sessionid = sessionid;
-		return sessionid;
-	}
+    public String sendRequest(String type, String job, String data) throws Exception
+    {
+        return sendRequest(type, job, sessionid, data);
+    }
 
-	public String stripPHP(String text)
-	{
-		text = text.substring(1);
-		text = text.substring(0, text.length() - 1);
-		return text;
-	}
+    public String sendRequest(String type, String job) throws Exception
+    {
+        return sendRequest(type, job, "");
+    }
 
-	public String startSession() throws Exception
-	{
-		return startSession(null);
-	}
+    public String sendRequest(String job) throws Exception
+    {
+        return sendRequest("data", job);
+    }
 
-	public String getSessionID()
-	{
-		return sessionid;
-	}
 
-	public void close() throws Exception
-	{
-		sendRequest("@palava.system.close");
-		socket.close();
-	}
+    private String receive() throws Exception
+    {
+        InputStream in = socket.getInputStream();
+        
+
+        // read the header
+
+        String mimetype = "";
+        String contentlength = "";
+
+        int part = 0;
+        boolean end = false;
+        while (!end) {
+            int result = 0;
+            while (result <= 0) {
+                result = in.read();
+            }
+            char data = (char)result;
+
+            switch (part) {
+                case 0:
+                        if (data == ':')
+                            part++;
+                        else
+                            mimetype = mimetype + data;
+                        break;
+                case 1:
+                case 2:
+                        if (data == '/')
+                            part++;
+                        else
+                            throw new Exception("protocol error 1");
+                        break;
+                case 3:
+                        if (data == '(')
+                            part++;
+                        else
+                            throw new Exception("protocol error 2");
+                        break;
+                case 4:
+                        if (data == ')')
+                            part++;
+                        else
+                            contentlength = contentlength + data;
+                        break;
+                case 5:
+                        if (data == '?')
+                            end = true;
+                        else
+                            throw new Exception("protocol error 3");
+            }
+        }
+
+        // read the content
+        String content = "";
+
+        long length = Long.parseLong(contentlength);
+        for (long n = 0; n < length; n++) {
+            int result = 0;
+            while (result <= 0) {
+                result = in.read();
+            }
+            content = content + (char)result;
+        }
+        return content;
+    }
+
+    public String startSession(String sessionid) throws Exception
+    {
+        sessionid = sendRequest("data", "@palava.session.initialize", sessionid, "ip=" + socket.getLocalAddress() + "&ua=Palava Server");
+        sessionid = stripPHP(sessionid);
+        this.sessionid = sessionid;
+        return sessionid;
+    }
+
+    public String stripPHP(String text)
+    {
+        text = text.substring(1);
+        text = text.substring(0, text.length() - 1);
+        return text;
+    }
+
+    public String startSession() throws Exception
+    {
+        return startSession(null);
+    }
+
+    public String getSessionID()
+    {
+        return sessionid;
+    }
+
+    public void close() throws Exception
+    {
+        sendRequest("@palava.system.close");
+        socket.close();
+    }
 
 
 }

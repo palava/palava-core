@@ -38,8 +38,8 @@ import de.cosmocode.palava.core.session.HttpSession;
 public class get implements Job
 {
 
-	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
-	{
+    public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+    {
         DataCall req = (DataCall) request;
         Map<String, String> args = req.getArgs();
         String key = args.get("key");
@@ -49,6 +49,6 @@ public class get implements Job
             response.setContent(new PhpContent(data));
         else 
             response.setContent( PhpContent.NOT_FOUND );
-	}
+    }
 
 }

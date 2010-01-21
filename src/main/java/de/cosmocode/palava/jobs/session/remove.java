@@ -32,11 +32,11 @@ import de.cosmocode.palava.core.session.HttpSession;
 
 public class remove implements Job {
 
-	@Override
-	public void process(Call request, Response response, HttpSession session,
-			Server server, Map<String, Object> caddy)
-			throws ConnectionLostException, Exception {
-		
+    @Override
+    public void process(Call request, Response response, HttpSession session,
+            Server server, Map<String, Object> caddy)
+            throws ConnectionLostException, Exception {
+        
         DataCall req = (DataCall) request;
 
         if ( session == null ) throw new NullPointerException("session");
@@ -44,11 +44,11 @@ public class remove implements Job {
         Map<String,Object> args = req.getArgs() ;
         
         for ( String key : args.keySet()){
-        	session.remove(key);
+            session.remove(key);
         }
         response.setContent( PhpContent.OK ) ;
  
 
-	}
+    }
 
 }

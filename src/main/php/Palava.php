@@ -77,27 +77,27 @@ class Palava
 //        }
 //        else
 //        {
-//	        $configfile = file($configfile);
-//	        foreach ($configfile as $line)
-//	        {
-//	            $line = trim($line);
-//	            if (!(substr($line, 0, 1) == '#') && !(strlen($line) == 0))
-//	            {
-//	                $firsteq = strpos($line, '=');
-//	                if ($firsteq >= 0)
-//	                {
-//	                    $key = trim(substr($line, 0, $firsteq));
-//	                    $value = trim(substr($line, $firsteq + 1));
-//	                    if (substr($value, 0, 1) == '"' && substr($value, strlen($value) - 1, 1) == '"')
-//	                    {
-//	                        $value = substr($value, 1);
-//	                        $value = substr($value, 0, strlen($value) - 1);
-//	                    }
-//	                    $this->config[$key] = $value;
-//	                }
-//	            }
-//	        }
-//	}
+//            $configfile = file($configfile);
+//            foreach ($configfile as $line)
+//            {
+//                $line = trim($line);
+//                if (!(substr($line, 0, 1) == '#') && !(strlen($line) == 0))
+//                {
+//                    $firsteq = strpos($line, '=');
+//                    if ($firsteq >= 0)
+//                    {
+//                        $key = trim(substr($line, 0, $firsteq));
+//                        $value = trim(substr($line, $firsteq + 1));
+//                        if (substr($value, 0, 1) == '"' && substr($value, strlen($value) - 1, 1) == '"')
+//                        {
+//                            $value = substr($value, 1);
+//                            $value = substr($value, 0, strlen($value) - 1);
+//                        }
+//                        $this->config[$key] = $value;
+//                    }
+//                }
+//            }
+//    }
 //
 //        // parse backend servers
 //        if (!isset($this->config['BACKEND_SERVERS']))
@@ -681,7 +681,7 @@ class Palava
                 if (is_array($paramarr)) {
                     foreach ($paramarr as $key => $param) {
                         $params[$key] = $param;
-        		    }
+                    }
                 } else {
                     $splitted = explode('=', $paramarr);
                     $params[$splitted[0]] = $splitted[1];
@@ -749,10 +749,10 @@ class Palava
 
     function escapeString($string)
     {
-	$string = str_replace('\\', '\\\\', $string);
-	$string = str_replace('&', '\\&', $string);
-	$string = str_replace('=', '\\=', $string);
-	return $string;
+    $string = str_replace('\\', '\\\\', $string);
+    $string = str_replace('&', '\\&', $string);
+    $string = str_replace('=', '\\=', $string);
+    return $string;
     }
 }
 

@@ -37,12 +37,12 @@ import de.cosmocode.palava.core.session.HttpSession;
  * @author Tobias Sarnowski
  */
 public class close implements Job {
-	
-	public void process(Call request, Response response, HttpSession s, Server server, 
-		Map<String,Object> caddy) throws ConnectionLostException, CloseConnection, Exception {
+    
+    public void process(Call request, Response response, HttpSession s, Server server, 
+        Map<String,Object> caddy) throws ConnectionLostException, CloseConnection, Exception {
 
-	    
-	    
-	}
+        
+        
+    }
 
 }

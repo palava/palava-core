@@ -19,11 +19,21 @@
 
 package de.cosmocode.palava.core.server;
 
+import com.google.inject.Inject;
+
 import de.cosmocode.commons.Stateful;
 import de.cosmocode.palava.core.service.ServiceManager;
 
 public interface Server extends Stateful {
 
+    /**
+     * Provides access to the service manager.
+     * 
+     * @deprecated use {@link Inject} to get a reference
+     * 
+     * @return the service manager
+     */
+    @Deprecated
     ServiceManager getServiceManager();
 
     void start();

@@ -41,21 +41,21 @@ public class ErrorContent extends AbstractContent {
     private ErrorContent(Exception e) {
         super(MimeType.ERROR);
         
-		// FIXME php is good enough to create the html itself, it's ugly here
+        // FIXME php is good enough to create the html itself, it's ugly here
         final StringBuilder builder = new StringBuilder();
-		builder.append("<div style='background-color: #ff0000 !important; margin: 20px; font-family: Lucida Grande, " +
-			"Verdana, Sans-serif; font-size: 12px; color: #ffffff !important; border-color: #000000 !important; " +
-			"border-width: 2px; border-style: solid; padding: 10px; text-align: left'>");
-		builder.append("<span style='font-weight: bold; font-size: 16px; background-color: #ff0000 !important'>" +
-			"Palava Error:  ");
-		builder.append(htmlspecialchars(e.toString()));
-		builder.append("</span>");
-		builder.append("<pre style='background-color: #ff0000 !important'>");
-		final StringWriter writer = new StringWriter();
-		e.printStackTrace(new PrintWriter(writer));
-		builder.append(htmlspecialchars(writer.toString()));
-		builder.append("</pre>");
-		builder.append("</div>");
+        builder.append("<div style='background-color: #ff0000 !important; margin: 20px; font-family: Lucida Grande, " +
+            "Verdana, Sans-serif; font-size: 12px; color: #ffffff !important; border-color: #000000 !important; " +
+            "border-width: 2px; border-style: solid; padding: 10px; text-align: left'>");
+        builder.append("<span style='font-weight: bold; font-size: 16px; background-color: #ff0000 !important'>" +
+            "Palava Error:  ");
+        builder.append(htmlspecialchars(e.toString()));
+        builder.append("</span>");
+        builder.append("<pre style='background-color: #ff0000 !important'>");
+        final StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        builder.append(htmlspecialchars(writer.toString()));
+        builder.append("</pre>");
+        builder.append("</div>");
 
         bytes = builder.toString().getBytes();
     }

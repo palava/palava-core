@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 function printUsage {
-	echo "palava - the java-php-bridge
+    echo "palava - the java-php-bridge
 Usage:
   palava-admin <command> [options]
 
@@ -41,13 +41,13 @@ Usage:
 
 # files and directories
 if [ `id -u` -eq 0 ]; then
-	CONFIG=/etc/palava/world
-	CORE_CONFIG=/etc/palava/core
-	ROOT=/var/www
+    CONFIG=/etc/palava/world
+    CORE_CONFIG=/etc/palava/core
+    ROOT=/var/www
 else
-	CONFIG=$HOME/.palava/world
-	CORE_CONFIG=$HOME/.palava/core
-	ROOT=$HOME
+    CONFIG=$HOME/.palava/world
+    CORE_CONFIG=$HOME/.palava/core
+    ROOT=$HOME
 fi
 
 # my own absolute position
@@ -57,21 +57,21 @@ MY_BIN="$MY_PATH/`basename $0`"
 
 CORE_PATH=""
 if [ -f $CORE_CONFIG ]; then
-	CORE_PATH="`cat $CORE_CONFIG`"
+    CORE_PATH="`cat $CORE_CONFIG`"
 fi
 
 
 # am I called with a different named symlink?
 # if so, start my names instance with his config
 if [ "`basename $0`" != "palava-admin" ]; then
-	ENV_NAME="`basename $0`"
-	ENTRY="`cat $CONFIG | grep -e \"^$ENV_NAME:\"`"
-	ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-	ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-	ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
+    ENV_NAME="`basename $0`"
+    ENTRY="`cat $CONFIG | grep -e \"^$ENV_NAME:\"`"
+    ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+    ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+    ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
 
-	$ENTRY_PATH/be/bin/palava $ENTRY_CONFIG
-	exit $?
+    $ENTRY_PATH/be/bin/palava $ENTRY_CONFIG
+    exit $?
 fi
 
 
@@ -79,326 +79,326 @@ COMMAND="$1"
 
 # parse the command
 if [ -z $COMMAND ]; then
-	echo "No command set."
-	printUsage
-	exit 1
+    echo "No command set."
+    printUsage
+    exit 1
 fi
 
 # check the system for our requirements
 if [ $COMMAND == "check" ]; then
-	echo -n "git version 1.5 :  "
-	GIT_VERSION="`git version | cut -d'.' -f 2 2> /dev/null`"
-	if [ "$GIT_VERSION" == "5" ]; then
-		echo "ok"
-	else
-		echo "FAILED"
-	fi
+    echo -n "git version 1.5 :  "
+    GIT_VERSION="`git version | cut -d'.' -f 2 2> /dev/null`"
+    if [ "$GIT_VERSION" == "5" ]; then
+        echo "ok"
+    else
+        echo "FAILED"
+    fi
 
-	echo -n "java version 1.6 :  "
-	JAVA_VERSION="`$JAVA_HOME/bin/java -version 2>&1 | cut -d'.' -f 2 | head -n 1`"
-	if [ "$JAVA_VERSION" == "6" ]; then
-		echo "ok"
-	else
-		echo "FAILED"
-	fi
+    echo -n "java version 1.6 :  "
+    JAVA_VERSION="`$JAVA_HOME/bin/java -version 2>&1 | cut -d'.' -f 2 | head -n 1`"
+    if [ "$JAVA_VERSION" == "6" ]; then
+        echo "ok"
+    else
+        echo "FAILED"
+    fi
 
-	echo -n "screen :  "
-	if [ ! -z "`screen -v`" ]; then
-		echo "ok"
-	else
-		echo "FAILED"
-	fi
-	exit 0
+    echo -n "screen :  "
+    if [ ! -z "`screen -v`" ]; then
+        echo "ok"
+    else
+        echo "FAILED"
+    fi
+    exit 0
 fi
 
 
 # install this directory and create the configs
 if [ $COMMAND == "install" ]; then
-	echo "Installing palava on the system..."
-	mkdir -p `dirname $CONFIG`
-	touch $CONFIG
-	if [ `id -u` -eq 0 ]; then
-		ln -s $MY_BIN /usr/bin/
-		if [ -d /etc/bash_completion.d ]; then
-			ln -s $MY_PATH/../tools/palava-admin_bashcompletion /etc/bash_completion.d/palava-admin.sh
-		fi
-	else
-		echo "INFO:  You have no root privileges, so no symlink is created to /usr/bin/. To use palava-admin call this script."
-		echo "       bash_completion script also not installed."
-	fi
-	cd $MY_PATH/..
-	echo "`pwd`" > $CORE_CONFIG
+    echo "Installing palava on the system..."
+    mkdir -p `dirname $CONFIG`
+    touch $CONFIG
+    if [ `id -u` -eq 0 ]; then
+        ln -s $MY_BIN /usr/bin/
+        if [ -d /etc/bash_completion.d ]; then
+            ln -s $MY_PATH/../tools/palava-admin_bashcompletion /etc/bash_completion.d/palava-admin.sh
+        fi
+    else
+        echo "INFO:  You have no root privileges, so no symlink is created to /usr/bin/. To use palava-admin call this script."
+        echo "       bash_completion script also not installed."
+    fi
+    cd $MY_PATH/..
+    echo "`pwd`" > $CORE_CONFIG
 
-	exit 0
+    exit 0
 fi
 
 if [ -z $CORE_PATH ]; then
-	echo "palava not installed on the system!"
-	echo "use \"palava-admin install\""
-	exit 1
+    echo "palava not installed on the system!"
+    echo "use \"palava-admin install\""
+    exit 1
 fi
 
 
 # list all created instances
 if [ $COMMAND == "list" ]; then
-	cat $CONFIG | while read ENTRY; do
-		ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-		ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-		ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
-		if [ "`screen -wipe | grep \.palava\.$ENTRY_NAME | grep Detached`" ]; then
-			STATUS="running"
-		else
-			STATUS="stopped"
-		fi
-		echo "  * $ENTRY_NAME"
-		echo "      [Status: $STATUS]"
-		echo "      [Path: $ENTRY_PATH]"
-		echo "      [Config: $ENTRY_CONFIG]"
-		if [ ! -r $ENTRY_CONFIG ]; then
-			echo "      [NOT CONFIGURED YET]"
-		else
-			. $ENTRY_CONFIG
-			if [ ! -z $PALAVA_DIR ]; then
-				echo "      [Port: $PALAVA_PORT]"
-				echo "      [Version: `cat $PALAVA_DIR/version`]"
-			fi
-			if [ ! -z $BACKEND_SERVERS ]; then
-				echo "      [Used backends: $BACKEND_SERVERS]"
-			fi
-		fi
-	done
-	exit 0
+    cat $CONFIG | while read ENTRY; do
+        ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+        ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+        ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
+        if [ "`screen -wipe | grep \.palava\.$ENTRY_NAME | grep Detached`" ]; then
+            STATUS="running"
+        else
+            STATUS="stopped"
+        fi
+        echo "  * $ENTRY_NAME"
+        echo "      [Status: $STATUS]"
+        echo "      [Path: $ENTRY_PATH]"
+        echo "      [Config: $ENTRY_CONFIG]"
+        if [ ! -r $ENTRY_CONFIG ]; then
+            echo "      [NOT CONFIGURED YET]"
+        else
+            . $ENTRY_CONFIG
+            if [ ! -z $PALAVA_DIR ]; then
+                echo "      [Port: $PALAVA_PORT]"
+                echo "      [Version: `cat $PALAVA_DIR/version`]"
+            fi
+            if [ ! -z $BACKEND_SERVERS ]; then
+                echo "      [Used backends: $BACKEND_SERVERS]"
+            fi
+        fi
+    done
+    exit 0
 fi
 
 
 # update the main source with git
 if [ $COMMAND == "update-git" ]; then
-	echo "Updating palava core directory with git..."
-	cd $CORE_PATH
-	git-pull
-	exit 0
+    echo "Updating palava core directory with git..."
+    cd $CORE_PATH
+    git-pull
+    exit 0
 fi
 
 
 # create a new instance
 if [ $COMMAND == "create" ]; then
-	mkdir -p `dirname $CONFIG`
-	if [ -z "$2" ]; then
-		echo "No enviroment name specified!"
-		printUsage
-		exit 1
-	fi
-	INSTANCE="$2"
-	echo "Installing new enviroment \"$INSTANCE\"...   "
+    mkdir -p `dirname $CONFIG`
+    if [ -z "$2" ]; then
+        echo "No enviroment name specified!"
+        printUsage
+        exit 1
+    fi
+    INSTANCE="$2"
+    echo "Installing new enviroment \"$INSTANCE\"...   "
 
-	if [ -z "$3" ]; then
-		INSTANCE_ROOT="$ROOT/palava.$INSTANCE"
-	else
-		INSTANCE_ROOT=$3
-	fi
+    if [ -z "$3" ]; then
+        INSTANCE_ROOT="$ROOT/palava.$INSTANCE"
+    else
+        INSTANCE_ROOT=$3
+    fi
 
-	if [ -z "$4" ]; then
-		INSTANCE_CONF="$INSTANCE_ROOT/palava.conf"
-	else
-		INSTANCE_CONF=$4
-	fi
+    if [ -z "$4" ]; then
+        INSTANCE_CONF="$INSTANCE_ROOT/palava.conf"
+    else
+        INSTANCE_CONF=$4
+    fi
 
-	if [ -e $INSTANCE_ROOT ]; then
-		echo "Directory already exists ($INSTANCE_ROOT)!"
-		if [ -z "`cat $CONFIG | grep $INSTANCE`" ]; then
-			echo "$INSTANCE not found in world file; adding it."
-			echo "$INSTANCE:$INSTANCE_ROOT:$INSTANCE_CONF" >> $CONFIG
-			exit 0
-		fi
-		exit 1
-	fi
-	if [ ! -e $CORE_PATH/classes/palava.jar ]; then
-		echo "You have to compile palava first!"
-		echo "Type 'ant' to do so."
-		exit 1
-	fi
+    if [ -e $INSTANCE_ROOT ]; then
+        echo "Directory already exists ($INSTANCE_ROOT)!"
+        if [ -z "`cat $CONFIG | grep $INSTANCE`" ]; then
+            echo "$INSTANCE not found in world file; adding it."
+            echo "$INSTANCE:$INSTANCE_ROOT:$INSTANCE_CONF" >> $CONFIG
+            exit 0
+        fi
+        exit 1
+    fi
+    if [ ! -e $CORE_PATH/classes/palava.jar ]; then
+        echo "You have to compile palava first!"
+        echo "Type 'ant' to do so."
+        exit 1
+    fi
 
-	# copy what we need
-	mkdir -p $INSTANCE_ROOT
-	mkdir $INSTANCE_ROOT/fe
-	cp -r $CORE_PATH/phplib/* $INSTANCE_ROOT/fe/
-	mkdir $INSTANCE_ROOT/be
-	cp -r $CORE_PATH/classes $INSTANCE_ROOT/be/
-	cp -r $CORE_PATH/bin $INSTANCE_ROOT/be/
-	cp -r $CORE_PATH/conf $INSTANCE_ROOT/be/
-	cp $CORE_PATH/conf/palava.conf.default $INSTANCE_ROOT/
-	cp -r $CORE_PATH/lib $INSTANCE_ROOT/be/
-	cp -r $CORE_PATH/tools $INSTANCE_ROOT/be/
-	cp -rP $CORE_PATH/licenses $INSTANCE_ROOT/be/
-	cp $CORE_PATH/version $INSTANCE_ROOT/be/
+    # copy what we need
+    mkdir -p $INSTANCE_ROOT
+    mkdir $INSTANCE_ROOT/fe
+    cp -r $CORE_PATH/phplib/* $INSTANCE_ROOT/fe/
+    mkdir $INSTANCE_ROOT/be
+    cp -r $CORE_PATH/classes $INSTANCE_ROOT/be/
+    cp -r $CORE_PATH/bin $INSTANCE_ROOT/be/
+    cp -r $CORE_PATH/conf $INSTANCE_ROOT/be/
+    cp $CORE_PATH/conf/palava.conf.default $INSTANCE_ROOT/
+    cp -r $CORE_PATH/lib $INSTANCE_ROOT/be/
+    cp -r $CORE_PATH/tools $INSTANCE_ROOT/be/
+    cp -rP $CORE_PATH/licenses $INSTANCE_ROOT/be/
+    cp $CORE_PATH/version $INSTANCE_ROOT/be/
 
-	# create a symlink to us
-	ln -s $INSTANCE_ROOT/be/bin/palava-admin $INSTANCE_ROOT/be/bin/$INSTANCE
+    # create a symlink to us
+    ln -s $INSTANCE_ROOT/be/bin/palava-admin $INSTANCE_ROOT/be/bin/$INSTANCE
 
-	# create the log dir
-	mkdir -p $INSTANCE_ROOT/be/log
-	echo "`date` \"$ENTRY_NAME\" created." >> $INSTANCE_ROOT/be/log/palava-admin.log
+    # create the log dir
+    mkdir -p $INSTANCE_ROOT/be/log
+    echo "`date` \"$ENTRY_NAME\" created." >> $INSTANCE_ROOT/be/log/palava-admin.log
 
-	# adding the env to the world file
-	echo "$INSTANCE:$INSTANCE_ROOT:$INSTANCE_ROOT/palava.conf" >> $CONFIG
+    # adding the env to the world file
+    echo "$INSTANCE:$INSTANCE_ROOT:$INSTANCE_ROOT/palava.conf" >> $CONFIG
 
-	echo "HINT: Don't forget to create the config files from the default."
-	exit 0
+    echo "HINT: Don't forget to create the config files from the default."
+    exit 0
 fi
 
 if [ -z $2 ]; then
-	echo "No enviroment name set."
-	printUsage
-	exit 1
+    echo "No enviroment name set."
+    printUsage
+    exit 1
 fi
 ENV_NAME="$2"
 
 
 # update an instance
 function updateEnv {
-	ENTRY="`cat $CONFIG | grep -e \"^$1:\"`"
-	ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-	ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-	if [ $ENTRY_NAME == $1 ]; then
-		echo "Updating \"$1\"..."
-		ls $CORE_PATH/phplib/console/ | while read FILE; do
-			if [ "`basename $FILE`" != "conf.php" ]; then
-				cp $CORE_PATH/phplib/console/$FILE $ENTRY_PATH/fe/console/
-			fi
-		done
-		cp $CORE_PATH/phplib/* $ENTRY_PATH/fe/ 2> /dev/null
-		cp -r $CORE_PATH/classes/* $ENTRY_PATH/be/classes/
-		cp -r $CORE_PATH/bin/* $ENTRY_PATH/be/bin/
-		cp -r $CORE_PATH/lib/* $ENTRY_PATH/be/lib/
-		cp -r $CORE_PATH/tools/* $ENTRY_PATH/be/tools/
-		cp -rP $CORE_PATH/licenses/* $ENTRY_PATH/be/licenses/
-		cp $CORE_PATH/version $ENTRY_PATH/be/
-		ls $CORE_PATH/conf/ | while read CONF; do
-			cp $CORE_PATH/conf/$CONF $ENTRY_PATH/be/conf/$CONF.new
-		done
-	fi
+    ENTRY="`cat $CONFIG | grep -e \"^$1:\"`"
+    ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+    ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+    if [ $ENTRY_NAME == $1 ]; then
+        echo "Updating \"$1\"..."
+        ls $CORE_PATH/phplib/console/ | while read FILE; do
+            if [ "`basename $FILE`" != "conf.php" ]; then
+                cp $CORE_PATH/phplib/console/$FILE $ENTRY_PATH/fe/console/
+            fi
+        done
+        cp $CORE_PATH/phplib/* $ENTRY_PATH/fe/ 2> /dev/null
+        cp -r $CORE_PATH/classes/* $ENTRY_PATH/be/classes/
+        cp -r $CORE_PATH/bin/* $ENTRY_PATH/be/bin/
+        cp -r $CORE_PATH/lib/* $ENTRY_PATH/be/lib/
+        cp -r $CORE_PATH/tools/* $ENTRY_PATH/be/tools/
+        cp -rP $CORE_PATH/licenses/* $ENTRY_PATH/be/licenses/
+        cp $CORE_PATH/version $ENTRY_PATH/be/
+        ls $CORE_PATH/conf/ | while read CONF; do
+            cp $CORE_PATH/conf/$CONF $ENTRY_PATH/be/conf/$CONF.new
+        done
+    fi
 }
 if [ $COMMAND == "update" ]; then
-	if [ ! -e $CORE_PATH/classes/palava.jar ]; then
-		echo "You have to compile palava first!"
-		echo "Type 'ant' to do so."
-		exit 1
-	fi
+    if [ ! -e $CORE_PATH/classes/palava.jar ]; then
+        echo "You have to compile palava first!"
+        echo "Type 'ant' to do so."
+        exit 1
+    fi
 
-	if [ $ENV_NAME != "world" ]; then
-		updateEnv $ENV_NAME
-	else
-		cat $CONFIG | while read ENTRY; do
-			ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-			updateEnv $ENTRY_NAME
-		done
-	fi
+    if [ $ENV_NAME != "world" ]; then
+        updateEnv $ENV_NAME
+    else
+        cat $CONFIG | while read ENTRY; do
+            ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+            updateEnv $ENTRY_NAME
+        done
+    fi
 
-	exit 0
+    exit 0
 fi
 
 
 # remove an instance from the list
 if [ $COMMAND == "remove" ]; then
-	ENTRY="`cat $CONFIG | grep -e \"^$ENV_NAME:\"`"
-	ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-	ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-	if [ "$ENTRY_NAME" == "$ENV_NAME" ]; then
-		echo "Removing \"$ENTRY_NAME\" from list..."
-		cat $CONFIG | grep -ve "^$ENTRY_NAME:" > $CONFIG.new
-		mv $CONFIG.new $CONFIG
-		echo "HINT: The directory itself is NOT removed by this script. Remove"
-		echo "      it yourself:  $ENTRY_PATH"
-		exit 0
-	else
-		echo "\"$ENV_NAME\" not found."
-		exit 1
-	fi
+    ENTRY="`cat $CONFIG | grep -e \"^$ENV_NAME:\"`"
+    ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+    ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+    if [ "$ENTRY_NAME" == "$ENV_NAME" ]; then
+        echo "Removing \"$ENTRY_NAME\" from list..."
+        cat $CONFIG | grep -ve "^$ENTRY_NAME:" > $CONFIG.new
+        mv $CONFIG.new $CONFIG
+        echo "HINT: The directory itself is NOT removed by this script. Remove"
+        echo "      it yourself:  $ENTRY_PATH"
+        exit 0
+    else
+        echo "\"$ENV_NAME\" not found."
+        exit 1
+    fi
 fi
 
 
 # start an instance
 function startPalava {
-	ENTRY_NAME=$1
-	ENTRY_PATH=$2
-	ENTRY_CONFIG=$3
-	if [ ! -f $ENTRY_CONFIG ]; then
-		echo "$ENTRY_NAME seems not to be configured yet. Config file is missing."
-	else
-		echo -n "Starting \"$ENTRY_NAME\"...  "
-		mkdir -p $ENTRY_PATH/be/log
-		echo "`date` Starting \"$ENTRY_NAME\"..." >> $ENTRY_PATH/be/log/palava-admin.log
-		screen -d -m -f -s "$ENTRY_PATH/be/bin/$ENTRY_NAME" -S palava.$ENTRY_NAME
-		if [ $? -eq 0 ]; then
-			echo "ok"
-		else
-			echo "failed!"
-		fi
-	fi
+    ENTRY_NAME=$1
+    ENTRY_PATH=$2
+    ENTRY_CONFIG=$3
+    if [ ! -f $ENTRY_CONFIG ]; then
+        echo "$ENTRY_NAME seems not to be configured yet. Config file is missing."
+    else
+        echo -n "Starting \"$ENTRY_NAME\"...  "
+        mkdir -p $ENTRY_PATH/be/log
+        echo "`date` Starting \"$ENTRY_NAME\"..." >> $ENTRY_PATH/be/log/palava-admin.log
+        screen -d -m -f -s "$ENTRY_PATH/be/bin/$ENTRY_NAME" -S palava.$ENTRY_NAME
+        if [ $? -eq 0 ]; then
+            echo "ok"
+        else
+            echo "failed!"
+        fi
+    fi
 }
 if [ $COMMAND == "start" ]; then
-	cat $CONFIG | while read ENTRY; do
-		ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-		ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-		ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
-		if [ $ENTRY_NAME == $ENV_NAME ]; then
-			startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-		if [ $ENV_NAME == "world" ]; then
-			startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-	done
-	exit 0
+    cat $CONFIG | while read ENTRY; do
+        ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+        ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+        ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
+        if [ $ENTRY_NAME == $ENV_NAME ]; then
+            startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+        if [ $ENV_NAME == "world" ]; then
+            startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+    done
+    exit 0
 fi
 
 
 # stop an instance
 function stopPalava {
-	ENTRY_NAME=$1
-	ENTRY_PATH=$2
-	ENTRY_CONFIG=$3
-	echo -n "Stopping \"$ENTRY_NAME\"...  "
-	echo "`date` Stopping \"$ENTRY_NAME\"..." >> $ENTRY_PATH/be/log/palava-admin.log
-	$ENTRY_PATH/be/bin/palavaclient $ENTRY_CONFIG -e "server.shutdown();" > /dev/null 2>> $ENTRY_PATH/be/log/palava-admin.log
-	if [ $? -eq 0 ]; then
-		sleep 11
-		echo "ok";
-	else
-		echo "failed!";
-	fi
+    ENTRY_NAME=$1
+    ENTRY_PATH=$2
+    ENTRY_CONFIG=$3
+    echo -n "Stopping \"$ENTRY_NAME\"...  "
+    echo "`date` Stopping \"$ENTRY_NAME\"..." >> $ENTRY_PATH/be/log/palava-admin.log
+    $ENTRY_PATH/be/bin/palavaclient $ENTRY_CONFIG -e "server.shutdown();" > /dev/null 2>> $ENTRY_PATH/be/log/palava-admin.log
+    if [ $? -eq 0 ]; then
+        sleep 11
+        echo "ok";
+    else
+        echo "failed!";
+    fi
 } 
 if [ $COMMAND == "stop" ]; then
-	cat $CONFIG | while read ENTRY; do
-		ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-		ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-		ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
-		if [ $ENTRY_NAME == $ENV_NAME ]; then
-			stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-		if [ $ENV_NAME == "world" ]; then
-			stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-	done
-	exit 0
+    cat $CONFIG | while read ENTRY; do
+        ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+        ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+        ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
+        if [ $ENTRY_NAME == $ENV_NAME ]; then
+            stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+        if [ $ENV_NAME == "world" ]; then
+            stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+    done
+    exit 0
 fi
 
 
 # restart (stop + start)
 if [ $COMMAND == "restart" ]; then
-	cat $CONFIG | while read ENTRY; do
-		ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
-		ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
-		ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
-		if [ $ENTRY_NAME == $ENV_NAME ]; then
-			stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-			startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-		if [ $ENV_NAME == "world" ]; then
-			stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-			startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
-		fi
-	done
-	exit 0
+    cat $CONFIG | while read ENTRY; do
+        ENTRY_NAME="`echo $ENTRY | cut -d':' -f 1`"
+        ENTRY_PATH="`echo $ENTRY | cut -d':' -f 2`"
+        ENTRY_CONFIG="`echo $ENTRY | cut -d':' -f 3`"
+        if [ $ENTRY_NAME == $ENV_NAME ]; then
+            stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+            startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+        if [ $ENV_NAME == "world" ]; then
+            stopPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+            startPalava $ENTRY_NAME $ENTRY_PATH $ENTRY_CONFIG
+        fi
+    done
+    exit 0
 fi
 
 echo "Command not found!"

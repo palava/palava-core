@@ -25,10 +25,10 @@ import de.cosmocode.palava.core.service.Service;
 
 public interface ContentStore extends Service {
 
-	String store(Content content) throws Exception;
-	
-	StreamContent load(String key) throws Exception;
+    String store(Content content) throws Exception;
+    
+    StreamContent load(String key) throws Exception;
 
-	void remove(String key);
-	
+    void remove(String key);
+    
 }

@@ -1,92 +1,92 @@
 * {
-	border: 0;
-	margin: 0;
-	padding: 0;
-	font: 12px sans-serif;
-	color: black;
-	background-color: white;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font: 12px sans-serif;
+    color: black;
+    background-color: white;
 }
 
 h1 {
-	font-size: 20px;
-	font-weight: bold;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 h2 {
-	font-size: 16px;
-	font-weight: bold;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 div {
-	margin: 20px;
+    margin: 20px;
 }
 
 pre {
-	background-color: red;
-	font-family: "Courier new", Courier;
-	padding: 2px;
+    background-color: red;
+    font-family: "Courier new", Courier;
+    padding: 2px;
 }
 
 p {
-	padding: 2px;
+    padding: 2px;
 }
 
 table {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
 th {
-	background-color: black;
-	color: white;
-	font-weight: bold;
-	text-align: left;
-	padding-left: 5px;
-	padding-right: 5px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 td {
-	padding: 1px;
-	margin: 1px;
-	background-color: #dddddd;
+    padding: 1px;
+    margin: 1px;
+    background-color: #dddddd;
 }
 
 .name {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 
 
 .left {
-	text-align: left;
-	padding-right: 20px;
-	padding-left: 5px;
+    text-align: left;
+    padding-right: 20px;
+    padding-left: 5px;
 }
 
 .right {
-	text-align: right;
-	padding-right: 5px;
-	padding-left: 20px;
+    text-align: right;
+    padding-right: 5px;
+    padding-left: 20px;
 }
 
 .center {
-	text-align: center;
+    text-align: center;
 }
 
 
 
 .critical {
-	background-color: red;
-	font-weight: bold;
+    background-color: red;
+    font-weight: bold;
 }
 
 .warning {
-	background-color: red;
+    background-color: red;
 }
 
 .important {
-	background-color: orange;
+    background-color: orange;
 }
 
 .ok {
-	background-color: lightgreen;
+    background-color: lightgreen;
 }

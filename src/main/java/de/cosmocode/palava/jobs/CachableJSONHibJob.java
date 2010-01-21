@@ -33,31 +33,31 @@ import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.jobs.hib.CachableHibJob;
 
 public abstract class CachableJSONHibJob extends CachableHibJob {
-	
-	private JSONObject json;
+    
+    private JSONObject json;
 
-	@Override
-	public final void process(Call request, Response response, HttpSession s, Server server, 
-		Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
+    @Override
+    public final void process(Call request, Response response, HttpSession s, Server server, 
+        Map<String, Object> caddy, org.hibernate.Session session) throws Exception {
 
-		JsonCall jRequest = (JsonCall) request;
-		json = jRequest.getJSONObject();
-		
-		if (session == null) session = createHibSession(server, caddy);
+        JsonCall jRequest = (JsonCall) request;
+        json = jRequest.getJSONObject();
+        
+        if (session == null) session = createHibSession(server, caddy);
 
-		process(json, response, s, server, caddy, session);
-		session.flush();
-	}
+        process(json, response, s, server, caddy, session);
+        session.flush();
+    }
     
     protected abstract void process(JSONObject json, Response response, HttpSession s, Server server,
         Map<String, Object> caddy, org.hibernate.Session session) throws Exception;
     
-	
-	protected final void validate(JSONObject json, String... keys) throws MissingArgumentException {
-		for (String key : keys) {
-			if (!json.has(key)) throw new MissingArgumentException(key);
-		}
-	}
+    
+    protected final void validate(JSONObject json, String... keys) throws MissingArgumentException {
+        for (String key : keys) {
+            if (!json.has(key)) throw new MissingArgumentException(key);
+        }
+    }
     
 
     // methods implemented from UtilityJob

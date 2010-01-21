@@ -35,8 +35,6 @@ import org.json.JSONObject;
 import org.json.extension.JSONConstructor;
 import org.json.extension.JSONEncoder;
 
-import de.cosmocode.palava.components.captcha.Captcha;
-
 /**
  * 
  *
@@ -299,11 +297,6 @@ public class UpdateResult implements Convertible, JSONEncoder {
     public Boolean lookupBoolean(Map<String, Object> args, String field) {
         String value = (String) args.get(field);
         return Boolean.parseBoolean(value);
-    }
-    public String lookupCaptcha(Map<String, Object> args, String field, String sessionID, Captcha captcha) {
-        String captchaCode = lookupString(args,field);
-        if ( captchaCode != null && ! captcha.validate( sessionID, captchaCode ) ) addError(UpdateResult.ERR_DIFFERENT, field);
-        return captchaCode;
     }
     public String lookupPassword(Map<String, Object> args, String field, int minLength) {
         String password = lookupString(args,field);

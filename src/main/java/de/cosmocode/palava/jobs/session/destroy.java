@@ -41,8 +41,8 @@ public class destroy implements Job
     private static final Logger logger = Logger.getLogger( destroy.class ) ;
 
     public void process( Call request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception
-	{
-		session.destroy();
+    {
+        session.destroy();
         resp.setContent(new PhpContent(PhpContent.OK)) ;
     }
 }

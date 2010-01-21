@@ -40,11 +40,11 @@ public class PHPConverter extends ContentConverter {
         buf.append("array(");
         Iterator<Map.Entry> iter = map.entrySet().iterator();
         boolean hasNext = iter.hasNext();
-		if (!hasNext)
-		{
-			buf.append(")");
-			return;
-		}
+        if (!hasNext)
+        {
+            buf.append(")");
+            return;
+        }
         while( hasNext ) {
             Map.Entry me = iter.next();
 
@@ -57,13 +57,13 @@ public class PHPConverter extends ContentConverter {
     }
 
     public void convertKeyValue( StringBuffer buf, String key, Object value, KeyValueState state ) throws ConversionException {
-    	if ( state == KeyValueState.ZERO) {
-    		buf.append("array()");
-    		return;
-    	}
-    	else if ( state == KeyValueState.SINGLE || state == KeyValueState.START ) buf.append("array(");
+        if ( state == KeyValueState.ZERO) {
+            buf.append("array()");
+            return;
+        }
+        else if ( state == KeyValueState.SINGLE || state == KeyValueState.START ) buf.append("array(");
 
-	convert(buf, key);
+    convert(buf, key);
         buf.append("=>");
         convert(buf, value);
 
@@ -77,23 +77,23 @@ public class PHPConverter extends ContentConverter {
     }
 
     public void convertString( StringBuffer buf, String object ) throws ConversionException {
-		String buffer = object.toString().replace("\\", "\\\\");
-		buffer = buffer.replace("'", "\\'");
+        String buffer = object.toString().replace("\\", "\\\\");
+        buffer = buffer.replace("'", "\\'");
         buf.append("'").append( buffer ).append("'");
     }
 
     public void convertDate( StringBuffer buf, java.util.Date object ) throws ConversionException {
-		// java timestamp:  number of milliseconds since January 1, 1970, 00:00:00 GMT
-		// php timestamp:   number of seconds since January 1, 1970, 00:00:00 GMT
+        // java timestamp:  number of milliseconds since January 1, 1970, 00:00:00 GMT
+        // php timestamp:   number of seconds since January 1, 1970, 00:00:00 GMT
         buf.append( (object.getTime() / 1000) );
     }
 
-	public static Date getJavaDate(String phpdate)
-	{
-		if (phpdate == null) return null;
-		long phptime = Long.parseLong(phpdate);
-		return new Date(phptime * 1000);
-	}
+    public static Date getJavaDate(String phpdate)
+    {
+        if (phpdate == null) return null;
+        long phptime = Long.parseLong(phpdate);
+        return new Date(phptime * 1000);
+    }
 
     public void convertNumber( StringBuffer buf, Number object ) throws ConversionException {
         buf.append( object );

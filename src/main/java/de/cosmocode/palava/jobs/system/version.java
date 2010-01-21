@@ -37,10 +37,10 @@ import de.cosmocode.palava.core.session.HttpSession;
 public class version implements Job
 {
 
-	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
-	{
-	    // TODO fixme
+    public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+    {
+        // TODO fixme
         response.setContent(new PhpContent("1.4"));
-	}
+    }
 
 }

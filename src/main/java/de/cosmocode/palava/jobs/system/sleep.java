@@ -39,33 +39,33 @@ import de.cosmocode.palava.core.session.HttpSession;
 public class sleep implements Job
 {
 
-	public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
-	{
-		DataCall req = (DataCall) request;	
+    public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
+    {
+        DataCall req = (DataCall) request;    
 
-		Map<String,String> args = req.getArgs();
+        Map<String,String> args = req.getArgs();
 
-		int delay = 0;
+        int delay = 0;
 
-		try {
-			delay = Integer.parseInt( args.get("msec") );
-		} catch ( Exception e ) {
-		}
-		if ( delay == 0 ) {
-			Random rnd = new Random();
-			try {
-				delay = rnd.nextInt(Integer.parseInt( args.get("random"))) ;
-			} catch ( Exception e ) {}
-		}
-		try
-		{
-			if ( delay > 0 )
-				Thread.currentThread().sleep( delay );
-		}
-		catch (Exception e)
-		{}
-		// send the output
+        try {
+            delay = Integer.parseInt( args.get("msec") );
+        } catch ( Exception e ) {
+        }
+        if ( delay == 0 ) {
+            Random rnd = new Random();
+            try {
+                delay = rnd.nextInt(Integer.parseInt( args.get("random"))) ;
+            } catch ( Exception e ) {}
+        }
+        try
+        {
+            if ( delay > 0 )
+                Thread.currentThread().sleep( delay );
+        }
+        catch (Exception e)
+        {}
+        // send the output
         response.setContent( PhpContent.OK ) ;
-	}
+    }
 
 }
