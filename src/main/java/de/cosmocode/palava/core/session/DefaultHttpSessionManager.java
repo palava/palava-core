@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,16 +49,24 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
     private final Map<String, HttpSession> sessions = new HashMap<String, HttpSession>();
 
     @Override
-    public synchronized HttpSession get(String sessionId) {
-        return sessions.get(sessionId);
+    public HttpSession get(String sessionId) {
+        synchronized (sessions) {
+            return sessions.get(sessionId);
+        }
     }
 
     @Override
-    public void purge() {
-        final Date date = new Date();
+    public void destroyAll() {
+        destroy(0, TimeUnit.MILLISECONDS);
+    }
+    
+    @Override
+    public void destroy(long period, TimeUnit periodUnit) {
+        final long then = System.currentTimeMillis() - periodUnit.toMillis(period);
+        final Date date = new Date(then);
         final Collection<HttpSession> purged;
         
-        synchronized (this) {
+        synchronized (sessions) {
             purged = Collections2.filter(sessions.values(), new Predicate<HttpSession>() {
                 
                 @Override
@@ -70,7 +79,7 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         }
         
         for (HttpSession session : purged) {
-            log.debug("purged {}", session.toString());
+            log.debug("Destroying {}", session);
             session.destroy();
         }
     }
@@ -88,7 +97,11 @@ final class DefaultHttpSessionManager implements HttpSessionManager {
         final String sessionId = builder.toString();
         final HttpSession session = new DefaultHttpSession(sessionId);
         log.debug("Created new session with id {}", sessionId);
-        sessions.put(sessionId, session);
+        
+        synchronized (sessions) {
+            sessions.put(sessionId, session);
+        }
+        
         return session;
     }
     

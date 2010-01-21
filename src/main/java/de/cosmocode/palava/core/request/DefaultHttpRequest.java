@@ -24,10 +24,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.inject.internal.Maps;
 import com.google.inject.internal.Nullable;
 
-import de.cosmocode.palava.core.session.Destroyable;
+import de.cosmocode.palava.core.scope.Destroyable;
 import de.cosmocode.palava.core.session.HttpSession;
 
 /**
@@ -106,10 +107,9 @@ final class DefaultHttpRequest implements HttpRequest {
     
     @Override
     public void destroy() {
-        for (Object value : context.values()) {
-            if (value instanceof Destroyable) {
-                Destroyable.class.cast(value).destroy();
-            }
+        final Iterable<Destroyable> destroyables = Iterables.filter(context.values(), Destroyable.class);
+        for (Destroyable destroyable : destroyables) {
+            destroyable.destroy(); 
         }
         context.clear();
         serverVariable.clear();

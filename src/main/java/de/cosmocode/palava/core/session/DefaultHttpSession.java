@@ -30,51 +30,45 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import com.google.inject.internal.Maps;
-import com.google.inject.servlet.SessionScoped;
 
 import de.cosmocode.json.JSONRenderer;
+import de.cosmocode.palava.core.scope.Destroyable;
 
 /**
  * Default implementation of the {@link HttpSession} interface.
  *
  * @author Willi Schoenborn
  */
-@SessionScoped
 final class DefaultHttpSession implements HttpSession {
     
     public static final Logger log = Logger.getLogger(DefaultHttpSession.class);
-    
-    private static final String LANGUAGE_KEY = "lang";
-    private static final String COUNTRY_KEY = "country";
 
     private String sessionId;
 
     private long accessTime;
-    private boolean invalid;
 
-    private final Map<Object, Object> data = Maps.newHashMap();
+    private final Map<Object, Object> context = Maps.newHashMap();
     
     private Locale locale;
+    
     private NumberFormat format;
+    
     private Collator collator;
     
-    @Inject
-    public DefaultHttpSession(@Assisted String sessionId) {
+    public DefaultHttpSession(String sessionId) {
         this.sessionId = Preconditions.checkNotNull(sessionId, "SessionId");
     }
 
     @Override
     public Locale getLocale() {
-        final Object langValue = data.get(LANGUAGE_KEY);
+        final Object langValue = context.get(LANGUAGE);
         if (locale == null || !locale.getLanguage().equals(langValue)) {
             
             format = null;
             collator = null;
             
-            final Object countryValue = data.get(COUNTRY_KEY);
+            final Object countryValue = context.get(COUNTRY);
             
             if (langValue instanceof String && StringUtils.isNotBlank(String.class.cast(langValue))) {
                 if (countryValue instanceof String && StringUtils.isNotBlank(String.class.cast(countryValue))) {
@@ -106,18 +100,6 @@ final class DefaultHttpSession implements HttpSession {
     }
 
     @Override
-    public void destroy() {
-        if (invalid) return;
-        
-        for (Destroyable destroyable : Iterables.filter(data.values(), Destroyable.class)) {
-            destroyable.destroy(); 
-        }
-        
-        data.clear();
-        invalid = true;
-    }
-
-    @Override
     public void updateAccessTime() {
         accessTime = System.currentTimeMillis();
     }
@@ -134,29 +116,38 @@ final class DefaultHttpSession implements HttpSession {
 
     @Override
     public <K> boolean contains(K key) {
-        return data.containsKey(key);
+        return context.containsKey(key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> V get(K key) {
-        return (V) data.get(key);
+        return (V) context.get(key);
     }
 
     @Override
     public <K, V> void putAll(Map<? extends K, ? extends V> map) {
-        data.putAll(map);
+        context.putAll(map);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> V remove(K key) {
-        return (V) data.get(key);
+        return (V) context.get(key);
     }
 
     @Override
     public <K, V> void set(K key, V value) {
-        data.put(key, value);
+        context.put(key, value);
+    }
+
+    @Override
+    public void destroy() {
+        final Iterable<Destroyable> destroyables = Iterables.filter(context.values(), Destroyable.class);
+        for (Destroyable destroyable : destroyables) {
+            destroyable.destroy(); 
+        }
+        context.clear();
     }
 
     @Override
@@ -164,7 +155,7 @@ final class DefaultHttpSession implements HttpSession {
         return renderer.
             key("id").value(sessionId).
             key("accesstime").value(accessTime).
-            key("data").object(data);
+            key("data").object(context);
     }
 
 }

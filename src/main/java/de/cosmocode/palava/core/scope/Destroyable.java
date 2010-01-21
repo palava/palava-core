@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.session;
+package de.cosmocode.palava.core.scope;
 
 /**
- * Lifecycle class for session data.
+ * Lifecycle class for scoped objects.
  * 
  * @author Detlef Hüttemann
  * @author Willi Schoenborn

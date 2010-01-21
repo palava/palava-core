@@ -6,6 +6,11 @@
   <version>1.4-SNAPSHOT</version>
   <name>Palava Core</name>
   <url>http://palava.cosmocode.de</url>
+  <licenses>
+    <license>
+      <name>test</name>
+    </license>
+  </licenses>
   <parent>
     <artifactId>palava-parent</artifactId>
     <groupId>de.cosmocode.palava</groupId>

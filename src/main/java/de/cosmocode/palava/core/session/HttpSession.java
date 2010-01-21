@@ -27,6 +27,7 @@ import java.util.Map;
 
 import de.cosmocode.json.JSONMapable;
 import de.cosmocode.json.JSONRenderer;
+import de.cosmocode.palava.core.scope.Destroyable;
 
 /**
  * A {@link HttpSession} represents an browser session,
@@ -35,6 +36,10 @@ import de.cosmocode.json.JSONRenderer;
  * @author Willi Schoenborn
  */
 public interface HttpSession extends Destroyable, JSONMapable {
+    
+    String LANGUAGE = "lang";
+    
+    String COUNTRY = "country";
 
     String getSessionId();
     

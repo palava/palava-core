@@ -19,6 +19,8 @@
 
 package de.cosmocode.palava.core.session;
 
+import java.util.concurrent.TimeUnit;
+
 import com.google.inject.Provider;
 
 /**
@@ -29,9 +31,18 @@ import com.google.inject.Provider;
 public interface HttpSessionManager extends Provider<HttpSession> {
 
     /**
-     * Purge all sessions.
+     * Destroys all sessions.
      */
-    void purge();
+    void destroyAll();
+    
+    /**
+     * Destroys all sessions which were not
+     * accessed in the specified period.
+     * 
+     * @param period the maximum time of inactivity
+     * @param periodUnit the unit of period
+     */
+    void destroy(long period, TimeUnit periodUnit);
     
     /**
      * Retrieve an {@link HttpSession} for a given session id.

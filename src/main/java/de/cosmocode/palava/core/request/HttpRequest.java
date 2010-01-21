@@ -22,7 +22,7 @@ package de.cosmocode.palava.core.request;
 import java.net.URI;
 import java.util.Map;
 
-import de.cosmocode.palava.core.session.Destroyable;
+import de.cosmocode.palava.core.scope.Destroyable;
 import de.cosmocode.palava.core.session.HttpSession;
 
 /**
