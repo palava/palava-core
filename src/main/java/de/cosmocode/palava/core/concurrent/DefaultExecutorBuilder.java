@@ -42,7 +42,7 @@ final class DefaultExecutorBuilder implements ExecutorBuilder {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultExecutorBuilder.class);
 
-    private final ThreadFactoryProvider provider;
+    private final ThreadProvider provider;
     
     private int minPoolSize = DEFAULT_MIN_POOL_SIZE;
     private int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
@@ -52,7 +52,7 @@ final class DefaultExecutorBuilder implements ExecutorBuilder {
     private ThreadFactory threadFactory;
     
     @Inject
-    public DefaultExecutorBuilder(ThreadFactoryProvider provider) {
+    public DefaultExecutorBuilder(ThreadProvider provider) {
         this.provider = Preconditions.checkNotNull(provider, "Provider");
     }
     

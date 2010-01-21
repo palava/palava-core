@@ -32,7 +32,7 @@ public final class ConcurrencyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadFactoryProvider.class).to(DefaultThreadFactoryProvider.class);
+        binder.bind(ThreadProvider.class).to(DefaultThreadProvider.class);
     }
 
 }

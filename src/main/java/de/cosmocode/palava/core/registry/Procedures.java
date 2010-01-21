@@ -22,7 +22,7 @@ package de.cosmocode.palava.core.registry;
 import com.google.common.base.Preconditions;
 
 /**
- * 
+ * TODO move to commons
  *
  * @author Willi Schoenborn
  */

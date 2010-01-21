@@ -22,13 +22,13 @@ package de.cosmocode.palava.core.concurrent;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * {@link ThreadFactoryProvider} provides a way to create
- * new {@link ThreadFactory}s while simultaneously keeping track
+ * {@link ThreadProvider} provides a way to create {@link Thread}s
+ * and {@link ThreadFactory}s while simultaneously keeping track
  * of all threads currently running. 
  *
  * @author Willi Schoenborn
  */
-public interface ThreadFactoryProvider {
+public interface ThreadProvider extends ThreadFactory {
 
     /**
      * Creates a new {@link ThreadFactory} which

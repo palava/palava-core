@@ -81,7 +81,7 @@ public class ClientBin
 			}
 			else
 			{
-				port = Integer.parseInt((String)config.get("PALAVA_PORT"));
+				port = Integer.parseInt((String)config.get("core.socket.port"));
 			}
 
 			// check options

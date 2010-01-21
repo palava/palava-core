@@ -129,7 +129,6 @@ final class DefaultSocketConnector implements SocketConnector, ThreadFactory, Un
             final Socket client;
             
             try {
-                // TODO fix
                 client = socket.accept();
             } catch (SocketTimeoutException e) {
                 continue;
@@ -153,10 +152,8 @@ final class DefaultSocketConnector implements SocketConnector, ThreadFactory, Un
                         communicator.communicate(input, output);
                     } finally {
                         try {
-//                            client.getInputStream().close();
-//                            client.shutdownInput();
-//                            client.getOutputStream().close();
-//                            client.shutdownOutput();
+                            client.shutdownInput();
+                            client.shutdownOutput();
                             client.close();
                         } catch (IOException e) {
                             log.warn("Closing socket failed", e);
@@ -166,7 +163,12 @@ final class DefaultSocketConnector implements SocketConnector, ThreadFactory, Un
                 
             });
             
-            
+        }
+        
+        try {
+            socket.close();
+        } finally {
+            shutdown();
         }
     }
 
@@ -174,6 +176,10 @@ final class DefaultSocketConnector implements SocketConnector, ThreadFactory, Un
     public void stop() {
         log.debug("Stopping {}", this);
         state = State.STOPPING;
+    }
+    
+    private void shutdown() {
+        log.info("Shutting down");
         service.shutdown();
         
         try {

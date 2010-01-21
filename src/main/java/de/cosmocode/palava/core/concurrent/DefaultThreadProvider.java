@@ -31,15 +31,15 @@ import com.google.common.collect.MapMaker;
 import com.google.inject.Singleton;
 
 /**
- * Default implementation of the {@link ThreadFactoryProvider} interface.
+ * Default implementation of the {@link ThreadProvider} interface.
  *
  * @author Oliver Lorenz
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultThreadFactoryProvider implements ThreadFactoryProvider {
+final class DefaultThreadProvider implements ThreadProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultThreadFactoryProvider.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultThreadProvider.class);
 
     private final ThreadFactory cachedFactory = new Factory();
     
@@ -54,10 +54,15 @@ final class DefaultThreadFactoryProvider implements ThreadFactoryProvider {
         
     };
     
-    public DefaultThreadFactoryProvider() {
+    public DefaultThreadProvider() {
         final MapMaker maker = new MapMaker().softKeys();
         final Map<Thread, Boolean> map = maker.makeMap();
         this.threads = Collections.newSetFromMap(map);
+    }
+
+    @Override
+    public Thread newThread(Runnable r) {
+        return cachedFactory.newThread(r);
     }
     
     @Override

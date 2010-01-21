@@ -29,6 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
+import de.cosmocode.palava.core.concurrent.ThreadProvider;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
@@ -46,23 +47,28 @@ final class DefaultServer implements Server {
     
     private final SocketConnector socketConnector;
     
+    private final ThreadProvider threadProvider;
+    
     private State state = State.NEW;
     
     @Inject
-    public DefaultServer(ServiceManager serviceManager, SocketConnector connector) {
+    public DefaultServer(ServiceManager serviceManager, SocketConnector connector,
+        ThreadProvider threadProvider) {
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
+        this.threadProvider = Preconditions.checkNotNull(threadProvider, "ThreadProvider");
     }
     
     @Override
     public void start() {
         state = State.STARTING;
         addHook();
-
         state = State.RUNNING;
         
         try {
             socketConnector.run();
+            serviceManager.stop();
+            state = State.TERMINATED;
         } catch (IOException e) {
             log.error("Socket error", e);
             stop();
@@ -71,8 +77,7 @@ final class DefaultServer implements Server {
     }
     
     private void addHook() {
-        // TODO dont create new thread
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        Runtime.getRuntime().addShutdownHook(threadProvider.newThread(new Runnable() {
             
             @Override
             public void run() {
@@ -99,10 +104,11 @@ final class DefaultServer implements Server {
     
     @Override
     public void stop() {
-        state = State.STOPPING;
-        socketConnector.stop();
-        serviceManager.stop();
-        state = State.TERMINATED;
+        if (state == State.RUNNING) {
+            log.debug("Stopping server");
+            state = State.STOPPING;
+            socketConnector.stop();
+        }
     }
     
 }
