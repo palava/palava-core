@@ -19,12 +19,8 @@
 
 package de.project.main;
 
-import com.google.inject.Key;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 
-import de.cosmocode.palava.components.cstore.ContentStore;
-import de.cosmocode.palava.components.cstore.FSContentStore;
 import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
 import de.cosmocode.palava.core.request.HttpRequestFilter;
@@ -40,8 +36,6 @@ public final class ProjectModule extends AbstractApplicationModule {
     protected void configureApplication() {
         install(new CoreModule());
 
-        serve(Key.get(ContentStore.class, Names.named("FileSystem"))).with(FSContentStore.class);
-        
         filter("*.version").through(LogFilter.class);
 //        filter(CommandMatchers.any()).through(LogFilter.class);
         

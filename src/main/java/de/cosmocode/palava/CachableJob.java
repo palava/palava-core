@@ -42,7 +42,6 @@ import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.protocol.content.TextContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.utils.ObjectSizeCalculator;
 
 
 public abstract class CachableJob extends UtilityJobImpl implements Job {
@@ -231,7 +230,6 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
             // logging
             if (logger.isDebugEnabled()) {
                 logger.debug ("putIntoCache: " + cacheItem.getJobName() + ", " + cacheItem.getJobArguments() + ", " + cacheItem.getLanguage());
-                logger.debug ("    ~additional mem usage: cacheItem: " + cacheItem.calculateApproximateSize() + ", content: " + content.getLength());
                 logger.debug ("    ~total mem usage: " + currentUsedCacheSize); //ObjectSizeCalculator.sizeOf(cache));
             }
         }
@@ -432,16 +430,6 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
                 return false;
             return true;
         }
-        
-        /**
-         * Returns the (approximated) size of this CacheItem in bytes.
-         * IMPORTANT: This method is neither fast nor accurate. Use with caution.
-         * @return the memory size used by this CacheItem-instance
-         */
-        protected long calculateApproximateSize () {
-            return ObjectSizeCalculator.sizeOf(this);
-        }
-        
         
     }
 
