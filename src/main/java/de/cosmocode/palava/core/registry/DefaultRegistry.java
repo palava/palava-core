@@ -59,7 +59,10 @@ final class DefaultRegistry implements Registry {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(command, "Command");
         log.debug("Notifying all listeners for {} using {}", type, command);
-        Procedures.each(getListeners(type), command);
+        for (T listener : getListeners(type)) {
+            log.debug("Notifying {} for {}", listener, type);
+            command.apply(listener);
+        }
     }
 
     @Override

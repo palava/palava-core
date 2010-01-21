@@ -40,6 +40,11 @@ public interface Registry {
     /**
      * Provide all listeners for a specific type.
      * 
+     * <p>
+     *   Note: Implementations may provide a live view which
+     *   supports write through operations.
+     * </p>
+     * 
      * @param <T> the generic type
      * @param type the type's class
      * @return an iterable over all found listeners for that type
