@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
-
+import org.apache.commons.validator.EmailValidator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.extension.JSONConstructor;
@@ -175,11 +174,10 @@ public class UpdateResult implements Convertible, JSONEncoder {
             return false;
         }
         
-        try {
-            new InternetAddress( value );
-        } catch (Exception e) {
+        if (!EmailValidator.getInstance().isValid(value)) {
             addError(ERR_FORMAT, field);
             return false;
+            
         }
         return true;
     }

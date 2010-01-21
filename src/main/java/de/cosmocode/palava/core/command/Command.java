@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core.command;
 
-import javax.servlet.Servlet;
-
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.content.Content;
 
