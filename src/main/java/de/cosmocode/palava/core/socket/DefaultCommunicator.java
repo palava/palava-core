@@ -137,20 +137,19 @@ final class DefaultCommunicator implements Communicator {
         
         final Command command;
         
-        /*CHECKSTYLE:OFF*/
         try {
             command = commandManager.forName(aliasedName);
+        /*CHECKSTYLE:OFF*/
         } catch (RuntimeException e) {
+        /*CHECKSTYLE:ON*/
             return ErrorContent.create(e);
         }
-        /*CHECKSTYLE:ON*/
         
         final Call call = header.getCallType().createCall(request, command, header, input);
         return filterAndExecute(command, call);
     }
     
     private Content filterAndExecute(final Command command, Call call) {
-        /*CHECKSTYLE:OFF*/
         try {
             return chainFactory.create(new FilterChain() {
                 
@@ -165,7 +164,9 @@ final class DefaultCommunicator implements Communicator {
                 }
                 
             }).filter(call);
+        /*CHECKSTYLE:OFF*/
         } catch (RuntimeException e) {
+        /*CHECKSTYLE:ON*/ 
             log.error("Command execution failed", e);
             return ErrorContent.create(e);
         } catch (FilterException e) {
@@ -178,13 +179,13 @@ final class DefaultCommunicator implements Communicator {
                 throw new IllegalStateException(e);
             }
         }
-        /*CHECKSTYLE:ON*/ 
     }
     
     private void after(HttpRequest request) {
         for (HttpRequestFilter filter : requestFilters) {
             filter.after(request);
         }
+        log.debug("Destroying request {}", request);
         request.destroy();
     }
     

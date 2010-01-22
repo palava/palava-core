@@ -40,7 +40,7 @@ public class TextCall extends AbstractCall {
         super(request, command, header, stream);
     }
 
-    public String getText() throws ConnectionLostException, IOException {
+    public String getText() throws ConnectionLostException {
         if (text == null) {
             final byte[] buffer = new byte[getHeader().getContentLength()];
             read(buffer);

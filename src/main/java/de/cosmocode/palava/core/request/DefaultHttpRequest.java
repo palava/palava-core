@@ -23,6 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.inject.internal.Maps;
@@ -37,6 +40,8 @@ import de.cosmocode.palava.core.session.HttpSession;
  * @author Willi Schoenborn
  */
 final class DefaultHttpRequest implements HttpRequest {
+    
+    private static final Logger log = LoggerFactory.getLogger(DefaultHttpRequest.class);
     
     private static final String REQUEST_URI = "REQUEST_URI";
     private static final String REMOTE_ADDR = "REMOTE_ADDR";
@@ -109,7 +114,8 @@ final class DefaultHttpRequest implements HttpRequest {
     public void destroy() {
         final Iterable<Destroyable> destroyables = Iterables.filter(context.values(), Destroyable.class);
         for (Destroyable destroyable : destroyables) {
-            destroyable.destroy(); 
+            log.debug("Destryoing {}", destroyable);
+            destroyable.destroy();
         }
         context.clear();
         serverVariable.clear();

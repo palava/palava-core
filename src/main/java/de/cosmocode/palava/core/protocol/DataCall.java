@@ -19,19 +19,8 @@
 
 package de.cosmocode.palava.core.protocol;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
-import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Functions;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-
-import de.cosmocode.json.JSON;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.HttpRequest;
 
@@ -45,39 +34,8 @@ import de.cosmocode.palava.core.request.HttpRequest;
 @Deprecated
 public final class DataCall extends JsonCall {
     
-    private static final Logger log = LoggerFactory.getLogger(DataCall.class);
-
-    private Map<String, String> arguments;
-
     DataCall(HttpRequest request, Command command, Header header, InputStream stream) {
         super(request, command, header, stream);
-    }
-
-    @Deprecated
-    public <K, V> Map<K, V> getArgs() throws ConnectionLostException, IOException {
-        if (arguments == null) parseArgs();
-
-        @SuppressWarnings("unchecked")
-        final Map<K, V> args = (Map<K, V>) arguments;
-        
-        return args;
-    }
-
-    public Map<String, String> getArguments() throws ConnectionLostException {
-        if (arguments == null) parseArgs();
-        return arguments;
-    }
-
-    private void parseArgs() throws ConnectionLostException {
-        Preconditions.checkState(arguments == null, "Arguments already parsed");
-        try {
-            arguments = Maps.transformValues(JSON.asMap(getJSONObject()), Functions.toStringFunction());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        } catch (JSONException e) {
-            throw new IllegalStateException(e);
-        }
-        log.debug("Parsed arguments: {}", arguments);
     }
 
 }

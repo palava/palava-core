@@ -157,7 +157,7 @@ public abstract class CachableJob extends UtilityJobImpl implements Job {
      */
     protected Object getArguments(Call request) throws Exception, UncachableException {
         if (request instanceof DataCall) {
-            return ((DataCall) request).getArguments();
+            return ((DataCall) request).getStringedArguments();
         } else if (request instanceof TextCall) {
             return ((TextCall)request).getText();
         } else {

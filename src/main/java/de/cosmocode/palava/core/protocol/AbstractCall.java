@@ -89,13 +89,12 @@ abstract class AbstractCall implements Call {
      * @param data
      * @return
      * @throws ConnectionLostException
-     * @throws IOException
      */
-    protected final int read(byte[] data) throws ConnectionLostException, IOException {
+    protected final int read(byte[] data) throws ConnectionLostException {
         final long max = header.getContentLength();
 
         if (totalBytesRead >= max) {
-            throw new IOException("not allowed to read enough bytes, content-length reached");
+            throw new ConnectionLostException("not allowed to read enough bytes, content-length reached");
         }
 
         int read;

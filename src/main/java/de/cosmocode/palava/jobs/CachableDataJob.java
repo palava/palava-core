@@ -40,7 +40,7 @@ public abstract class CachableDataJob extends CachableJob {
         Map<String, Object> caddy) throws ConnectionLostException, Exception {
         
         DataCall dataRequest = (DataCall) request;
-        args = dataRequest.getArgs();
+        args = dataRequest.getStringedArguments();
         
         process(args, response, session, server, caddy);
     }

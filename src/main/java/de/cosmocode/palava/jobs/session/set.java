@@ -45,7 +45,7 @@ public class set implements Job {
 
         if ( session == null ) throw new NullPointerException("session");
 
-        Map<String,Object> args = req.getArgs() ;
+        Map<String, Object> args = req.getArguments() ;
 
         session.putAll( (Map<String,Object>) args ) ;
 

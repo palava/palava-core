@@ -41,7 +41,7 @@ public class get implements Job
     public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
     {
         DataCall req = (DataCall) request;
-        Map<String, String> args = req.getArgs();
+        Map<String, String> args = req.getStringedArguments();
         String key = args.get("key");
         if ( key == null ) throw new NullPointerException("key");
         Object data = session.get( key ) ;

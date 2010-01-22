@@ -43,7 +43,7 @@ public class sleep implements Job
     {
         DataCall req = (DataCall) request;    
 
-        Map<String,String> args = req.getArgs();
+        Map<String, String> args = req.getStringedArguments();
 
         int delay = 0;
 

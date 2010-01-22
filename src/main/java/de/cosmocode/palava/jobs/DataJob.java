@@ -42,7 +42,7 @@ public abstract class DataJob implements Job {
         Map<String, Object> caddy) throws ConnectionLostException, Exception {
         
         DataCall dataRequest = (DataCall) request;
-        args = dataRequest.getArgs();
+        args = dataRequest.getStringedArguments();
         
         process(args, response, session, server, caddy);
     }
