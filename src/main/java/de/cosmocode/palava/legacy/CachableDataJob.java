@@ -17,19 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.jobs;
+package de.cosmocode.palava.legacy;
 
 import java.util.Map;
 
-import de.cosmocode.palava.CachableJob;
-import de.cosmocode.palava.MissingArgumentException;
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.call.MissingArgumentException;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.DataCall;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
+/**
+ * @deprecated use Cache annotation
+ *
+ * @author Willi Schoenborn
+ */
+@Deprecated
 public abstract class CachableDataJob extends CachableJob {
     
     private Map<String, String> args;

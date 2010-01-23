@@ -21,7 +21,6 @@ package de.cosmocode.palava.core.protocol.content;
 
 import java.sql.Blob;
 
-import de.cosmocode.palava.MimeType;
 
 /**
  * SQL Blob stream content.

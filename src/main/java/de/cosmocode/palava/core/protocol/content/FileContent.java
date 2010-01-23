@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import de.cosmocode.palava.MimeTypes;
 
 /**
  * send a local file to the browser.

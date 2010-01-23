@@ -21,12 +21,12 @@ package de.cosmocode.palava.jobs.session;
 
 import java.util.Map;
 
-import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.JsonContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.legacy.Job;
 
 /**
  * debug job, dumping all session data.

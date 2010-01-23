@@ -26,7 +26,6 @@ import java.io.StringWriter;
 
 import com.google.common.base.Preconditions;
 
-import de.cosmocode.palava.MimeType;
 
 /**
  * An error occured, this ships it to the browser.

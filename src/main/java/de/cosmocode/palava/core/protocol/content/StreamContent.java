@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CountingInputStream;
 
-import de.cosmocode.palava.MimeType;
 
 /**
  * General content to return streams.

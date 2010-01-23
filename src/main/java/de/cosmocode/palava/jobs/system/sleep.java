@@ -22,7 +22,6 @@ package de.cosmocode.palava.jobs.system;
 import java.util.Map;
 import java.util.Random;
 
-import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.DataCall;
@@ -30,6 +29,7 @@ import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.legacy.Job;
 
 
 /**

@@ -31,7 +31,6 @@ import org.json.extension.JSONEncoder;
 import de.cosmocode.json.JSON;
 import de.cosmocode.json.JSONMapable;
 import de.cosmocode.json.JSONRenderer;
-import de.cosmocode.palava.MimeType;
 import de.cosmocode.patterns.Immutable;
 
 /**

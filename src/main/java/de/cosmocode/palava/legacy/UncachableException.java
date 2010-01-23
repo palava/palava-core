@@ -17,24 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.legacy;
 
-/**
- * marks an object to be usable with a converter.
- * 
- * @author Detlef Hüttemann
- * @deprecated use JSONMapable instead
- */
-@Deprecated
-public interface Convertible {
+public class UncachableException extends RuntimeException {
     
-    /**
-     * Converts this object using the given converter.
-     * 
-     * @param buf the target buffer
-     * @param converter the {@linkplain ContentConverter content converter} used to convert this object
-     * @throws ConversionException if conversion failed
-     */
-    void convert(StringBuffer buf, ContentConverter converter) throws ConversionException;
-    
+    private static final long serialVersionUID = -4123365865843473019L;
+
+    public UncachableException() {
+    }
+
+    public UncachableException(String message) {
+        super(message);
+    }
+
+    public UncachableException(Throwable cause) {
+        super(cause);
+    }
+
+    public UncachableException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

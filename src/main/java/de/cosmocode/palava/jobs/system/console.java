@@ -29,7 +29,6 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 
 import de.cosmocode.palava.Client;
-import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
@@ -37,6 +36,7 @@ import de.cosmocode.palava.core.protocol.TextCall;
 import de.cosmocode.palava.core.protocol.content.TextContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.legacy.Job;
 
 
 /**

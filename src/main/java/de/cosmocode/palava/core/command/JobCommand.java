@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filterable;
 import de.cosmocode.palava.core.protocol.Response;
@@ -36,6 +35,7 @@ import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.scope.Scopes;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.legacy.Job;
 import de.cosmocode.patterns.Adapter;
 
 /**

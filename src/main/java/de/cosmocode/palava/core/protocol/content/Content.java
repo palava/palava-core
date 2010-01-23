@@ -22,7 +22,6 @@ package de.cosmocode.palava.core.protocol.content;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.cosmocode.palava.MimeType;
 
 /**
  * A content can be seen as any kind

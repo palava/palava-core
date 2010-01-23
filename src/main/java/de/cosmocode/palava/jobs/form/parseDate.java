@@ -35,7 +35,7 @@ import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.JsonContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.jobs.CachableJSONJob;
+import de.cosmocode.palava.legacy.CachableJSONJob;
 
 public class parseDate extends CachableJSONJob {
 

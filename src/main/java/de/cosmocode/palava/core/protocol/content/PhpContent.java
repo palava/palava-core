@@ -22,9 +22,8 @@ package de.cosmocode.palava.core.protocol.content;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.cosmocode.palava.ConversionException;
-import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.PHPConverter;
+import de.cosmocode.palava.legacy.ConversionException;
+import de.cosmocode.palava.legacy.PHPConverter;
 
 /**
  * Content which uses PHP notation.

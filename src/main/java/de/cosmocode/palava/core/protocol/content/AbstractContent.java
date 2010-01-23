@@ -24,7 +24,6 @@ import javax.activation.MimetypesFileTypeMap;
 import com.google.common.base.Preconditions;
 import com.sun.activation.registries.MimeTypeFile;
 
-import de.cosmocode.palava.MimeType;
 
 /**
  * Abstract base implementation of the {@link Content} interface.

@@ -17,11 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
-
+package de.cosmocode.palava.legacy;
 
 /**
- * used by converters to identify the position in an array
+ * marks an object to be usable with a converter.
+ * 
  * @author Detlef Hüttemann
+ * @deprecated use JSONMapable instead
  */
-public enum KeyValueState { START,INSIDE,LAST,ZERO,SINGLE };
+@Deprecated
+public interface Convertible {
+    
+    /**
+     * Converts this object using the given converter.
+     * 
+     * @param buf the target buffer
+     * @param converter the {@linkplain ContentConverter content converter} used to convert this object
+     * @throws ConversionException if conversion failed
+     */
+    void convert(StringBuffer buf, ContentConverter converter) throws ConversionException;
+    
+}

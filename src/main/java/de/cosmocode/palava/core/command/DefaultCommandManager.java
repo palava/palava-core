@@ -30,8 +30,8 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.server.Server;
+import de.cosmocode.palava.legacy.Job;
 
 /**
  * Default implementation of the {@link CommandManager} interface.

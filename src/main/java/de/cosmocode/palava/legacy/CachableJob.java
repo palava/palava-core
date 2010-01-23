@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.legacy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,12 +38,19 @@ import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.TextCall;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.JsonContent;
+import de.cosmocode.palava.core.protocol.content.MimeType;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.protocol.content.TextContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
-
+/**
+ * 
+ * @deprecated use Cache annotation
+ *
+ * @author Willi Schoenborn
+ */
+@Deprecated
 public abstract class CachableJob extends UtilityJobImpl implements Job {
     
     //  methods implemented from UtilityJob

@@ -21,6 +21,7 @@ package de.cosmocode.palava.core.protocol;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +29,12 @@ import org.json.JSONObject;
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
 
+import de.cosmocode.collections.utility.AbstractUtilityMap;
 import de.cosmocode.collections.utility.UtilityMap;
+import de.cosmocode.collections.utility.UtilitySet;
 import de.cosmocode.json.JSON;
+import de.cosmocode.palava.core.call.Arguments;
+import de.cosmocode.palava.core.call.MissingArgumentException;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.HttpRequest;
 
@@ -42,6 +47,7 @@ public class JsonCall extends TextCall {
     
     private JSONObject json;
     private UtilityMap<String, Object> map;
+    private Arguments arguments;
 
     JsonCall(HttpRequest request, Command command, Header header, InputStream stream) {
         super(request, command, header, stream);
@@ -56,25 +62,45 @@ public class JsonCall extends TextCall {
     
     @Deprecated
     public final <K, V> UtilityMap<K, V> getArgs() {
-        if (map == null) {
-            try {
-                map = JSON.asMap(getJSONObject());
-            } catch (JSONException e) {
-                throw new IllegalArgumentException(e);
-            }
+        if (arguments == null) {
+            arguments = new InternalArguments();
         }
-        return (UtilityMap<K, V>) map;
+        return (UtilityMap<K, V>) arguments;
     }
     
-    public final UtilityMap<String, Object> getArguments() {
-        if (map == null) {
-            try {
-                map = JSON.asMap(getJSONObject());
-            } catch (JSONException e) {
-                throw new IllegalArgumentException(e);
-            }
+    public final Arguments getArguments() {
+        if (arguments == null) {
+            arguments = new InternalArguments();
         }
-        return map;
+        return arguments;
+    }
+    
+    private class InternalArguments extends AbstractUtilityMap<String, Object> implements Arguments {
+        
+        @Override
+        public void require(String... keys) throws MissingArgumentException {
+            final Set<String> keySet = keySet();
+            for (String key : keys) {
+                if (keySet.contains(key)) continue;
+                throw new MissingArgumentException(key);
+            }                
+        }
+        
+        @Override
+        public UtilitySet<Map.Entry<String, Object>> entrySet() {
+            if (json == null) {
+                try {
+                    json = getJSONObject();
+                } catch (JSONException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+            if (map == null) {
+                map = JSON.asMap(json);
+            }
+            return map.entrySet();
+        }
+        
     }
 
     public final Map<String, String> getStringedArguments() throws ConnectionLostException {

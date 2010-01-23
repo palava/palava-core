@@ -22,10 +22,6 @@ package de.cosmocode.palava.core.protocol.content;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import de.cosmocode.palava.ConversionException;
-import de.cosmocode.palava.MimeType;
-import de.cosmocode.palava.TextConverter;
-
 /**
  * Plain text content.
  * 
@@ -35,14 +31,11 @@ public class TextContent extends AbstractContent {
 
     private final byte[] bytes;
 
-    public TextContent(Object object) throws ConversionException {
+    public TextContent(String text) {
         super(MimeType.TEXT);
-        final TextConverter converter = new TextConverter();
-        final StringBuffer buf = new StringBuffer();
-        converter.convert(buf, object);
-        bytes = buf.toString().getBytes();
+        bytes = text == null ? "null".getBytes() : text.getBytes();
     }
-    
+
     @Override
     public long getLength() {
         return bytes.length;
@@ -52,6 +45,5 @@ public class TextContent extends AbstractContent {
     public void write(OutputStream out) throws IOException {
         out.write(bytes, 0, bytes.length);
     }
-    
-}
 
+}

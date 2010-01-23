@@ -17,25 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.legacy;
 
-public class UncachableException extends RuntimeException {
+
+/**
+ * used by converters to identify the position in an array.
+ * 
+ * @deprecated Stop using it. Now!
+ * 
+ * @author Detlef Hüttemann
+ */
+@Deprecated
+public enum KeyValueState {
     
-    private static final long serialVersionUID = -4123365865843473019L;
-
-    public UncachableException() {
-    }
-
-    public UncachableException(String message) {
-        super(message);
-    }
-
-    public UncachableException(Throwable cause) {
-        super(cause);
-    }
-
-    public UncachableException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-}
+    START,
+    
+    INSIDE,
+    
+    LAST,
+    
+    ZERO,
+    
+    SINGLE
+    
+};

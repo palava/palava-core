@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import de.cosmocode.commons.io.UnclosableInputStream;
+import de.cosmocode.palava.core.call.Arguments;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.HttpRequest;
@@ -63,6 +64,11 @@ abstract class AbstractCall implements Call {
         this.command = command;
         this.stream = new UnclosableInputStream(Preconditions.checkNotNull(stream, "Stream"));
         this.header = Preconditions.checkNotNull(header, "Header");
+    }
+    
+    @Override
+    public Arguments getArguments() {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support arguments");
     }
     
     @Override

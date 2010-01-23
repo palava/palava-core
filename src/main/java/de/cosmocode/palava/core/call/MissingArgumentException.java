@@ -19,37 +19,39 @@
 
 package de.cosmocode.palava.core.call;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import de.cosmocode.palava.core.command.Command;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.Header;
-import de.cosmocode.palava.core.request.HttpRequest;
+import java.util.List;
 
 /**
- * A Call represents one single access.
+ * Indicates a missing argument when invoking a command.
  *
  * @author Willi Schoenborn
  */
-public interface Call {
+public class MissingArgumentException extends RuntimeException {
 
-    Arguments getArguments();
+    private static final long serialVersionUID = -4016565094430756701L;
     
-    /**
-     * Provide the surrounding {@link HttpRequest}.
-     * 
-     * @return the request
-     */
-    HttpRequest getHttpRequest();
+    public MissingArgumentException(String argument) {
+        super(argument);
+    }
     
-    Command getCommand();
+    public MissingArgumentException(Throwable cause) {
+        super(cause);
+    }
     
-    // TODO blocking?
-    InputStream getInputStream();
+    public MissingArgumentException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MissingArgumentException(Object ignored, String missingArgument) {
+        this(missingArgument);
+    }
     
-    Header getHeader();
+    public MissingArgumentException(Object ignored, String missingArgument, String type) {
+        super(missingArgument + " (" + type + ")");
+    }
     
-    void discard() throws ConnectionLostException, IOException;
+    public MissingArgumentException(Object ignored, List<String> missingArguments) {
+        this(missingArguments.toString());
+    }
     
 }
