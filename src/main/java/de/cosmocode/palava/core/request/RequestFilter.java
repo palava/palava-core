@@ -17,10 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava;
+package de.cosmocode.palava.core.request;
 
-public interface Closable {
+/**
+ * Runs before and after every {@link HttpRequest}.
+ *
+ * @author Willi Schoenborn
+ */
+public interface RequestFilter {
 
-    public void onClose();
+    /**
+     * Runs before an {@link HttpRequest}.
+     * 
+     * @param request the request
+     */
+    void before(HttpRequest request);
+    
+    /**
+     * Runs after an {@link HttpRequest}.
+     * 
+     * @param request the request 
+     */
+    void after(HttpRequest request);
     
 }

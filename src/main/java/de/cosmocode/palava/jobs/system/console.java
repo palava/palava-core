@@ -26,6 +26,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Undefined;
 
 import de.cosmocode.palava.Client;
 import de.cosmocode.palava.Job;
@@ -82,7 +83,7 @@ public class console implements Job
         //       this is also ugly, let php or the binclient do the formating
         try {
             Object returned = script.exec(context, scope);
-            if (returned != null && returned.toString().length() > 0 && ! (returned instanceof org.mozilla.javascript.Undefined))
+            if (returned != null && returned.toString().length() > 0 && ! (returned instanceof Undefined))
                 sout.write("\n%%GREEN+%%" + returned.toString() + "%%+GREEN%%");
             sout.write("\n%%GREY+%%Script successful executed.%%+GREY%%");
         } catch (Exception e) {

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import de.cosmocode.palava.UncloseableInputStream;
+import de.cosmocode.commons.io.UnclosableInputStream;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.HttpRequest;
@@ -56,11 +56,12 @@ abstract class AbstractCall implements Call {
     private int totalBytesRead;
 
     AbstractCall(HttpRequest request, Command command, Header header, InputStream stream) {
+        // TODO we need nullchecks here!
 //        this.request = Preconditions.checkNotNull(request, "Request");
 //        this.command = Preconditions.checkNotNull(command, "Command");
         this.request = request;
         this.command = command;
-        this.stream = new UncloseableInputStream(Preconditions.checkNotNull(stream, "Stream"));
+        this.stream = new UnclosableInputStream(Preconditions.checkNotNull(stream, "Stream"));
         this.header = Preconditions.checkNotNull(header, "Header");
     }
     

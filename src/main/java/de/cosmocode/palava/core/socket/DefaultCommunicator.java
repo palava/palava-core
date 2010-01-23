@@ -47,7 +47,7 @@ import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.ErrorContent;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.request.HttpRequestFactory;
-import de.cosmocode.palava.core.request.HttpRequestFilter;
+import de.cosmocode.palava.core.request.RequestFilter;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.core.session.HttpSessionManager;
 
@@ -71,13 +71,13 @@ final class DefaultCommunicator implements Communicator {
     
     private final CommandManager commandManager;
     
-    private final Set<HttpRequestFilter> requestFilters;
+    private final Set<RequestFilter> requestFilters;
     
     private final FilterChainFactory chainFactory;
     
     @Inject
     public DefaultCommunicator(ProtocolAlgorithm algorithm, HttpSessionManager sessionManager,
-        HttpRequestFactory requestFactory, CommandManager commandManager, Set<HttpRequestFilter> requestFilters,
+        HttpRequestFactory requestFactory, CommandManager commandManager, Set<RequestFilter> requestFilters,
         FilterChainFactory chainFactory) {
         this.algorithm = Preconditions.checkNotNull(algorithm, "Algorithm");
         this.sessionManager = Preconditions.checkNotNull(sessionManager, "SessionManager");
@@ -106,7 +106,7 @@ final class DefaultCommunicator implements Communicator {
     }
     
     private void before(HttpRequest request) {
-        for (HttpRequestFilter filter : requestFilters) {
+        for (RequestFilter filter : requestFilters) {
             filter.before(request);
         }
     }
@@ -182,7 +182,7 @@ final class DefaultCommunicator implements Communicator {
     }
     
     private void after(HttpRequest request) {
-        for (HttpRequestFilter filter : requestFilters) {
+        for (RequestFilter filter : requestFilters) {
             filter.after(request);
         }
         log.debug("Destroying request {}", request);

@@ -20,6 +20,7 @@
 package de.cosmocode.palava.core.request;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 
 import de.cosmocode.palava.core.scope.Destroyable;
@@ -32,10 +33,36 @@ import de.cosmocode.palava.core.session.HttpSession;
  */
 public interface HttpRequest extends Destroyable {
 
+    /**
+     * 
+     * @return
+     * @throws IllegalStateException if there is no request uri information
+     *         available in this request
+     * @throws IllegalArgumentException if the request uri is no valid {@link URI}
+     */
     URI getRequestUri();
     
+    /**
+     * 
+     * @return the referer of this request or null if there
+     *         was no information about the referer available
+     * @throws IllegalArgumentException if the referer is no valid {@link URL}
+     */
+    URL getReferer();
+    
+    /**
+     * 
+     * @return
+     * @throws IllegalStateException if there is no remote address
+     *         information available in this request
+     */
     String getRemoteAddress();
     
+    /**
+     * 
+     * @return the user agent of this request or null if there
+     *         was no information about the user agent available
+     */
     String getUserAgent();
     
     HttpSession getHttpSession();

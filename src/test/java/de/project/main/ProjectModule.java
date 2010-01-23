@@ -23,7 +23,7 @@ import com.google.inject.multibindings.Multibinder;
 
 import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
-import de.cosmocode.palava.core.request.HttpRequestFilter;
+import de.cosmocode.palava.core.request.RequestFilter;
 
 /**
  * Mock implementation which adds service bindings.
@@ -39,7 +39,7 @@ public final class ProjectModule extends AbstractApplicationModule {
         filter("*.version").through(LogFilter.class);
 //        filter(CommandMatchers.any()).through(LogFilter.class);
         
-        Multibinder.newSetBinder(binder(), HttpRequestFilter.class).addBinding().to(LogRequestFilter.class);
+        Multibinder.newSetBinder(binder(), RequestFilter.class).addBinding().to(LogRequestFilter.class);
         
         alias("de.project.commands").as("@project");
         

@@ -25,15 +25,15 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Singleton;
 
 import de.cosmocode.palava.core.request.HttpRequest;
-import de.cosmocode.palava.core.request.HttpRequestFilter;
+import de.cosmocode.palava.core.request.RequestFilter;
 
 /**
- * A {@link HttpRequestFilter} which handles {@link RequestScope} entering/exiting.
+ * A {@link RequestFilter} which handles {@link RequestScope} entering/exiting.
  *
  * @author Willi Schoenborn
  */
 @Singleton
-final class RequestScopeFilter implements HttpRequestFilter {
+final class RequestScopeFilter implements RequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(RequestScopeFilter.class);
 

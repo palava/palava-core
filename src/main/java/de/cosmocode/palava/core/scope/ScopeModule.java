@@ -26,7 +26,7 @@ import com.google.inject.servlet.SessionScoped;
 
 import de.cosmocode.palava.core.call.filter.definition.Matchers;
 import de.cosmocode.palava.core.inject.AbstractApplicationModule;
-import de.cosmocode.palava.core.request.HttpRequestFilter;
+import de.cosmocode.palava.core.request.RequestFilter;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.scope} package.
@@ -49,7 +49,7 @@ public final class ScopeModule extends AbstractApplicationModule {
         binder().bindScope(RequestScoped.class, requestScope);
         binder().bind(RequestScope.class).toInstance(requestScope);
         
-        Multibinder.newSetBinder(binder(), HttpRequestFilter.class).addBinding().to(RequestScopeFilter.class);
+        Multibinder.newSetBinder(binder(), RequestFilter.class).addBinding().to(RequestScopeFilter.class);
         
         final SessionScope sessionScope = new SessionScope();
         binder().requestInjection(requestScope);

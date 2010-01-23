@@ -21,27 +21,27 @@ package de.cosmocode.palava.jobs.system;
 
 import java.util.Map;
 
-import de.cosmocode.palava.Closable;
-import de.cosmocode.palava.CloseConnection;
 import de.cosmocode.palava.Job;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
-import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 
 
 /**
- * close the connection
+ * Closes the connection.
+ * 
+ * @deprecated is not doing anything anymore
+ * 
  * @author Tobias Sarnowski
+ * @author Willi Schoenborn
  */
+@Deprecated
 public class close implements Job {
     
-    public void process(Call request, Response response, HttpSession s, Server server, 
-        Map<String,Object> caddy) throws ConnectionLostException, CloseConnection, Exception {
-
-        
+    public void process(Call request, Response response, HttpSession httpSession, Server server, 
+        Map<String, Object> caddy) throws Exception {
         
     }
 

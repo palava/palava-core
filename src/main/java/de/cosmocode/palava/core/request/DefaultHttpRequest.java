@@ -19,10 +19,13 @@
 
 package de.cosmocode.palava.core.request;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,7 @@ final class DefaultHttpRequest implements HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpRequest.class);
     
     private static final String REQUEST_URI = "REQUEST_URI";
+    private static final String HTTP_REFERER = "HTTP_REFERER";
     private static final String REMOTE_ADDR = "REMOTE_ADDR";
     private static final String HTTP_USER_AGENT = "HTTP_USER_AGENT";
 
@@ -62,26 +66,38 @@ final class DefaultHttpRequest implements HttpRequest {
     @Override
     public URI getRequestUri() {
         final String uri = serverVariable.get(REQUEST_URI);
-        Preconditions.checkState(uri != null, "%s not found", REQUEST_URI);
+        Preconditions.checkState(StringUtils.isNotBlank(uri), "%s not found", REQUEST_URI);
         try {
             return new URI(uri);
         } catch (URISyntaxException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
+    @Override
+    public URL getReferer() {
+        final String referer = serverVariable.get(HTTP_REFERER);
+        if (StringUtils.isAlpha(referer)) {
+            return null;
+        } else {
+            try {
+                return new URL(referer);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
     
     @Override
     public String getRemoteAddress() {
         final String address = serverVariable.get(REMOTE_ADDR);
-        Preconditions.checkState(address != null, "%s not found", REMOTE_ADDR);
+        Preconditions.checkState(StringUtils.isNotBlank(address), "%s not found", REMOTE_ADDR);
         return address;
     }
 
     @Override
     public String getUserAgent() {
-        final String agent = serverVariable.get(HTTP_USER_AGENT);
-        Preconditions.checkState(agent != null, "%s not found", HTTP_USER_AGENT);
-        return agent;
+        return serverVariable.get(HTTP_USER_AGENT);
     }
 
     @Override
