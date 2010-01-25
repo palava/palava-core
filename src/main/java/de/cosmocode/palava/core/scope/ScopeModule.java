@@ -25,7 +25,7 @@ import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.SessionScoped;
 
 import de.cosmocode.palava.core.call.filter.definition.Matchers;
-import de.cosmocode.palava.core.inject.AbstractApplicationModule;
+import de.cosmocode.palava.core.inject.PalavaModule;
 import de.cosmocode.palava.core.request.RequestFilter;
 
 /**
@@ -33,7 +33,7 @@ import de.cosmocode.palava.core.request.RequestFilter;
  *
  * @author Willi Schoenborn
  */
-public final class ScopeModule extends AbstractApplicationModule {
+public final class ScopeModule extends PalavaModule {
 
     @Override
     protected void configureApplication() {

@@ -22,6 +22,8 @@ package de.project.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.FilterChain;
@@ -34,6 +36,7 @@ import de.cosmocode.palava.core.protocol.content.Content;
  *
  * @author Willi Schoenborn
  */
+@Singleton
 final class LogFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(LogFilter.class);

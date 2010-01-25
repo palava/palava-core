@@ -28,7 +28,6 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import de.cosmocode.palava.core.call.filter.Filterable;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.command.Commands;
 
@@ -100,6 +99,12 @@ public final class Matchers {
         return Matchers.ofPredicate(Predicates.or(matchers));
     }
     
+    /**
+     * 
+     * @param pattern
+     * @param patterns
+     * @return
+     */
     public static Predicate<Command> regex(String pattern, String... patterns) {
         final ImmutableList.Builder<String> builder = ImmutableList.builder();
         final ImmutableList<String> list = builder.add(pattern).add(patterns).build();
@@ -114,6 +119,11 @@ public final class Matchers {
         return Matchers.ofPredicate(Predicates.or(matchers));
     }
     
+    /**
+     * 
+     * @param annotation
+     * @return
+     */
     public static Predicate<Command> annotatedWith(final Class<? extends Annotation> annotation) {
         return new Predicate<Command>() {
             
@@ -125,6 +135,11 @@ public final class Matchers {
         };
     }
     
+    /**
+     * 
+     * @param superClass
+     * @return
+     */
     public static Predicate<Command> subClassesOf(final Class<?> superClass) {
         return new Predicate<Command>() {
             

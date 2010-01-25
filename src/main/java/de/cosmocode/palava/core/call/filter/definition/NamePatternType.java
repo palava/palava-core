@@ -57,11 +57,11 @@ enum NamePatternType {
     };
     
     /**
-     * Creates a new {@link Predicate} using the semantics
+     * Creates a new {@link Predicate<Command>} using the semantics
      * of this {@link NamePatternType}.
      * 
      * @param pattern the name pattern
-     * @return a new {@link Predicate}
+     * @return a new {@link Predicate<Command>}
      */
     public abstract Predicate<Command> matcher(String pattern);
     

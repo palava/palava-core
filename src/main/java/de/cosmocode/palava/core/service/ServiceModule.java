@@ -21,7 +21,11 @@ package de.cosmocode.palava.core.service;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.service} package.
@@ -34,6 +38,18 @@ public final class ServiceModule implements Module {
     public void configure(Binder binder) {
         binder.bind(ServiceManager.class).to(DefaultServiceManager.class);
         Multibinder.newSetBinder(binder, Service.class);
+        
+        binder.bindListener(Matchers.any(), new TypeListener() {
+            
+            @Override
+            public <I> void hear(TypeLiteral<I> literal, TypeEncounter<I> encounter) {
+                if (Service.class.isAssignableFrom(literal.getRawType())) {
+                    encounter.register(new InitializableListener<I>());
+                    encounter.register(new StartableListener<I>());
+                }
+            }
+            
+        });
     }
 
 }

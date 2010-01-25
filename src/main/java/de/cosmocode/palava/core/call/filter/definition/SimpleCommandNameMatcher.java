@@ -22,7 +22,6 @@ package de.cosmocode.palava.core.call.filter.definition;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
-import de.cosmocode.palava.core.call.filter.Filterable;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.command.Commands;
 

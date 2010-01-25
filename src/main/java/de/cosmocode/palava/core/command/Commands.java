@@ -42,7 +42,19 @@ public final class Commands {
         }
         
     };
+    
+    private Commands() {
+        
+    }
 
+    /**
+     * Returns the real class of a {@link Command}, which may differ from
+     * {@link Object#getClass()} in case the given {@link Command} is
+     * {@linkplain Filterable filterable}.
+     * 
+     * @param command the command
+     * @return the underlying class
+     */
     public static Class<?> getClass(Command command) {
         return GET_CLASS.apply(command);
     }

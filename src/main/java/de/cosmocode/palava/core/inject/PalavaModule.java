@@ -36,7 +36,6 @@ import com.google.inject.multibindings.Multibinder;
 
 import de.cosmocode.palava.core.CoreModule;
 import de.cosmocode.palava.core.call.filter.Filter;
-import de.cosmocode.palava.core.call.filter.definition.Matchers;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 import de.cosmocode.palava.core.command.Alias;
 import de.cosmocode.palava.core.command.Aliases;
@@ -49,7 +48,7 @@ import de.cosmocode.palava.core.service.Service;
  *
  * @author Willi Schoenborn
  */
-public abstract class AbstractApplicationModule extends AbstractModule {
+public abstract class PalavaModule extends AbstractModule {
     
     private final List<FilterDefinition> filterDefinitions = Lists.newArrayList();
     private final Map<Key<Filter>, Filter> filterInstances = Maps.newLinkedHashMap();
@@ -101,25 +100,9 @@ public abstract class AbstractApplicationModule extends AbstractModule {
     /**
      * Binds a filter.
      * 
-     * @param pattern the name pattern the filter will be applied on
-     * @param patterns additional patterns
+     * @param matcher the matcher the filter uses
      * @return a {@link FilterBinder}
      */
-    protected FilterBinder filter(String pattern, String... patterns) {
-        return filter(Matchers.named(pattern, patterns));
-    }
-    
-    /**
-     * Binds a filter.
-     * 
-     * @param pattern the name pattern the filter will be applied on
-     * @param patterns additional patterns
-     * @return a {@link FilterBinder}
-     */
-    protected FilterBinder filterRegex(String pattern, String... patterns) {
-        return filter(Matchers.regex(pattern, patterns));
-    }
-    
     protected FilterBinder filter(Predicate<Command> matcher) {
         return new InternalFilterBinder(matcher);
     }
@@ -134,6 +117,11 @@ public abstract class AbstractApplicationModule extends AbstractModule {
         return new InternalAliasBinder(packageName);
     }
     
+    /**
+     * Binds a request filter.
+     * 
+     * @param type the filter's class literal
+     */
     protected void filterRequestsWith(Class<? extends RequestFilter> type) {
         Multibinder.newSetBinder(binder(), RequestFilter.class).addBinding().to(type);
     }

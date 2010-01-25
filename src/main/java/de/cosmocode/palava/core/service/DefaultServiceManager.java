@@ -32,8 +32,8 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 
+import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
 import de.cosmocode.palava.core.service.lifecycle.Disposable;
-import de.cosmocode.palava.core.service.lifecycle.Initializable;
 import de.cosmocode.palava.core.service.lifecycle.LifecycleException;
 import de.cosmocode.palava.core.service.lifecycle.Startable;
 
@@ -43,7 +43,7 @@ import de.cosmocode.palava.core.service.lifecycle.Startable;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServiceManager implements ServiceManager {
+final class DefaultServiceManager implements ServiceManager, PostServerStopListener {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultServiceManager.class);
     
@@ -59,30 +59,29 @@ final class DefaultServiceManager implements ServiceManager {
         for (Service service : services) {
             log.debug("Created {}", service);
         }
-        start();
     }
     
-    @Override
-    public void start() {
-        initializeServices();
-        startServices();
-    }
-    
-    private void initializeServices() {
-        log.info("Initializing services");
-        for (Initializable initializable : Iterables.filter(services, Initializable.class)) {
-            log.info("Initializing {}", initializable);
-            initializable.initialize();
-        }
-    }
-    
-    private void startServices() {
-        log.info("Starting services");
-        for (Startable startable : Iterables.filter(services, Startable.class)) {
-            log.info("Starting {}", startable);
-            startable.start();
-        }
-    }
+//    @Override
+//    public void start() {
+//        initializeServices();
+//        startServices();
+//    }
+//    
+//    private void initializeServices() {
+//        log.info("Initializing services");
+//        for (Initializable initializable : Iterables.filter(services, Initializable.class)) {
+//            log.info("Initializing {}", initializable);
+//            initializable.initialize();
+//        }
+//    }
+//    
+//    private void startServices() {
+//        log.info("Starting services");
+//        for (Startable startable : Iterables.filter(services, Startable.class)) {
+//            log.info("Starting {}", startable);
+//            startable.start();
+//        }
+//    }
     
     @Override
     public <T> T lookup(Class<T> spec) {
@@ -98,7 +97,7 @@ final class DefaultServiceManager implements ServiceManager {
     }
     
     @Override
-    public void stop() {
+    public void afterStop() {
         stopServices();
         disposeServices();
     }

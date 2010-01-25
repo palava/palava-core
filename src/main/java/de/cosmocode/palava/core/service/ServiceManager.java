@@ -21,8 +21,6 @@ package de.cosmocode.palava.core.service;
 
 import com.google.inject.Inject;
 
-import de.cosmocode.palava.core.service.lifecycle.Startable;
-
 /**
  * A manager for all services running inside the palava
  * framework. The {@link ServiceManager} is responsible for
@@ -31,7 +29,7 @@ import de.cosmocode.palava.core.service.lifecycle.Startable;
  *
  * @author Willi Schoenborn
  */
-public interface ServiceManager extends Startable {
+public interface ServiceManager {
 
     /**
      * Lookups a service by its specification.
