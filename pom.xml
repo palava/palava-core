@@ -19,29 +19,6 @@
   <scm>
     <developerConnection>scm:svn:http://palava.svn.cosmocode.de/palava-core/trunk</developerConnection>
   </scm>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.5.0</version>
-        <configuration>
-          <header>src/etc/header</header>
-          <includes>
-            <include>**/*.java</include>
-          </includes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
   <repositories>
     <repository>
       <id>jahia</id>
