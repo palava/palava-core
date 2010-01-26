@@ -32,6 +32,7 @@ import com.google.inject.Key;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 
+import de.cosmocode.palava.core.registry.Registry;
 import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
 import de.cosmocode.palava.core.service.lifecycle.Disposable;
 import de.cosmocode.palava.core.service.lifecycle.LifecycleException;
@@ -52,8 +53,10 @@ final class DefaultServiceManager implements ServiceManager, PostServerStopListe
     private final Set<Service> services;
     
     @Inject
-    public DefaultServiceManager(Injector injector, Set<Service> services) {
+    public DefaultServiceManager(Injector injector, Registry registry, Set<Service> services) {
         this.injector = Preconditions.checkNotNull(injector, "Injector");
+        Preconditions.checkNotNull(registry, "Registry");
+        registry.register(PostServerStopListener.class, this);
         this.services = Preconditions.checkNotNull(services, "Services");
         log.info("Found {} services", services.size());
         for (Service service : services) {

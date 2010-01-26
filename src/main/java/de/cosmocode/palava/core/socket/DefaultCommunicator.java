@@ -91,9 +91,11 @@ final class DefaultCommunicator implements Communicator {
         final Header header = algorithm.read(input);
         if (header.getCallType() == CallType.OPEN) {
             final String sessionId = header.getSessionId();
-            final HttpSession session = sessionManager.get(sessionId);
+            HttpSession session = sessionManager.get(sessionId);
             log.debug("Session found for id {}: {}", sessionId, session);
-            if (session != null) {
+            if (session == null) {
+                session = sessionManager.get();
+            } else {
                 log.debug("Updating access time for {}", sessionId);
                 session.updateAccessTime();
             }

@@ -47,7 +47,8 @@ class Palava
     private $known_mimetypes = array('error' => 'application/error',
                                      'php' => 'application/x-httpd-php',
                                      'json' => 'application/json',
-                                     'text' => 'text/plain');
+                                     'text' => 'text/plain',
+                                     'xml'  => 'application/xml');
     private $actual_job = null;
     private $benchmarks = array();
 
@@ -258,7 +259,11 @@ class Palava
 
     public function call_json($job,$obj)
     {
-        $json = json_encode($obj);
+        if(count($obj) > 0)
+            $json = json_encode($obj);
+        else
+            $json = '{}';
+
         return $this->call_ex('json', array($job, $json));
     }
 
@@ -533,6 +538,10 @@ class Palava
         {
             //return $data['body'];
             return json_decode($data['body'], true);
+        }
+        if ($data['type'] == $this->known_mimetypes['xml'])
+        {
+            return $data['body'];
         }
         return null;
     }

@@ -101,6 +101,11 @@ public class JsonCall extends TextCall {
             return map.entrySet();
         }
         
+        @Override
+        public Object put(String key, Object value) {
+            return entrySet().add(Maps.immutableEntry(key, value));
+        }
+        
     }
 
     public final Map<String, String> getStringedArguments() throws ConnectionLostException {

@@ -19,6 +19,7 @@
 
 package de.cosmocode.palava.core.main;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
@@ -27,6 +28,7 @@ import org.kohsuke.args4j.CmdLineException;
  *
  * @author Willi Schoenborn
  */
+@Ignore
 public final class MainTest {
 
     /**

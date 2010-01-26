@@ -20,10 +20,13 @@
 package de.cosmocode.palava.core.inject;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -41,28 +44,45 @@ public final class InjectionModule implements Module {
 
     private static final Logger log = LoggerFactory.getLogger(InjectionModule.class);
     
-    private static final Matcher<TypeLiteral<?>> FILE_MATCHER = new AbstractMatcher<TypeLiteral<?>>() {
-
+    private static final TypeConverter FILE_CONVERTER = new TypeConverter() {
+        
         @Override
-        public boolean matches(TypeLiteral<?> literal) {
-            return File.class.isAssignableFrom(literal.getRawType());
+        public Object convert(String value, TypeLiteral<?> literal) {
+            return new File(value);
         }
         
     };
     
-    private static final TypeConverter FILE_CONVERTER = new TypeConverter() {
+    private static final TypeConverter URL_CONVERTER = new TypeConverter() {
         
         @Override
-        public Object convert(String name, TypeLiteral<?> literal) {
-            return new File(name);
+        public Object convert(String value, TypeLiteral<?> literal) {
+            try {
+                return new URL(value);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
-        
     };
+    
+    private static Matcher<TypeLiteral<?>> subclasseOf(final Class<?> type) {
+        Preconditions.checkNotNull(type, "Type");
+        return new AbstractMatcher<TypeLiteral<?>>() {
+            
+            @Override
+            public boolean matches(TypeLiteral<?> literal) {
+                return type.isAssignableFrom(literal.getRawType());
+            }
+            
+        };
+    }
 
     @Override
     public void configure(Binder binder) {
         log.debug("Registering file type converter");
-        binder.convertToTypes(FILE_MATCHER, FILE_CONVERTER);
+        binder.convertToTypes(subclasseOf(File.class), FILE_CONVERTER);
+        log.debug("Registering url type converter");
+        binder.convertToTypes(subclasseOf(URL.class), URL_CONVERTER);
     }
 
 }
