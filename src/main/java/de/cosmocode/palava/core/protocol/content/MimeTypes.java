@@ -37,6 +37,7 @@ public final class MimeTypes {
     
     static {
         try {
+            // TODO fixme
             SINGLETON = new MimeTypes("/etc/mime.types");
         } catch (IOException e) {
             throw new ExceptionInInitializerError(e);
