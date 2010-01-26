@@ -44,7 +44,7 @@ final class RequestScope implements Scope {
             @Override
             public T get() {
                 synchronized (request) {
-                    final T current = request.get(key);
+                    final T current = request.<Key<T>, T>get(key);
                     if (current == null && !request.contains(key)) {
                         final T unscoped = provider.get();
                         request.set(key, unscoped);

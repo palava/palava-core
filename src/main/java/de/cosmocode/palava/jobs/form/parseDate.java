@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
+import de.cosmocode.json.JSON;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.JsonContent;
@@ -53,7 +54,7 @@ public class parseDate extends CachableJSONJob {
         final DateFormat dateFormat = new SimpleDateFormat(pattern);
         dateFormat.setLenient(false);
         
-        final JSONConstructor out = new JSONStringer();
+        final JSONConstructor out = JSON.asJSONConstructor(new JSONStringer());
 
         Object returnValue = Boolean.FALSE;
         

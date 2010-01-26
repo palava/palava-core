@@ -67,7 +67,7 @@ public final class Matchers {
      * @param predicate the backing predicate
      * @return a {@link Predicate<Command>} backed by a {@link Predicate}
      */
-    public static Predicate<Command> ofPredicate(final Predicate<Command> predicate) {
+    public static Predicate<Command> ofPredicate(final Predicate<? super Command> predicate) {
         return new Predicate<Command>() {
             
             @Override

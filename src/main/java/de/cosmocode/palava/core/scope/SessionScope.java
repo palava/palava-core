@@ -44,7 +44,7 @@ final class SessionScope implements Scope {
             @Override
             public T get() {
                 synchronized (session) {
-                    final T current = session.get(key);
+                    final T current = session.<Key<T>, T>get(key);
                     if (current == null && !session.contains(key)) {
                         final T unscoped = provider.get();
                         session.set(key, unscoped);
