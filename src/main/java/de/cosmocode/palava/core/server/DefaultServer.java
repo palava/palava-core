@@ -29,10 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
-import de.cosmocode.palava.core.concurrent.ThreadProvider;
-import de.cosmocode.palava.core.registry.Registry;
-import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
-import de.cosmocode.palava.core.server.lifecycle.PreServerStartListener;
+import de.cosmocode.palava.core.lifecycle.Startable;
 import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
@@ -42,56 +39,42 @@ import de.cosmocode.palava.core.socket.SocketConnector;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServer implements Server {
+final class DefaultServer implements Server, Runnable, Startable {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
     
-    private final Registry registry;
-
     private final ServiceManager serviceManager;
     
     private final SocketConnector socketConnector;
     
-    private final ThreadProvider threadProvider;
-    
     private State state = State.NEW;
     
     @Inject
-    public DefaultServer(Registry registry, ServiceManager serviceManager, 
-        SocketConnector connector, ThreadProvider threadProvider) {
-        this.registry = Preconditions.checkNotNull(registry, "Registry");
+    public DefaultServer(ServiceManager serviceManager, SocketConnector connector) {
         this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
-        this.threadProvider = Preconditions.checkNotNull(threadProvider, "ThreadProvider");
+    }
+
+    @Override
+    public void start() {
+        log.info("Starting server");
+        final Thread thread = new Thread(this);
+        thread.setDaemon(false);
+        thread.start();
     }
     
     @Override
-    public void start() {
+    public void run() {
         state = State.STARTING;
-        addHook();
-        registry.notify(PreServerStartListener.class, PreServerStartListener.COMMAND);
-        state = State.RUNNING;
         
         try {
+            state = State.RUNNING;
             socketConnector.run();
-            registry.notify(PostServerStopListener.class, PostServerStopListener.COMMAND);
             state = State.TERMINATED;
         } catch (IOException e) {
             log.error("Socket error", e);
-            stop();
             state = State.FAILED;
         } 
-    }
-    
-    private void addHook() {
-        Runtime.getRuntime().addShutdownHook(threadProvider.newThread(new Runnable() {
-            
-            @Override
-            public void run() {
-                stop();
-            }
-            
-        }));
     }
     
     @Override

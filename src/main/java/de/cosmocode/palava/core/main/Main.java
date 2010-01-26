@@ -22,7 +22,6 @@ package de.cosmocode.palava.core.main;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Properties;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -32,13 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.name.Names;
 
-import de.cosmocode.palava.core.server.Server;
+import de.cosmocode.palava.core.lifecycle.Framework;
+import de.cosmocode.palava.core.lifecycle.Palava;
 
 /**
  * Application entry point.
@@ -52,11 +47,9 @@ public final class Main {
     @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
     private File settings;
     
-    private Main() {
-        
-    }
+    private final Framework framework;
     
-    private void run(String[] args) {
+    private Main(String[] args) {
         final CmdLineParser parser = new CmdLineParser(this);
         
         try {
@@ -69,20 +62,6 @@ public final class Main {
         Preconditions.checkNotNull(settings, "Settings file not set");
         Preconditions.checkState(settings.exists(), "Settings file does not exist");
         
-        final Module module = configure();
-        final Injector injector = Guice.createInjector(module);
-        
-        final Server server = injector.getInstance(Server.class);
-        log.debug("Created server {}", server);
-        
-        log.info("Starting server");
-        server.start();
-        log.info("Server successfully stopped");
-    }
-    
-    private Module configure() {
-        final Module module;
-        
         final Properties properties = new Properties();
         
         try {
@@ -91,30 +70,13 @@ public final class Main {
             throw new IllegalArgumentException(e);
         }
         
-        final String className = properties.getProperty("core.main.module");
-        final Class<? extends Module> moduleClass;
-
-        try {
-            moduleClass = Class.forName(className).asSubclass(Module.class);
-            module = moduleClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-        
-        return new Module() {
-            
-            @Override
-            public void configure(Binder binder) {
-                Names.bindProperties(binder, properties);
-                binder.bind(Map.class).annotatedWith(Settings.class).toInstance(properties);
-                binder.install(module);
-            }
-            
-        };
+        framework = Palava.createFramework(properties);
+        framework.start();
+    }
+    
+    private Main(Properties properties) {
+        framework = Palava.createFramework(properties);
+        framework.start();
     }
     
     /**
@@ -122,9 +84,19 @@ public final class Main {
      * 
      * @param args command line arguments
      * @throws CmdLineException if command line parsing failed
+     * @throws CloseFailedException 
      */
     public static void main(String[] args) throws CmdLineException {
-        new Main().run(args);
+        final Main main = new Main(args);
+        log.debug("Adding shutdown hook");
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                main.framework.stop();
+            }
+            
+        }));
     }
 
 }

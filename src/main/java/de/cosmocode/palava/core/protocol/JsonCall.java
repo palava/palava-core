@@ -86,8 +86,7 @@ public class JsonCall extends TextCall {
             }                
         }
         
-        @Override
-        public UtilitySet<Map.Entry<String, Object>> entrySet() {
+        private void lazyLoad() {
             if (json == null) {
                 try {
                     json = getJSONObject();
@@ -98,12 +97,22 @@ public class JsonCall extends TextCall {
             if (map == null) {
                 map = JSON.asMap(json);
             }
+        }
+        
+        @Override
+        public UtilitySet<Map.Entry<String, Object>> entrySet() {
+            lazyLoad();
             return map.entrySet();
         }
         
         @Override
         public Object put(String key, Object value) {
-            return entrySet().add(Maps.immutableEntry(key, value));
+            lazyLoad();
+            try {
+                return json.put(key, value);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
         
     }

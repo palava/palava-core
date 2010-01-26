@@ -17,35 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.scope;
+package de.cosmocode.palava.core.lifecycle;
 
-import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.protocol.Response;
+import com.google.inject.spi.InjectionListener;
 
 /**
- * Simple pojo for call and response instances.
+ * {@link InjectionListener} which handles {@link Startable}s.
  *
  * @author Willi Schoenborn
+ * @param <I>
  */
-final class Context {
+final class StartableListener<I> implements InjectionListener<I> {
 
-    private final Call call;
-    
-    private final Response response;
-    
-    public Context(Call call, Response response) {
-        this.call = Preconditions.checkNotNull(call, "Call");
-        this.response = Preconditions.checkNotNull(response, "Response");
+    private static final Logger log = LoggerFactory.getLogger(StartableListener.class);
+
+    @Override
+    public void afterInjection(I injectee) {
+        if (injectee instanceof Startable) {
+            log.info("Starting service {}", injectee);
+            Startable.class.cast(injectee).start();
+        }
     }
+
     
-    public Call getCall() {
-        return call;
-    }
-    
-    public Response getResponse() {
-        return response;
-    }
     
 }

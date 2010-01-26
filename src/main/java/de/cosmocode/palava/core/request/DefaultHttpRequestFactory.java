@@ -23,6 +23,12 @@ import java.util.Map;
 
 import de.cosmocode.palava.core.session.HttpSession;
 
+/**
+ * Default implementation of the {@link HttpRequestFactory} which creates
+ * {@link DefaultHttpRequest}s.
+ *
+ * @author Willi Schoenborn
+ */
 final class DefaultHttpRequestFactory implements HttpRequestFactory {
 
     @Override

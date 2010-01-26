@@ -17,25 +17,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service.lifecycle;
+package de.cosmocode.palava.core.service;
+
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 /**
- * A Service which implements {@link Initializable} marks
- * that he wants to get notified after construction.
- * 
- * <p>
- *   This interface is part of the palava lifecycle framework.
- * </p>
+ * Default implementation of the {@link ServiceManager} interface
+ * which uses the guice {@link Injector} to satisfy dependencies.
  *
  * @author Willi Schoenborn
  */
-public interface Initializable {
+@Singleton
+final class InjectorServiceManager implements ServiceManager {
+    
+    private final Injector injector;
 
-    /**
-     * Initializes the service.
-     * 
-     * @throws LifecycleException if initialize failed
-     */
-    void initialize();
+    @Inject
+    public InjectorServiceManager(Injector injector) {
+        this.injector = Preconditions.checkNotNull(injector, "Injector");
+    }
+    
+    @Override
+    public <T> T lookup(Class<T> spec) {
+        Preconditions.checkNotNull(spec, "Spec");
+        return injector.getInstance(spec);
+    }
     
 }

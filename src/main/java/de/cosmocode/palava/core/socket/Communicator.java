@@ -22,7 +22,9 @@ package de.cosmocode.palava.core.socket;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface Communicator {
+import de.cosmocode.palava.core.service.Service;
+
+public interface Communicator extends Service {
 
     void communicate(InputStream input, OutputStream output);
     

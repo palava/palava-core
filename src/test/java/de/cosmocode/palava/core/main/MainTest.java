@@ -19,26 +19,35 @@
 
 package de.cosmocode.palava.core.main;
 
-import org.junit.Ignore;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.junit.Test;
-import org.kohsuke.args4j.CmdLineException;
+
+import de.cosmocode.palava.core.lifecycle.Framework;
+import de.cosmocode.palava.core.lifecycle.Palava;
 
 /**
  * Tests {@link Main}.
  *
  * @author Willi Schoenborn
  */
-@Ignore
 public final class MainTest {
 
     /**
      * Tests {@link Main#main(String[])}.
      * 
-     * @throws CmdLineException if something went wrong
+     * @throws IOException if failed loading properties
      */
     @Test
-    public void main() throws CmdLineException {
-        Main.main(new String[] {"-c", "src/test/resources/configs/settings.properties"});
+    public void main() throws IOException {
+        final Properties properties = new Properties();
+        properties.load(new FileReader(new File("src/test/resources/configs/settings.properties")));
+        final Framework framework = Palava.createFramework(properties);
+        framework.start();
+        framework.stop();
     }
 
 }

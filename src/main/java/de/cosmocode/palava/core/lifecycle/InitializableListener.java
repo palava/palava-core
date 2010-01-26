@@ -1,4 +1,5 @@
 /**
+
  * palava - a java-php-bridge
  * Copyright (C) 2007  CosmoCode GmbH
  *
@@ -17,25 +18,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service.lifecycle;
+package de.cosmocode.palava.core.lifecycle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.spi.InjectionListener;
 
 /**
- * A Service which implements {@link Executable} marks
- * that he is able to get executed.
- *  
- * <p>
- *   This interface is part of the palava lifecycle framework.
- * </p>
+ * {@link InjectionListener} which handles {@link Initializable}s.
  *
  * @author Willi Schoenborn
+ * @param <I>
  */
-public interface Executable {
+final class InitializableListener<I> implements InjectionListener<I> {
 
-    /**
-     * Execution entry point.
-     * 
-     * @throws LifecycleException if execute failed
-     */
-    void execute();
+    private static final Logger log = LoggerFactory.getLogger(InitializableListener.class);
+
+    @Override
+    public void afterInjection(I injectee) {
+        if (injectee instanceof Initializable) {
+            log.info("Initializing service {}", injectee);
+            Initializable.class.cast(injectee).initialize();
+        }
+    }
     
 }

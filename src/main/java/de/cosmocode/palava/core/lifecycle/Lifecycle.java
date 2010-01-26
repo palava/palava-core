@@ -17,27 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.main;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import com.google.inject.BindingAnnotation;
+package de.cosmocode.palava.core.lifecycle;
 
 /**
- * Used to inject the global properties.
+ * Utility class for condition checks inside
+ * the lifecycle framework. 
  *
  * @author Willi Schoenborn
  */
-@Target({
-    ElementType.FIELD,
-    ElementType.PARAMETER,
-    ElementType.METHOD
-})
-@Retention(RetentionPolicy.RUNTIME)
-@BindingAnnotation
-public @interface Settings {
+public final class Lifecycle {
 
+    private Lifecycle() {
+        
+    }
+   
+    /**
+     * Checks the given expression and throws a {@link LifecycleException}
+     * if it is false. 
+     * 
+     * @param expression the condition
+     * @param message the error message
+     * @throws LifecycleException if expression is false
+     */
+    public static void check(boolean expression, String message) {
+        if (expression) return;
+        throw new LifecycleException(message);
+    }
+    
 }

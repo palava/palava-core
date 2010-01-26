@@ -35,7 +35,7 @@ public interface HttpRequest extends Destroyable {
 
     /**
      * 
-     * @return
+     * @return the requested uri
      * @throws IllegalStateException if there is no request uri information
      *         available in this request
      * @throws IllegalArgumentException if the request uri is no valid {@link URI}
@@ -52,7 +52,7 @@ public interface HttpRequest extends Destroyable {
     
     /**
      * 
-     * @return
+     * @return the remote address
      * @throws IllegalStateException if there is no remote address
      *         information available in this request
      */
@@ -65,14 +65,42 @@ public interface HttpRequest extends Destroyable {
      */
     String getUserAgent();
     
+    /**
+     * 
+     * @return
+     */
     HttpSession getHttpSession();
     
+    /**
+     * 
+     * @param <K>
+     * @param <V>
+     * @param key
+     * @param value
+     */
     <K, V> void set(K key, V value);
     
+    /**
+     * 
+     * @param <K>
+     * @param key
+     * @return
+     */
     <K> boolean contains(K key);
     
+    /**
+     * 
+     * @param <K>
+     * @param <V>
+     * @param key
+     * @return
+     */
     <K, V> V get(K key);
     
+    /**
+     * 
+     * @return
+     */
     Map<Object, Object> getAttributes();
     
 }

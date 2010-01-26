@@ -21,6 +21,8 @@ package de.cosmocode.palava.core.socket;
 
 import java.io.IOException;
 
+import de.cosmocode.palava.core.service.Service;
+
 /**
  * A {@link SocketConnector} is able to listen
  * on one specific port and establish a socket
@@ -28,7 +30,7 @@ import java.io.IOException;
  *
  * @author Willi Schoenborn
  */
-public interface SocketConnector {
+public interface SocketConnector extends Service {
 
     void run() throws IOException;
     

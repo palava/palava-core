@@ -29,15 +29,12 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import de.cosmocode.palava.core.registry.Registry;
+import de.cosmocode.palava.core.lifecycle.Disposable;
 import de.cosmocode.palava.core.scope.Scopes;
-import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
 
 /**
  * Manages all sessions.
@@ -46,18 +43,12 @@ import de.cosmocode.palava.core.server.lifecycle.PostServerStopListener;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultHttpSessionManager implements HttpSessionManager, PostServerStopListener {
+final class DefaultHttpSessionManager implements HttpSessionManager, Disposable {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultHttpSessionManager.class);
     
     private final Map<String, HttpSession> sessions = new HashMap<String, HttpSession>();
 
-    @Inject
-    public DefaultHttpSessionManager(Registry registry) {
-        Preconditions.checkNotNull(registry, "Registry");
-        registry.register(PostServerStopListener.class, this);
-    }
-    
     @Override
     public HttpSession get(String sessionId) {
         synchronized (sessions) {
@@ -121,7 +112,7 @@ final class DefaultHttpSessionManager implements HttpSessionManager, PostServerS
     }
     
     @Override
-    public void afterStop() {
+    public void dispose() {
         destroyAll();
     }
     

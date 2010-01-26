@@ -23,12 +23,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Provider;
 
+import de.cosmocode.palava.core.service.Service;
+
 /**
  * A manager for {@link HttpSession}s.
  *
  * @author Willi Schoenborn
  */
-public interface HttpSessionManager extends Provider<HttpSession> {
+public interface HttpSessionManager extends Service, Provider<HttpSession> {
 
     /**
      * Destroys all sessions.

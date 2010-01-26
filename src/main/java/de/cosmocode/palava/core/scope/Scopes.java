@@ -73,6 +73,11 @@ public final class Scopes {
         return REQUEST.get();
     }
     
+    /**
+     * Provides access to the current session.
+     * 
+     * @return the current session
+     */
     public static HttpSession getCurrentSession() {
         final HttpRequest request = getCurrentRequest();
         if (request == null) return null;

@@ -17,21 +17,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.server.lifecycle;
+package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.registry.Procedure;
+import de.cosmocode.palava.core.service.Service;
 
-public interface PreServerStartListener {
+/**
+ * A Service which implements {@link Startable} marks
+ * that it is possible to start and stop it. 
+ *
+ * <p>
+ *   This interface is part of the palava lifecycle framework.
+ * </p>
+ * 
+ * @author Willi Schoenborn
+ */
+public interface Startable extends Service {
 
-    public static final Procedure<PreServerStartListener> COMMAND = new Procedure<PreServerStartListener>() {
-        
-        @Override
-        public void apply(PreServerStartListener listener) {
-            listener.beforeStart();
-        }
-        
-    };
-
-    void beforeStart();
+    /**
+     * Starts the service.
+     * 
+     * @throws LifecycleException if start failed
+     */
+    void start();
+    
+    /**
+     * Stops the service.
+     * 
+     * @throws LifecycleException if stop failed
+     */
+    void stop();
     
 }

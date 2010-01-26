@@ -1,0 +1,203 @@
+package de.cosmocode.palava.core.lifecycle;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.name.Names;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+
+import de.cosmocode.commons.State;
+import de.cosmocode.palava.core.service.Service;
+
+/**
+ * Default implementation of the {@link Framework} interface.
+ *
+ * @author Willi Schoenborn
+ */
+final class DefaultFramework implements Framework {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultFramework.class);
+    
+    private State state = State.NEW;
+    
+    private final List<Service> services = Lists.newArrayList();
+    
+    private final Injector injector;
+    
+    DefaultFramework(final Properties properties) {
+        Preconditions.checkNotNull(properties, "Properties");
+
+        final Module mainModule;
+        
+        final String className = properties.getProperty("core.main.module");
+        Preconditions.checkNotNull(className, "core.main.module");
+        final Class<? extends Module> mainModuleClass;
+
+        try {
+            mainModuleClass = Class.forName(className).asSubclass(Module.class);
+            mainModule = mainModuleClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        
+        injector = Guice.createInjector(
+            mainModule,
+            new PropertiesModule(properties),
+            new ListenerModule()
+        );
+    }
+    
+    /**
+     * Module which binds properties to constants and the properties
+     * map itself to a map annotated with {@link Settings}.
+     *
+     * @author Willi Schoenborn
+     */
+    private final class PropertiesModule implements Module {
+        
+        private final Properties properties;
+        
+        public PropertiesModule(Properties properties) {
+            this.properties = Preconditions.checkNotNull(properties, "Properties");
+        }
+        
+        @Override
+        public void configure(Binder binder) {
+            Names.bindProperties(binder, properties);
+            binder.bind(Map.class).annotatedWith(Settings.class).toInstance(properties);
+        }
+        
+    }
+    
+    /**
+     * Module which listens for {@link Service}s and registers them locally.
+     *
+     * @author Willi Schoenborn
+     */
+    private final class ListenerModule implements Module {
+
+        @Override
+        public void configure(Binder binder) {
+            binder.bindListener(Matchers.any(), new TypeListener() {
+                
+                @Override
+                public <I> void hear(final TypeLiteral<I> literal, TypeEncounter<I> encounter) {
+                    if (Service.class.isAssignableFrom(literal.getRawType())) {
+                        encounter.register(new InjectionListener<I>() {
+                            
+                            @Override
+                            public void afterInjection(I injectee) {
+                                log.info("Adding {} to services", injectee);
+                                services.add(Service.class.cast(injectee));
+                            };
+                            
+                        });
+                        
+                        encounter.register(new InitializableListener<I>());
+                        encounter.register(new StartableListener<I>());
+                    }
+                }
+                
+            });
+        }
+        
+    }
+    
+    /**
+     * Private inner class for forcing guice to eagerly initialize all services.
+     *
+     * @author Willi Schoenborn
+     */
+    private static final class GuiceHack {
+        
+        // will be called by guice
+        @Inject
+        @SuppressWarnings("unused")
+        public GuiceHack(Set<Service> services) {
+            log.debug("GuiceHack created");
+            for (Service service : services) {
+                log.debug("Found {}", service);
+            }
+        }
+        
+    }
+    
+    @Override
+    public void start() {
+        state = State.STARTING;
+        injector.getInstance(GuiceHack.class);
+        state = State.RUNNING;
+    }
+    
+    private <T> Iterable<T> filterAndReverse(Class<T> type) {
+        return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
+    }
+    
+    @Override
+    public State currentState() {
+        return state;
+    }
+    
+    @Override
+    public boolean isRunning() {
+        return currentState() == State.RUNNING;
+    }
+    
+    @Override
+    public void stop() {
+        state = State.STOPPING;
+        log.info("Stopping framework");
+        stopServices();
+        disposeServices();
+        log.info("Framework stopped");
+        state = State.TERMINATED;
+    }
+    
+    private void stopServices() {
+        log.info("Stopping services");
+        for (Startable startable : filterAndReverse(Startable.class)) {
+            log.info("Stopping {}", startable);
+            try {
+                startable.stop();
+            } catch (LifecycleException e) {
+                final String message = String.format("Unable to stop service %s", startable);
+                log.warn(message, e);
+            }
+        }
+    }
+    
+    private void disposeServices() {
+        log.info("Disposing services");
+        for (Disposable disposable : filterAndReverse(Disposable.class)) {
+            log.info("Disposing {}", disposable);
+            try {
+                disposable.dispose();
+            } catch (LifecycleException e) {
+                final String message = String.format("Unable to dispose service %s", disposable);
+                log.warn(message, e);
+            }
+        }
+    }
+    
+}

@@ -17,33 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service;
+package de.cosmocode.palava.core.lifecycle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.spi.InjectionListener;
-
-import de.cosmocode.palava.core.service.lifecycle.Startable;
+import de.cosmocode.palava.core.service.Service;
 
 /**
- * {@link InjectionListener} which handles {@link Startable}s.
+ * A Service which implements {@link Disposable} marks
+ * that he wants to get notified on server shutdown.
+ * 
+ * <p>
+ *   This interface is part of the palava lifecycle framework.
+ * </p>
  *
  * @author Willi Schoenborn
- * @param <I>
  */
-final class StartableListener<I> implements InjectionListener<I> {
+public interface Disposable extends Service {
 
-    private static final Logger log = LoggerFactory.getLogger(StartableListener.class);
-
-    @Override
-    public void afterInjection(I injectee) {
-        if (injectee instanceof Startable) {
-            log.info("Starting service {}", injectee);
-            Startable.class.cast(injectee).start();
-        }
-    }
-
-    
+    /**
+     * Disposes the service.
+     * 
+     * @throws LifecycleException if dispose failed
+     */
+    void dispose();
     
 }

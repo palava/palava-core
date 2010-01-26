@@ -17,32 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service.lifecycle;
+package de.cosmocode.palava.core.lifecycle;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
 
 /**
- * A Service which implements {@link Suspendable} marks
- * that it is possible to suspend and resume.
- *
- * <p>
- *   This interface is part of the palava lifecycle framework.
- * </p>
+ * Used to inject the global properties.
  *
  * @author Willi Schoenborn
  */
-public interface Suspendable extends Startable {
+@Target({
+    ElementType.FIELD,
+    ElementType.PARAMETER,
+    ElementType.METHOD
+})
+@Retention(RetentionPolicy.RUNTIME)
+@BindingAnnotation
+public @interface Settings {
 
-    /**
-     * Suspends the service.
-     * 
-     * @throws LifecycleException if suspend failed
-     */
-    void suspend();
-    
-    /**
-     * Resumes the service.
-     * 
-     * @throws LifecycleException if resume failed
-     */
-    void resume();
-    
 }

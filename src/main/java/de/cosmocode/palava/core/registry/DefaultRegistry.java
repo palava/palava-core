@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Singleton;
 
@@ -37,7 +37,7 @@ final class DefaultRegistry implements Registry {
     
     private static final Logger log = LoggerFactory.getLogger(DefaultRegistry.class);
 
-    private final Multimap<Class<? extends Object>, Object> services = HashMultimap.create();
+    private final Multimap<Class<? extends Object>, Object> services = LinkedHashMultimap.create();
 
     @Override
     public <T> void register(Class<T> type, T listener) {

@@ -21,6 +21,9 @@ package de.cosmocode.palava.core.socket;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
+
+import de.cosmocode.palava.core.service.Service;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.socket} package.
@@ -33,6 +36,9 @@ public final class SocketModule implements Module {
     public void configure(Binder binder) {
         binder.bind(SocketConnector.class).to(DefaultSocketConnector.class);
         binder.bind(Communicator.class).to(DefaultCommunicator.class);
+        final Multibinder<Service> multibinder = Multibinder.newSetBinder(binder, Service.class);
+        multibinder.addBinding().to(SocketConnector.class);
+        multibinder.addBinding().to(Communicator.class);
     }
 
 }

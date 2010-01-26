@@ -17,25 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service.lifecycle;
+package de.cosmocode.palava.core.lifecycle;
 
 /**
- * A Service which implements {@link Disposable} marks
- * that he wants to get notified on server shutdown.
- * 
+ * A Service which implements {@link Executable} marks
+ * that he is able to get executed.
+ *  
  * <p>
  *   This interface is part of the palava lifecycle framework.
  * </p>
  *
  * @author Willi Schoenborn
  */
-public interface Disposable {
+public interface Executable {
 
     /**
-     * Disposes the service.
+     * Execution entry point.
      * 
-     * @throws LifecycleException if dispose failed
+     * @throws LifecycleException if execute failed
      */
-    void dispose();
+    void execute();
     
 }

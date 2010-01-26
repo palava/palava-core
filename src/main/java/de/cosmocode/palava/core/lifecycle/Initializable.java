@@ -17,21 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.server.lifecycle;
+package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.registry.Procedure;
+import de.cosmocode.palava.core.service.Service;
 
-public interface PostServerStopListener {
+/**
+ * A Service which implements {@link Initializable} marks
+ * that he wants to get notified after construction.
+ * 
+ * <p>
+ *   This interface is part of the palava lifecycle framework.
+ * </p>
+ *
+ * @author Willi Schoenborn
+ */
+public interface Initializable extends Service {
 
-    public static final Procedure<PostServerStopListener> COMMAND = new Procedure<PostServerStopListener>() {
-        
-        @Override
-        public void apply(PostServerStopListener listener) {
-            listener.afterStop();
-        }
-        
-    };
-
-    void afterStop();
+    /**
+     * Initializes the service.
+     * 
+     * @throws LifecycleException if initialize failed
+     */
+    void initialize();
     
 }

@@ -29,7 +29,7 @@ import com.google.inject.Inject;
  *
  * @author Willi Schoenborn
  */
-public interface ServiceManager {
+public interface ServiceManager extends Service {
 
     /**
      * Lookups a service by its specification.
@@ -44,20 +44,5 @@ public interface ServiceManager {
      */
     @Deprecated
     <T> T lookup(Class<T> spec);
-
-    /**
-     * Lookups a service by its specification and a its name.
-     * 
-     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
-     * annotation instead.
-     * 
-     * @param <T> the generic interface type
-     * @param spec the spec class literal
-     * @param name the service name
-     * @return the found Service
-     * @throws NullPointerException if spec or name is null
-     */
-    @Deprecated
-    <T> T lookup(Class<T> spec, String name);
     
 }

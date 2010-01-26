@@ -17,31 +17,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.spi.InjectionListener;
-
-import de.cosmocode.palava.core.service.lifecycle.Initializable;
+package de.cosmocode.palava.core.lifecycle;
 
 /**
- * {@link InjectionListener} which handles {@link Initializable}s.
+ * A Service which implements {@link Suspendable} marks
+ * that it is possible to suspend and resume.
+ *
+ * <p>
+ *   This interface is part of the palava lifecycle framework.
+ * </p>
  *
  * @author Willi Schoenborn
- * @param <I>
  */
-final class InitializableListener<I> implements InjectionListener<I> {
+public interface Suspendable extends Startable {
 
-    private static final Logger log = LoggerFactory.getLogger(InitializableListener.class);
-
-    @Override
-    public void afterInjection(I injectee) {
-        if (injectee instanceof Initializable) {
-            log.info("Initializing service {}", injectee);
-            Initializable.class.cast(injectee).initialize();
-        }
-    }
+    /**
+     * Suspends the service.
+     * 
+     * @throws LifecycleException if suspend failed
+     */
+    void suspend();
+    
+    /**
+     * Resumes the service.
+     * 
+     * @throws LifecycleException if resume failed
+     */
+    void resume();
     
 }

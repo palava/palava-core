@@ -21,6 +21,9 @@ package de.cosmocode.palava.core.server;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
+
+import de.cosmocode.palava.core.service.Service;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.server} package.
@@ -32,6 +35,7 @@ public final class ServerModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(Server.class).to(DefaultServer.class);
+        Multibinder.newSetBinder(binder, Service.class).addBinding().to(Server.class);
     }
 
 }

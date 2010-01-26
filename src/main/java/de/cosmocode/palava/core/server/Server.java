@@ -22,9 +22,10 @@ package de.cosmocode.palava.core.server;
 import com.google.inject.Inject;
 
 import de.cosmocode.commons.Stateful;
+import de.cosmocode.palava.core.service.Service;
 import de.cosmocode.palava.core.service.ServiceManager;
 
-public interface Server extends Stateful {
+public interface Server extends Service, Stateful {
 
     /**
      * Provides access to the service manager.
@@ -37,7 +38,5 @@ public interface Server extends Stateful {
     ServiceManager getServiceManager();
 
     void start();
-    
-    void stop();
     
 }
