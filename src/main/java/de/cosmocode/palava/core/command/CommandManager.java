@@ -19,13 +19,22 @@
 
 package de.cosmocode.palava.core.command;
 
+import de.cosmocode.palava.core.Service;
+
 /**
- * 
+ * A service which handles command management.
  *
  * @author Willi Schoenborn
  */
-public interface CommandManager {
+public interface CommandManager extends Service {
 
+    /**
+     * Creates a {@link Command} for a given name.
+     * The name might be aliased.
+     * 
+     * @param aliasedName the aliased command name
+     * @return the probably cached command instance
+     */
     Command forName(String aliasedName);
     
 }

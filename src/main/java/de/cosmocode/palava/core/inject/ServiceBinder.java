@@ -21,7 +21,7 @@ package de.cosmocode.palava.core.inject;
 
 import com.google.inject.Key;
 
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.Service;
 
 public interface ServiceBinder<S extends Service> {
 

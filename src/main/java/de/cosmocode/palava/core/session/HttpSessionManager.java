@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Provider;
 
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.Service;
 
 /**
  * A manager for {@link HttpSession}s.

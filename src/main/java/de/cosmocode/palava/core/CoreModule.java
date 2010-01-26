@@ -31,7 +31,6 @@ import de.cosmocode.palava.core.registry.RegistryModule;
 import de.cosmocode.palava.core.request.RequestModule;
 import de.cosmocode.palava.core.scope.ScopeModule;
 import de.cosmocode.palava.core.server.ServerModule;
-import de.cosmocode.palava.core.service.ServiceModule;
 import de.cosmocode.palava.core.session.SessionModule;
 import de.cosmocode.palava.core.socket.SocketModule;
 
@@ -54,7 +53,6 @@ public final class CoreModule implements Module {
         binder.install(new RequestModule());
         binder.install(new ScopeModule());
         binder.install(new ServerModule());
-        binder.install(new ServiceModule());
         binder.install(new SessionModule());
         binder.install(new SocketModule());
     }

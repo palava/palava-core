@@ -17,33 +17,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service;
+package de.cosmocode.palava.core;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation of the {@link ServiceManager} interface
- * which uses the guice {@link Injector} to satisfy dependencies.
+ * Static factory class for framework instances.
  *
  * @author Willi Schoenborn
  */
-@Singleton
-final class InjectorServiceManager implements ServiceManager {
-    
-    private final Injector injector;
+public final class Palava {
 
-    @Inject
-    public InjectorServiceManager(Injector injector) {
-        this.injector = Preconditions.checkNotNull(injector, "Injector");
-    }
+    private static final Logger log = LoggerFactory.getLogger(Palava.class);
     
-    @Override
-    public <T> T lookup(Class<T> spec) {
-        Preconditions.checkNotNull(spec, "Spec");
-        return injector.getInstance(spec);
+    private Palava() {
+        
+    }
+
+    /**
+     * Constructs a new {@link Framework} using the specified properties.
+     * 
+     * @param settings the settings
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if properties is null
+     */
+    public static Framework createFramework(Properties settings) {
+        log.debug("Creating new framework using {}", settings);
+        return new DefaultFramework(settings);
     }
     
 }

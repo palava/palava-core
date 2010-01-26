@@ -35,13 +35,13 @@ import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.multibindings.Multibinder;
 
 import de.cosmocode.palava.core.CoreModule;
+import de.cosmocode.palava.core.Service;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 import de.cosmocode.palava.core.command.Alias;
 import de.cosmocode.palava.core.command.Aliases;
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.request.RequestFilter;
-import de.cosmocode.palava.core.service.Service;
 
 /**
  * Abstract module for applications.
@@ -139,7 +139,6 @@ public abstract class PalavaModule extends AbstractModule {
         
         public InternalServiceBinder(Key<S> key) {
             this.key = Preconditions.checkNotNull(key, "Key");
-            // TODO make sure services are singletons
             Multibinder.newSetBinder(binder(), Service.class).addBinding().to(key).in(Singleton.class);
         }
         

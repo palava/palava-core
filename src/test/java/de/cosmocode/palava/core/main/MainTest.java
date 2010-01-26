@@ -26,8 +26,8 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import de.cosmocode.palava.core.lifecycle.Framework;
-import de.cosmocode.palava.core.lifecycle.Palava;
+import de.cosmocode.palava.core.Framework;
+import de.cosmocode.palava.core.Palava;
 
 /**
  * Tests {@link Main}.
@@ -47,6 +47,11 @@ public final class MainTest {
         properties.load(new FileReader(new File("src/test/resources/configs/settings.properties")));
         final Framework framework = Palava.createFramework(properties);
         framework.start();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         framework.stop();
     }
 

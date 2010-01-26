@@ -17,13 +17,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service;
+package de.cosmocode.palava.core.command;
+
+import de.cosmocode.palava.core.protocol.content.Content;
 
 /**
- * Marker interface for all services.
+ * Legacy content wrapper.
+ * 
+ * @deprecated use {@link Command} and return content
  *
  * @author Willi Schoenborn
  */
-public interface Service {
+@Deprecated
+public interface Response {
 
+    /**
+     * Set the content of this response.
+     * 
+     * @param content the content
+     */
+    void setContent(Content content);
+    
+    /**
+     * Provides the content of this response.
+     * 
+     * @return the current content or null if there is no content
+     */
+    Content getContent();
+    
+    /**
+     * Check content state.
+     * 
+     * @return true if this response contains content
+     */
+    boolean hasContent();
+    
 }

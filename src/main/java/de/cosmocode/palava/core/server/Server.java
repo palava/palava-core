@@ -22,10 +22,15 @@ package de.cosmocode.palava.core.server;
 import com.google.inject.Inject;
 
 import de.cosmocode.commons.Stateful;
-import de.cosmocode.palava.core.service.Service;
-import de.cosmocode.palava.core.service.ServiceManager;
+import de.cosmocode.palava.core.Service;
+import de.cosmocode.palava.core.lifecycle.Startable;
 
-public interface Server extends Service, Stateful {
+/**
+ * Legacy central palava framework instance.
+ *
+ * @author Willi Schoenborn
+ */
+public interface Server extends Service, Stateful, Startable {
 
     /**
      * Provides access to the service manager.
@@ -37,6 +42,18 @@ public interface Server extends Service, Stateful {
     @Deprecated
     ServiceManager getServiceManager();
 
-    void start();
+    /**
+     * Lookups a service by its specification.
+     * 
+     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
+     * annotation instead.
+     * 
+     * @param <T> the generic interface type
+     * @param spec the spec class literal
+     * @return the found Service
+     * @throws NullPointerException if spec is null
+     */
+    @Deprecated
+    <T> T lookup(Class<T> spec);
     
 }

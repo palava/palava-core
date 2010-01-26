@@ -26,11 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.lifecycle.Startable;
-import de.cosmocode.palava.core.service.ServiceManager;
 import de.cosmocode.palava.core.socket.SocketConnector;
 
 /**
@@ -39,19 +39,19 @@ import de.cosmocode.palava.core.socket.SocketConnector;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultServer implements Server, Runnable, Startable {
+final class DefaultServer implements Server, ServiceManager, Startable, Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultServer.class);
-    
-    private final ServiceManager serviceManager;
+
+    private final Injector injector;
     
     private final SocketConnector socketConnector;
     
     private State state = State.NEW;
     
     @Inject
-    public DefaultServer(ServiceManager serviceManager, SocketConnector connector) {
-        this.serviceManager = Preconditions.checkNotNull(serviceManager, "ServiceManager");
+    public DefaultServer(Injector injector, SocketConnector connector) {
+        this.injector = Preconditions.checkNotNull(injector, "Injector");
         this.socketConnector = Preconditions.checkNotNull(connector, "SocketConnector");
     }
 
@@ -79,7 +79,13 @@ final class DefaultServer implements Server, Runnable, Startable {
     
     @Override
     public ServiceManager getServiceManager() {
-        return serviceManager;
+        return this;
+    }
+    
+    @Override
+    public <T> T lookup(Class<T> spec) {
+        Preconditions.checkNotNull(spec, "Spec");
+        return injector.getInstance(spec);
     }
     
     @Override

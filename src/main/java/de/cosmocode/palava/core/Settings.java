@@ -17,32 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.service;
+package de.cosmocode.palava.core;
 
-import com.google.inject.Inject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
 
 /**
- * A manager for all services running inside the palava
- * framework. The {@link ServiceManager} is responsible for
- * the proper execution of all lifecycle methods
- * as defined in the lifecycle package.
+ * Used to inject the global properties.
  *
  * @author Willi Schoenborn
  */
-public interface ServiceManager extends Service {
+@Target({
+    ElementType.FIELD,
+    ElementType.PARAMETER,
+    ElementType.METHOD
+})
+@Retention(RetentionPolicy.RUNTIME)
+@BindingAnnotation
+public @interface Settings {
 
-    /**
-     * Lookups a service by its specification.
-     * 
-     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
-     * annotation instead.
-     * 
-     * @param <T> the generic interface type
-     * @param spec the spec class literal
-     * @return the found Service
-     * @throws NullPointerException if spec is null
-     */
-    @Deprecated
-    <T> T lookup(Class<T> spec);
-    
 }

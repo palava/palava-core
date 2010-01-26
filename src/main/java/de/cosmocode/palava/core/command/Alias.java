@@ -31,8 +31,18 @@ import de.cosmocode.patterns.Immutable;
 @Immutable
 public interface Alias extends Function<String, String> {
 
+    /**
+     * Provides the names of this alias.
+     * 
+     * @return the name
+     */
     String getName();
     
+    /**
+     * Provides the package name this alias stands for.
+     * 
+     * @return the package name
+     */
     String getPackageName();
     
 }

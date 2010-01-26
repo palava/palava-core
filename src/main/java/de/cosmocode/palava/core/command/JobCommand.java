@@ -29,7 +29,6 @@ import com.google.common.collect.Maps;
 
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.call.filter.Filterable;
-import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.scope.Scopes;
@@ -60,7 +59,7 @@ final class JobCommand implements Command, Filterable {
     @Override
     public Content execute(Call call) throws CommandException {
         
-        final Response response = new DefaultResponse();
+        final Response response = new DummyResponse();
         final HttpRequest request = Scopes.getCurrentRequest();
         log.debug("Local request: {}", request);
         final HttpSession session = request.getHttpSession();
@@ -70,9 +69,13 @@ final class JobCommand implements Command, Filterable {
         
         try {
             job.process(call, response, session, server, caddy);
+        /*CHECKSTYLE:OFF*/
         } catch (RuntimeException e) {
+        /*CHECKSTYLE:ON*/
             throw e;
+        /*CHECKSTYLE:OFF*/
         } catch (Exception e) {
+        /*CHECKSTYLE:ON*/
             throw new CommandException(e);
         }
         
@@ -81,7 +84,13 @@ final class JobCommand implements Command, Filterable {
         return response.getContent();
     }
     
-    private final class DefaultResponse implements Response {
+    /**
+     * Dummy implementation of the {@link Response} interface which allows simple
+     * content retrieval.
+     *
+     * @author Willi Schoenborn
+     */
+    private final class DummyResponse implements Response {
 
         private Content content;
 

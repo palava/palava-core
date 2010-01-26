@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import de.cosmocode.palava.core.lifecycle.Framework;
-import de.cosmocode.palava.core.lifecycle.Palava;
+import de.cosmocode.palava.core.Framework;
+import de.cosmocode.palava.core.Palava;
 
 /**
  * Application entry point.

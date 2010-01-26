@@ -17,31 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.lifecycle;
+package de.cosmocode.palava.core;
 
 /**
- * Utility class for condition checks inside
- * the lifecycle framework. 
+ * Marker interface for all services.
  *
  * @author Willi Schoenborn
  */
-public final class Lifecycle {
+public interface Service {
 
-    private Lifecycle() {
-        
-    }
-   
-    /**
-     * Checks the given expression and throws a {@link LifecycleException}
-     * if it is false. 
-     * 
-     * @param expression the condition
-     * @param message the error message
-     * @throws LifecycleException if expression is false
-     */
-    public static void check(boolean expression, String message) {
-        if (expression) return;
-        throw new LifecycleException(message);
-    }
-    
 }

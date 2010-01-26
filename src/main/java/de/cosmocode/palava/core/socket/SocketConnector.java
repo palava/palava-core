@@ -21,7 +21,7 @@ package de.cosmocode.palava.core.socket;
 
 import java.io.IOException;
 
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.Service;
 
 /**
  * A {@link SocketConnector} is able to listen

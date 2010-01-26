@@ -1,4 +1,23 @@
-package de.cosmocode.palava.core.lifecycle;
+/**
+ * palava - a java-php-bridge
+ * Copyright (C) 2007  CosmoCode GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package de.cosmocode.palava.core;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +43,10 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import de.cosmocode.commons.State;
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.lifecycle.Disposable;
+import de.cosmocode.palava.core.lifecycle.Initializable;
+import de.cosmocode.palava.core.lifecycle.LifecycleException;
+import de.cosmocode.palava.core.lifecycle.Startable;
 
 /**
  * Default implementation of the {@link Framework} interface.
@@ -123,6 +145,46 @@ final class DefaultFramework implements Framework {
         }
         
     }
+
+    /**
+     * {@link InjectionListener} which handles {@link Initializable}s.
+     *
+     * @author Willi Schoenborn
+     * @param <I>
+     */
+    private static final class InitializableListener<I> implements InjectionListener<I> {
+
+        private static final Logger log = LoggerFactory.getLogger(InitializableListener.class);
+
+        @Override
+        public void afterInjection(I injectee) {
+            if (injectee instanceof Initializable) {
+                log.info("Initializing service {}", injectee);
+                Initializable.class.cast(injectee).initialize();
+            }
+        }
+        
+    }
+
+    /**
+     * {@link InjectionListener} which handles {@link Startable}s.
+     *
+     * @author Willi Schoenborn
+     * @param <I>
+     */
+    private static final class StartableListener<I> implements InjectionListener<I> {
+
+        private static final Logger log = LoggerFactory.getLogger(StartableListener.class);
+
+        @Override
+        public void afterInjection(I injectee) {
+            if (injectee instanceof Startable) {
+                log.info("Starting service {}", injectee);
+                Startable.class.cast(injectee).start();
+            }
+        }
+        
+    }
     
     /**
      * Private inner class for forcing guice to eagerly initialize all services.
@@ -149,11 +211,6 @@ final class DefaultFramework implements Framework {
         injector.getInstance(GuiceHack.class);
         state = State.RUNNING;
     }
-    
-    private <T> Iterable<T> filterAndReverse(Class<T> type) {
-        return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
-    }
-    
     @Override
     public State currentState() {
         return state;
@@ -173,6 +230,11 @@ final class DefaultFramework implements Framework {
         log.info("Framework stopped");
         state = State.TERMINATED;
     }
+    
+    private <T> Iterable<T> filterAndReverse(Class<T> type) {
+        return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
+    }
+    
     
     private void stopServices() {
         log.info("Stopping services");

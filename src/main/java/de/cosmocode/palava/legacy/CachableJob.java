@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.log4j.Logger;
 
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.command.Response;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
 import de.cosmocode.palava.core.protocol.DataCall;
-import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.TextCall;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.JsonContent;

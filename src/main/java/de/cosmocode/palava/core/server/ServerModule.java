@@ -23,7 +23,7 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.multibindings.Multibinder;
 
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.Service;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.server} package.

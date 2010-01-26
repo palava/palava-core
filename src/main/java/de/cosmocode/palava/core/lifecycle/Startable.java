@@ -19,7 +19,7 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.service.Service;
+import de.cosmocode.palava.core.Service;
 
 /**
  * A Service which implements {@link Startable} marks

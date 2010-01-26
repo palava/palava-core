@@ -17,27 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.lifecycle;
+package de.cosmocode.palava.core;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import com.google.inject.BindingAnnotation;
+import de.cosmocode.commons.Stateful;
 
 /**
- * Used to inject the global properties.
+ * Root type for the palava framework.
  *
  * @author Willi Schoenborn
  */
-@Target({
-    ElementType.FIELD,
-    ElementType.PARAMETER,
-    ElementType.METHOD
-})
-@Retention(RetentionPolicy.RUNTIME)
-@BindingAnnotation
-public @interface Settings {
+public interface Framework extends Stateful {
+
+    /**
+     * Starts the framework.
+     */
+    void start();
+    
+    /**
+     * Stops the framework.
+     */
+    void stop();
 
 }

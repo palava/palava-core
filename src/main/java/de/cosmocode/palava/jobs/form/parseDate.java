@@ -31,8 +31,8 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
 import de.cosmocode.json.JSON;
+import de.cosmocode.palava.core.command.Response;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.JsonContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;

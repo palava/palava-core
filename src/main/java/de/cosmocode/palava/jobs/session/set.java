@@ -24,8 +24,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.command.Response;
 import de.cosmocode.palava.core.protocol.DataCall;
-import de.cosmocode.palava.core.protocol.Response;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
 import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;

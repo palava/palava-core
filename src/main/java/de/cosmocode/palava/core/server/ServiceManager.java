@@ -17,31 +17,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.lifecycle;
+package de.cosmocode.palava.core.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.inject.Inject;
 
-import com.google.inject.spi.InjectionListener;
+import de.cosmocode.palava.core.Service;
 
 /**
- * {@link InjectionListener} which handles {@link Startable}s.
+ * A manager for all services running inside the palava
+ * framework. The {@link ServiceManager} is responsible for
+ * the proper execution of all lifecycle methods
+ * as defined in the lifecycle package.
  *
  * @author Willi Schoenborn
- * @param <I>
  */
-final class StartableListener<I> implements InjectionListener<I> {
+public interface ServiceManager extends Service {
 
-    private static final Logger log = LoggerFactory.getLogger(StartableListener.class);
-
-    @Override
-    public void afterInjection(I injectee) {
-        if (injectee instanceof Startable) {
-            log.info("Starting service {}", injectee);
-            Startable.class.cast(injectee).start();
-        }
-    }
-
-    
+    /**
+     * Lookups a service by its specification.
+     * 
+     * @deprecated legacy way to retrieve a Service instance Use the {@link Inject}
+     * annotation instead.
+     * 
+     * @param <T> the generic interface type
+     * @param spec the spec class literal
+     * @return the found Service
+     * @throws NullPointerException if spec is null
+     */
+    @Deprecated
+    <T> T lookup(Class<T> spec);
     
 }
