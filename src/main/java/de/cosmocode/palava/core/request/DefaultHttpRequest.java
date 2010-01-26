@@ -122,11 +122,6 @@ final class DefaultHttpRequest implements HttpRequest {
     }
 
     @Override
-    public Map<Object, Object> getAttributes() {
-        return context;
-    }
-    
-    @Override
     public void destroy() {
         final Iterable<Destroyable> destroyables = Iterables.filter(context.values(), Destroyable.class);
         for (Destroyable destroyable : destroyables) {

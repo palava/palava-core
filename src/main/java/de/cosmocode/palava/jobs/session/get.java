@@ -19,36 +19,41 @@
 
 package de.cosmocode.palava.jobs.session;
 
-import java.util.Map;
+import com.google.common.base.Preconditions;
+import com.google.inject.Singleton;
 
+import de.cosmocode.palava.core.call.Arguments;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.DataCall;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.legacy.Job;
-
+import de.cosmocode.palava.legacy.ConversionException;
 
 /**
  * get a session data entry
  * @author Detlef Hüttemann
  */
-public class get implements Job
-{
-
-    public void process(Call request, Response response, HttpSession session, Server server, Map<String,Object> caddy) throws ConnectionLostException, Exception
-    {
-        DataCall req = (DataCall) request;
-        Map<String, String> args = req.getStringedArguments();
-        String key = args.get("key");
-        if ( key == null ) throw new NullPointerException("key");
-        Object data = session.get( key ) ;
-        if ( data != null )
-            response.setContent(new PhpContent(data));
-        else 
-            response.setContent( PhpContent.NOT_FOUND );
+@Singleton
+public class get implements Command {
+    
+    @Override
+    public Content execute(Call call) throws CommandException {
+        final Arguments arguments = call.getArguments();
+        arguments.require("key");
+        
+        final Object key = arguments.get("key");
+        final HttpSession session = call.getHttpRequest().getHttpSession();
+        Preconditions.checkNotNull(session, "Session");
+        
+        final Object value = session.get(key);
+        
+        try {
+            return new PhpContent(value);
+        } catch (ConversionException e) {
+            throw new CommandException(e);
+        }
     }
 
 }

@@ -20,10 +20,27 @@
 package de.cosmocode.palava.core.call.filter;
 
 import de.cosmocode.palava.core.call.Call;
+import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.protocol.content.Content;
 
+/**
+ * A filter can be configured to get executed on specified call, 
+ * usually requesting specified {@link Command}s and runs before, after or instead
+ * of the requested command.
+ *
+ * @author Willi Schoenborn
+ */
 public interface Filter {
 
+    /**
+     * Execute this filter. This may result in proceeding the given chain or in returning 
+     * a probably cached content.
+     * 
+     * @param call the incoming call
+     * @param chain the proceeding chain
+     * @return the generated content
+     * @throws FilterException if filtering failed
+     */
     Content filter(Call call, FilterChain chain) throws FilterException;
     
 }

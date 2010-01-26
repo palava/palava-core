@@ -24,8 +24,22 @@ import java.io.OutputStream;
 
 import de.cosmocode.palava.core.Service;
 
+/**
+ * A communicator handles exactly one incoming http request,
+ * which itself results in one socket connections.
+ *
+ * @author Willi Schoenborn
+ */
 public interface Communicator extends Service {
 
+    /**
+     * Communicate with the php frontend using the given input and
+     * output streams. A communication usually consists of multiple
+     * call/response cycles.
+     * 
+     * @param input the socket input stream
+     * @param output the socket output stream
+     */
     void communicate(InputStream input, OutputStream output);
     
 }

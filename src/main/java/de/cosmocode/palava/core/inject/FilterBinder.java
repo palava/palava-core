@@ -22,13 +22,36 @@ package de.cosmocode.palava.core.inject;
 import com.google.inject.Key;
 
 import de.cosmocode.palava.core.call.filter.Filter;
+import de.cosmocode.palava.core.call.filter.definition.FilterDefinition;
 
+/**
+ * Binds a filter to a key/class/instance.
+ *
+ * @author Willi Schoenborn
+ */
 public interface FilterBinder {
 
+    /**
+     * Binds the associated predicate and the specified class
+     * to a new {@link FilterDefinition}.
+     * 
+     * @param filterKey the key
+     */
     void through(Class<? extends Filter> filterKey);
-    
+
+    /**
+     * Binds the associated predicate and the specified key
+     * to a new {@link FilterDefinition}.
+     * 
+     * @param filterKey the key
+     */
     void through(Key<? extends Filter> filterKey);
     
+    /**
+     * Binds the associated predicate to the specifed instance.
+     * 
+     * @param filter the target filter
+     */
     void through(Filter filter);
     
 }

@@ -34,6 +34,13 @@ import de.cosmocode.palava.core.request.HttpRequest;
  */
 public interface Call {
 
+    /**
+     * Provide the arguments of this call.
+     * 
+     * @return the arguments
+     * @throws UnsupportedOperationException if this call does not support
+     *         Arguments
+     */
     Arguments getArguments();
     
     /**
@@ -43,13 +50,33 @@ public interface Call {
      */
     HttpRequest getHttpRequest();
     
+    /**
+     * Provide the command associated with this call.
+     * 
+     * @return the command scheduled for this call
+     */
     Command getCommand();
-    
-    // TODO blocking?
+
+    /**
+     * Provides the underlying inputstream.
+     * 
+     * @return the inputstream
+     */
     InputStream getInputStream();
     
+    /**
+     * Provide the header, this call has been build upon.
+     * 
+     * @return the header
+     */
     Header getHeader();
     
+    /**
+     * Discard all bytes left in the stream without parsing them.
+     * 
+     * @throws ConnectionLostException if stream has been closed
+     * @throws IOException if an error occurs during read
+     */
     void discard() throws ConnectionLostException, IOException;
     
 }

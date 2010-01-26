@@ -23,12 +23,34 @@ import com.google.inject.Key;
 
 import de.cosmocode.palava.core.Service;
 
+/**
+ * Binds services to their implementations and encapsulates
+ * multibinding issues.
+ *
+ * @author Willi Schoenborn
+ * @param <S> the generic service type
+ */
 public interface ServiceBinder<S extends Service> {
 
+    /**
+     * Binds the associated key to the specified key.
+     * 
+     * @param serviceKey the target key
+     */
     void with(Class<? extends S> serviceKey);
-    
+
+    /**
+     * Binds the associated key to the specified key.
+     * 
+     * @param serviceKey the target key
+     */
     void with(Key<? extends S> serviceKey);
-    
+
+    /**
+     * Binds the associated key to the specified instance.
+     * 
+     * @param service the target instance
+     */
     void with(S service);
     
 }

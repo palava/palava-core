@@ -22,12 +22,19 @@ package de.cosmocode.palava.core.call;
 import de.cosmocode.collections.utility.UtilityMap;
 
 /**
- * 
+ * Argument map providing useful methods for type checking
+ * and converting.
  *
  * @author Willi Schoenborn
  */
 public interface Arguments extends UtilityMap<String, Object> {
 
+    /**
+     * Checks whether all specified keys exist in these arguments.
+     * 
+     * @param keys the required keys
+     * @throws MissingArgumentException if any key is missing
+     */
     void require(String... keys) throws MissingArgumentException;
     
 }

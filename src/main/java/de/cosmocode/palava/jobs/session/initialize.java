@@ -19,42 +19,32 @@
 
 package de.cosmocode.palava.jobs.session;
 
-import java.util.Map;
-
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.TextContent;
-import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.core.session.HttpSessionManager;
-import de.cosmocode.palava.legacy.Job;
-
 
 /**
- * checks session and creates new if necessary. 
- * requires datarequest. return phpcontent(sessionid)
+ * Checks whether a session exists and creates new if necessary.
+ * 
  * @author Detlef Hüttemann
+ * @author Willi Schoenborn
  */
-public class initialize implements Job {
+@Singleton
+public class initialize implements Command {
 
     @Inject
-    private HttpSessionManager sessionManager;
+    private Provider<HttpSession> provider;
 
     @Override
-    public void process(Call call, Response response, HttpSession session, Server server, 
-        Map<String, Object> caddy) throws Exception {
-        
-        final HttpSession current;
-        
-        if (session == null) {
-            current = sessionManager.get();
-        } else {
-            current = session;
-        }
-        
-        response.setContent(new TextContent(current.getSessionId()));
-
+    public Content execute(Call call) throws CommandException {
+        return new TextContent(provider.get().getSessionId());
     }
+    
 }

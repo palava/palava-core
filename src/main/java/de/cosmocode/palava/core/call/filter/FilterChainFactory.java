@@ -19,8 +19,20 @@
 
 package de.cosmocode.palava.core.call.filter;
 
+/**
+ * A factory for {@link FilterChain}s.
+ *
+ * @author Willi Schoenborn
+ */
 public interface FilterChainFactory {
 
-    public FilterChain create(FilterChain proceeding);
+    /**
+     * Creates a {@link FilterChain} which will delegate to the specified
+     * chain if no filter intercepted the incoming call first.
+     * 
+     * @param proceeding the proceeding chain
+     * @return a new {@link FilterChain}
+     */
+    FilterChain create(FilterChain proceeding);
     
 }

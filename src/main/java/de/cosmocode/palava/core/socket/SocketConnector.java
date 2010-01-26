@@ -32,6 +32,12 @@ import de.cosmocode.palava.core.Service;
  */
 public interface SocketConnector extends Service {
 
+    /**
+     * Starts this socket connector, which
+     * opens a server socket.
+     * 
+     * @throws IOException if socket creation failed.
+     */
     void run() throws IOException;
     
     /**

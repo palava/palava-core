@@ -28,7 +28,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 
-import de.cosmocode.palava.Client;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.command.Response;
 import de.cosmocode.palava.core.protocol.ConnectionLostException;
@@ -38,9 +37,9 @@ import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
 import de.cosmocode.palava.legacy.Job;
 
-
 /**
- * offers a javascript enviroment in the server
+ * Offers a javascript enviroment in the server.
+ * 
  * @author Tobias Sarnowski
  */
 public class console implements Job
@@ -68,9 +67,6 @@ public class console implements Job
 
         Object jsSession = Context.javaToJS(session, scope);
         ScriptableObject.putProperty(scope, "session", jsSession);
-
-        Object jsClient = Context.javaToJS(new Client(), scope);
-        ScriptableObject.putProperty(scope, "Client", jsClient);
 
         Object jsServer = Context.javaToJS(server, scope);
         ScriptableObject.putProperty(scope, "server", jsServer);

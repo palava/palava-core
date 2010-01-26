@@ -21,7 +21,6 @@ package de.cosmocode.palava.core.command;
 
 import com.google.common.base.Function;
 
-import de.cosmocode.palava.core.call.filter.Filterable;
 
 /**
  * Static utility class for working with {@link Command}s.
@@ -34,8 +33,8 @@ public final class Commands {
         
         @Override
         public Class<?> apply(Command command) {
-            if (command instanceof Filterable) {
-                return Filterable.class.cast(command).getConcreteClass();
+            if (command instanceof JobCommand) {
+                return JobCommand.class.cast(command).getConcreteClass();
             } else {
                 return command.getClass();
             }

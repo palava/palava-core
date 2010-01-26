@@ -24,10 +24,35 @@ import com.google.inject.Key;
 import de.cosmocode.palava.core.call.filter.Filter;
 import de.cosmocode.palava.core.command.Command;
 
+/**
+ * A filter definition is the combination of a key exactly defining a
+ * filter and the abbility to decide whether the associated filter
+ * should run on a specified command.
+ *
+ * @author Willi Schoenborn
+ */
 public interface FilterDefinition {
 
+    /**
+     * The {@link Key} of the associated filter.
+     * 
+     * @return the key
+     */
     Key<? extends Filter> getKey();
     
+    /**
+     * Checks whether this filter should run on the specified command.
+     *
+     * <p>
+     *   <strong>Note</strong>: Implementations should be as fast as
+     *   possible. Long running operations will affect server performance
+     *   and throughput dramatically.
+     * </p>
+     * 
+     * @param command the requested command
+     * @return true if this filter should be applied to the incoming call
+     *         requesting the specified command
+     */
     boolean appliesTo(Command command);
     
 }

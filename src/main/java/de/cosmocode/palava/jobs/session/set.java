@@ -19,37 +19,35 @@
 
 package de.cosmocode.palava.jobs.session;
 
-import java.util.Map;
+import com.google.common.base.Preconditions;
+import com.google.inject.Singleton;
 
-import org.apache.log4j.Logger;
-
+import de.cosmocode.palava.core.call.Arguments;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.DataCall;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.legacy.Job;
-
 
 /**
- * sets a session data entry
+ * sets a session data entry.
+ * 
  * @author Detlef Hüttemann
+ * @author Willi Schoenborn
  */
-public class set implements Job {
+@Singleton
+public class set implements Command {
 
-    private static final Logger logger = Logger.getLogger( set.class ) ;
-
-    public void process( Call request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception {
-        DataCall req = (DataCall) request;
-
-        if ( session == null ) throw new NullPointerException("session");
-
-        Map<String, Object> args = req.getArguments() ;
-
-        session.putAll( (Map<String,Object>) args ) ;
-
-        resp.setContent( PhpContent.OK ) ;
+    @Override
+    public Content execute(Call call) throws CommandException {
+        final Arguments arguments = call.getArguments();
+        final HttpSession session = call.getHttpRequest().getHttpSession();
+        Preconditions.checkNotNull(session, "Session");
         
+        session.putAll(arguments);
+        
+        return PhpContent.OK;
     }
+
 }

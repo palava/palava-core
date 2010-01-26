@@ -28,7 +28,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.call.filter.Filterable;
 import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.request.HttpRequest;
 import de.cosmocode.palava.core.scope.Scopes;
@@ -43,7 +42,7 @@ import de.cosmocode.patterns.Adapter;
  * @author Willi Schoenborn
  */
 @Adapter(Command.class)
-final class JobCommand implements Command, Filterable {
+final class JobCommand implements Command {
     
     private static final Logger log = LoggerFactory.getLogger(JobCommand.class); 
 
@@ -65,10 +64,9 @@ final class JobCommand implements Command, Filterable {
         final HttpSession session = request.getHttpSession();
         log.debug("Local session: {}", session);
 
-        final Map<String, Object> caddy = Maps.newHashMap();
-        
         try {
-            job.process(call, response, session, server, caddy);
+            // TODO keep looking for NPEs (caddy shouldn't be used anymore
+            job.process(call, response, session, server, null);
         /*CHECKSTYLE:OFF*/
         } catch (RuntimeException e) {
         /*CHECKSTYLE:ON*/
@@ -110,9 +108,13 @@ final class JobCommand implements Command, Filterable {
         }
 
     }
-    
-    @Override
-    public Class<?> getConcreteClass() {
+
+    /**
+     * Provide the underlying job instance.
+     * 
+     * @return the job's class
+     */
+    public Class<? extends Job> getConcreteClass() {
         return job.getClass();
     }
     

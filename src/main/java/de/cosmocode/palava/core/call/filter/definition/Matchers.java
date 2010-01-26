@@ -21,12 +21,16 @@ package de.cosmocode.palava.core.call.filter.definition;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import de.cosmocode.palava.core.command.Command;
 import de.cosmocode.palava.core.command.Commands;
@@ -66,8 +70,10 @@ public final class Matchers {
      * 
      * @param predicate the backing predicate
      * @return a {@link Predicate<Command>} backed by a {@link Predicate}
+     * @throws NullPointerException if predicate is null
      */
     public static Predicate<Command> ofPredicate(final Predicate<? super Command> predicate) {
+        Preconditions.checkNotNull(predicate, "Predicate");
         return new Predicate<Command>() {
             
             @Override
@@ -79,13 +85,29 @@ public final class Matchers {
     }
     
     /**
+     * Returns a predicate which checks whether a given {@link Command} matches any
+     * of the given patterns by using a servlet style regex syntax.
      * 
+     * <div>
+     *   Supported are the following patterns:
+     *   <ol>
+     *     <li>*.list</li>
+     *     <li>de.cosmocode.palava.*</li>
+     *     <li>de.cosmocode.palava.jobs.assets.list.All</li>
+     *   </ol>
+     * </div>
      * 
-     * @param pattern
-     * @param patterns
-     * @return
+     * @param pattern the required pattern
+     * @param patterns optional patterns
+     * @return a new {@link Predicate}
+     * @throws NullPointerException if pattern is null, patterns is null or patterns contains null
      */
     public static Predicate<Command> named(String pattern, String... patterns) {
+        Preconditions.checkNotNull(pattern, "Pattern");
+        Preconditions.checkNotNull(patterns, "Patterns");
+        if (Iterables.any(Sets.newHashSet(patterns), Predicates.isNull())) {
+            throw new NullPointerException("Patterns contains null");
+        }
         final ImmutableList.Builder<String> builder = ImmutableList.builder();
         final ImmutableList<String> list = builder.add(pattern).add(patterns).build();
         final List<Predicate<Command>> matchers = Lists.transform(list, new Function<String, Predicate<Command>>() {
@@ -100,12 +122,20 @@ public final class Matchers {
     }
     
     /**
+     * Returns a predicate which checks whether a given {@link Command} matches any
+     * of the given patterns by using standard {@link Pattern} syntax.
      * 
-     * @param pattern
-     * @param patterns
-     * @return
+     * @param pattern the required pattern
+     * @param patterns optional patterns
+     * @return a new {@link Predicate}
+     * @throws NullPointerException if pattern is null, patterns is null or patterns contains null
      */
     public static Predicate<Command> regex(String pattern, String... patterns) {
+        Preconditions.checkNotNull(pattern, "Pattern");
+        Preconditions.checkNotNull(patterns, "Patterns");
+        if (Iterables.any(Sets.newHashSet(patterns), Predicates.isNull())) {
+            throw new NullPointerException("Patterns contains null");
+        }
         final ImmutableList.Builder<String> builder = ImmutableList.builder();
         final ImmutableList<String> list = builder.add(pattern).add(patterns).build();
         final List<Predicate<Command>> matchers = Lists.transform(list, new Function<String, Predicate<Command>>() {
@@ -120,11 +150,15 @@ public final class Matchers {
     }
     
     /**
+     * Returns a {@link Predicate} which checks the given {@link Command} for the presence
+     * of the specified {@link Annotation}.
      * 
-     * @param annotation
-     * @return
+     * @param annotation the required annotation
+     * @return a new {@link Predicate}
+     * @throws NullPointerException if annotation is null
      */
     public static Predicate<Command> annotatedWith(final Class<? extends Annotation> annotation) {
+        Preconditions.checkNotNull(annotation, "Annotation");
         return new Predicate<Command>() {
             
             @Override
@@ -136,11 +170,15 @@ public final class Matchers {
     }
     
     /**
+     * Returns a {@link Predicate} which checks whether the given {@link Command}
+     * is a sub class or of the same class as specified class.
      * 
-     * @param superClass
-     * @return
+     * @param superClass the super class
+     * @return a new {@link Predicate}
+     * @throws NullPointerException if superClass is null
      */
     public static Predicate<Command> subClassesOf(final Class<?> superClass) {
+        Preconditions.checkNotNull(superClass, "SuperClass");
         return new Predicate<Command>() {
             
             @Override

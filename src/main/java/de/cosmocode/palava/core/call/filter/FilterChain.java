@@ -22,8 +22,21 @@ package de.cosmocode.palava.core.call.filter;
 import de.cosmocode.palava.core.call.Call;
 import de.cosmocode.palava.core.protocol.content.Content;
 
+/**
+ * A chain containing from none to many filters which will
+ * be called before, after or instead of the requested command.
+ *
+ * @author Willi Schoenborn
+ */
 public interface FilterChain {
 
+    /**
+     * Proceed execution of this filter chain.
+     * 
+     * @param call the incoming call being processed
+     * @return the produced content
+     * @throws FilterException if an error occured during filtering
+     */
     Content filter(Call call) throws FilterException;
     
 }

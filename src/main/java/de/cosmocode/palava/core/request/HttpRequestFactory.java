@@ -23,8 +23,21 @@ import java.util.Map;
 
 import de.cosmocode.palava.core.session.HttpSession;
 
+/**
+ * A factory for {@link HttpRequest}s.
+ *
+ * @author Willi Schoenborn
+ */
 public interface HttpRequestFactory {
 
+    /**
+     * Creates a new {@link HttpRequest} which will be associated with the specified
+     * session and backed by the given server variable.
+     * 
+     * @param session the associated session
+     * @param serverVariable the content of the $_SERVER variable
+     * @return a new {@link HttpRequest}
+     */
     HttpRequest create(HttpSession session, Map<String, String> serverVariable);
     
 }

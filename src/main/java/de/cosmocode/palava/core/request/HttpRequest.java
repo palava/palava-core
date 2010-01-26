@@ -21,19 +21,19 @@ package de.cosmocode.palava.core.request;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Map;
 
 import de.cosmocode.palava.core.scope.Destroyable;
 import de.cosmocode.palava.core.session.HttpSession;
 
 /**
- * 
+ * Encapsulates http related data access and scoping issues.
  *
  * @author Willi Schoenborn
  */
 public interface HttpRequest extends Destroyable {
 
     /**
+     * Provide the requested {@link URI}.
      * 
      * @return the requested uri
      * @throws IllegalStateException if there is no request uri information
@@ -43,6 +43,7 @@ public interface HttpRequest extends Destroyable {
     URI getRequestUri();
     
     /**
+     * Provide the requested referer.
      * 
      * @return the referer of this request or null if there
      *         was no information about the referer available
@@ -51,6 +52,7 @@ public interface HttpRequest extends Destroyable {
     URL getReferer();
     
     /**
+     * Provide the remote address of the user.
      * 
      * @return the remote address
      * @throws IllegalStateException if there is no remote address
@@ -59,6 +61,7 @@ public interface HttpRequest extends Destroyable {
     String getRemoteAddress();
     
     /**
+     * Provide the user agent.
      * 
      * @return the user agent of this request or null if there
      *         was no information about the user agent available
@@ -66,41 +69,42 @@ public interface HttpRequest extends Destroyable {
     String getUserAgent();
     
     /**
+     * Provide the associated session.
      * 
-     * @return
+     * @return this request's session
      */
     HttpSession getHttpSession();
     
     /**
+     * Sets an attribute in this request.
      * 
-     * @param <K>
-     * @param <V>
-     * @param key
-     * @param value
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param key the key
+     * @param value the value
      */
     <K, V> void set(K key, V value);
     
     /**
+     * Checks for the presence of a binding to the specified
+     * key.
      * 
-     * @param <K>
-     * @param key
-     * @return
+     * @param <K> the key type
+     * @param key the key
+     * @return true of this request contains a binding to the specified
+     *         key
      */
     <K> boolean contains(K key);
     
     /**
+     * Retrieves the value bound the specified key. 
      * 
-     * @param <K>
-     * @param <V>
-     * @param key
-     * @return
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param key the key
+     * @return the value associated to the specified key or null if
+     *         there is no such binding
      */
     <K, V> V get(K key);
-    
-    /**
-     * 
-     * @return
-     */
-    Map<Object, Object> getAttributes();
     
 }

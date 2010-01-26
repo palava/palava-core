@@ -19,36 +19,37 @@
 
 package de.cosmocode.palava.jobs.session;
 
-import java.util.Map;
+import com.google.common.base.Preconditions;
+import com.google.inject.Singleton;
 
+import de.cosmocode.palava.core.call.Arguments;
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.DataCall;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.legacy.Job;
 
-public class remove implements Job {
+/**
+ * Removes a key from the session.
+ *
+ * @author Willi Schoenborn
+ */
+@Singleton
+public class remove implements Command {
 
     @Override
-    public void process(Call request, Response response, HttpSession session,
-            Server server, Map<String, Object> caddy)
-            throws ConnectionLostException, Exception {
+    public Content execute(Call call) throws CommandException {
+        final HttpSession session = call.getHttpRequest().getHttpSession();
+        Preconditions.checkNotNull(session, "Session");
         
-        DataCall req = (DataCall) request;
-
-        if ( session == null ) throw new NullPointerException("session");
-
-        Map<String, Object> args = req.getArguments() ;
+        final Arguments arguments = call.getArguments();
         
-        for ( String key : args.keySet()){
+        for (Object key : arguments.keySet()) {
             session.remove(key);
         }
-        response.setContent( PhpContent.OK ) ;
- 
-
+        
+        return PhpContent.OK;
     }
-
+    
 }

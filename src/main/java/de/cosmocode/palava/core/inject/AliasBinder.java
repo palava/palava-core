@@ -19,8 +19,19 @@
 
 package de.cosmocode.palava.core.inject;
 
+/**
+ * A binder which binds short names to package names.
+ *
+ * @author Willi Schoenborn
+ */
 public interface AliasBinder {
 
+    /**
+     * Binds the packageName of this binder to the specified
+     * alias.
+     * 
+     * @param alias the new alias
+     */
     void as(String alias);
     
 }

@@ -19,14 +19,11 @@
 
 package de.cosmocode.palava.jobs.system;
 
-import java.util.Map;
-
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.server.Server;
-import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.legacy.Job;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
+import de.cosmocode.palava.core.protocol.content.PhpContent;
 
 
 /**
@@ -38,11 +35,11 @@ import de.cosmocode.palava.legacy.Job;
  * @author Willi Schoenborn
  */
 @Deprecated
-public class close implements Job {
+public class close implements Command {
     
-    public void process(Call request, Response response, HttpSession httpSession, Server server, 
-        Map<String, Object> caddy) throws Exception {
-        
+    @Override
+    public Content execute(Call call) throws CommandException {
+        return PhpContent.OK;
     }
 
 }

@@ -19,30 +19,38 @@
 
 package de.cosmocode.palava.jobs.session;
 
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
+import com.google.inject.Singleton;
 
 import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
+import de.cosmocode.palava.core.command.Command;
+import de.cosmocode.palava.core.command.CommandException;
+import de.cosmocode.palava.core.protocol.content.Content;
 import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.server.Server;
 import de.cosmocode.palava.core.session.HttpSession;
-import de.cosmocode.palava.legacy.Job;
-
 
 /**
- * deletes the actual session
+ * Deletes the actual session.
+ * 
  * @author Tobias Sarnowski
  */
-public class destroy implements Job
-{
+@Singleton
+public class destroy implements Command {
 
-    private static final Logger logger = Logger.getLogger( destroy.class ) ;
-
-    public void process( Call request, Response resp, HttpSession session, Server server, Map<String,Object> caddy ) throws Exception
-    {
-        session.destroy();
-        resp.setContent(new PhpContent(PhpContent.OK)) ;
+    private static final Logger log = LoggerFactory.getLogger(destroy.class);
+    
+    @Override
+    public Content execute(Call call) throws CommandException {
+        final HttpSession session = call.getHttpRequest().getHttpSession();
+        if (session == null) {
+            log.warn("No session found, cant destroy.");
+        } else {
+            log.debug("Destroying sessiong {}", session);
+            session.destroy();
+        }
+        return PhpContent.OK;
     }
+    
 }
