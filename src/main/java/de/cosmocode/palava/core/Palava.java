@@ -17,44 +17,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.main;
+package de.cosmocode.palava.core;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Properties;
 
-import org.junit.Test;
-
-import de.cosmocode.palava.core.Framework;
-import de.cosmocode.palava.core.Main;
-import de.cosmocode.palava.core.Palava;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Tests {@link Main}.
+ * Static factory class for framework instances.
  *
  * @author Willi Schoenborn
  */
-public final class MainTest {
+public final class Palava {
 
-    /**
-     * Tests {@link Main#main(String[])}.
-     * 
-     * @throws IOException if failed loading properties
-     */
-    @Test
-    public void main() throws IOException {
-        final Properties properties = new Properties();
-        properties.load(new FileReader(new File("src/test/resources/configs/settings.properties")));
-        final Framework framework = Palava.createFramework(properties);
-        framework.start();
+    private static final Logger log = LoggerFactory.getLogger(Palava.class);
+    
+    private Palava() {
         
-        while (true) {
-            Thread.yield();
-            if (framework.isRunning()) break;
-        }
-        
-        framework.stop();
     }
 
+    /**
+     * Constructs a new {@link Framework} using the specified properties.
+     * 
+     * @param settings the settings
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if properties is null
+     */
+    public static Framework createFramework(Properties settings) {
+        log.debug("Creating new framework using {}", settings);
+        return new DefaultFramework(settings);
+    }
+    
 }
