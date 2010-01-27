@@ -31,17 +31,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.call.DataCall;
-import de.cosmocode.palava.core.bridge.call.TextCall;
-import de.cosmocode.palava.core.bridge.command.Response;
-import de.cosmocode.palava.core.bridge.session.HttpSession;
-import de.cosmocode.palava.core.bridge.simple.ConnectionLostException;
-import de.cosmocode.palava.core.bridge.simple.content.Content;
-import de.cosmocode.palava.core.bridge.simple.content.JsonContent;
-import de.cosmocode.palava.core.bridge.simple.content.MimeType;
-import de.cosmocode.palava.core.bridge.simple.content.PhpContent;
-import de.cosmocode.palava.core.bridge.simple.content.TextContent;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.call.DataCall;
+import de.cosmocode.palava.bridge.call.TextCall;
+import de.cosmocode.palava.bridge.command.Response;
+import de.cosmocode.palava.bridge.session.HttpSession;
+import de.cosmocode.palava.bridge.simple.ConnectionLostException;
+import de.cosmocode.palava.bridge.simple.content.Content;
+import de.cosmocode.palava.bridge.simple.content.JsonContent;
+import de.cosmocode.palava.bridge.simple.content.MimeType;
+import de.cosmocode.palava.bridge.simple.content.PhpContent;
+import de.cosmocode.palava.bridge.simple.content.TextContent;
 import de.cosmocode.palava.legacy.server.Server;
 
 /**

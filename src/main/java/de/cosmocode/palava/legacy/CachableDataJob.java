@@ -21,12 +21,12 @@ package de.cosmocode.palava.legacy;
 
 import java.util.Map;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.call.DataCall;
-import de.cosmocode.palava.core.bridge.call.MissingArgumentException;
-import de.cosmocode.palava.core.bridge.command.Response;
-import de.cosmocode.palava.core.bridge.session.HttpSession;
-import de.cosmocode.palava.core.bridge.simple.ConnectionLostException;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.call.DataCall;
+import de.cosmocode.palava.bridge.call.MissingArgumentException;
+import de.cosmocode.palava.bridge.command.Response;
+import de.cosmocode.palava.bridge.session.HttpSession;
+import de.cosmocode.palava.bridge.simple.ConnectionLostException;
 import de.cosmocode.palava.legacy.server.Server;
 
 /**

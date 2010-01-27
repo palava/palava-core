@@ -31,10 +31,10 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
 import de.cosmocode.json.JSON;
-import de.cosmocode.palava.core.bridge.command.Response;
-import de.cosmocode.palava.core.bridge.session.HttpSession;
-import de.cosmocode.palava.core.bridge.simple.ConnectionLostException;
-import de.cosmocode.palava.core.bridge.simple.content.JsonContent;
+import de.cosmocode.palava.bridge.command.Response;
+import de.cosmocode.palava.bridge.session.HttpSession;
+import de.cosmocode.palava.bridge.simple.ConnectionLostException;
+import de.cosmocode.palava.bridge.simple.content.JsonContent;
 import de.cosmocode.palava.legacy.CachableJSONJob;
 import de.cosmocode.palava.legacy.server.Server;
 

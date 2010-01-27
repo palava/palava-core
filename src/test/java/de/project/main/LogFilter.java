@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.call.filter.Filter;
-import de.cosmocode.palava.core.bridge.call.filter.FilterChain;
-import de.cosmocode.palava.core.bridge.call.filter.FilterException;
-import de.cosmocode.palava.core.bridge.command.Commands;
-import de.cosmocode.palava.core.bridge.simple.content.Content;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.call.filter.Filter;
+import de.cosmocode.palava.bridge.call.filter.FilterChain;
+import de.cosmocode.palava.bridge.call.filter.FilterException;
+import de.cosmocode.palava.bridge.command.Commands;
+import de.cosmocode.palava.bridge.simple.content.Content;
 
 /**
  * 

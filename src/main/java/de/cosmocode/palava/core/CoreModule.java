@@ -22,16 +22,15 @@ package de.cosmocode.palava.core;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
-import de.cosmocode.palava.core.bridge.call.filter.FilterModule;
-import de.cosmocode.palava.core.bridge.command.CommandModule;
-import de.cosmocode.palava.core.bridge.request.RequestModule;
-import de.cosmocode.palava.core.bridge.scope.ScopeModule;
-import de.cosmocode.palava.core.bridge.session.SessionModule;
-import de.cosmocode.palava.core.bridge.simple.ProtocolModule;
-import de.cosmocode.palava.core.bridge.simple.socket.DefaultListenerModule;
+import de.cosmocode.palava.bridge.call.filter.FilterModule;
+import de.cosmocode.palava.bridge.command.CommandModule;
+import de.cosmocode.palava.bridge.request.RequestModule;
+import de.cosmocode.palava.bridge.scope.ScopeModule;
+import de.cosmocode.palava.bridge.session.SessionModule;
+import de.cosmocode.palava.bridge.simple.ProtocolModule;
+import de.cosmocode.palava.bridge.simple.socket.DefaultListenerModule;
 import de.cosmocode.palava.core.concurrent.ConcurrencyModule;
 import de.cosmocode.palava.core.inject.InjectionModule;
-import de.cosmocode.palava.core.registry.RegistryModule;
 import de.cosmocode.palava.legacy.server.ServerModule;
 
 /**
@@ -49,7 +48,6 @@ public final class CoreModule implements Module {
         binder.install(new FilterModule());
         binder.install(new InjectionModule());
         binder.install(new ProtocolModule());
-        binder.install(new RegistryModule());
         binder.install(new RequestModule());
         binder.install(new ScopeModule());
         binder.install(new ServerModule());

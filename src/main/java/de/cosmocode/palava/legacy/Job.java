@@ -21,10 +21,10 @@ package de.cosmocode.palava.legacy;
 
 import java.util.Map;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.command.Command;
-import de.cosmocode.palava.core.bridge.command.Response;
-import de.cosmocode.palava.core.bridge.session.HttpSession;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.command.Command;
+import de.cosmocode.palava.bridge.command.Response;
+import de.cosmocode.palava.bridge.session.HttpSession;
 import de.cosmocode.palava.legacy.server.Server;
 
 

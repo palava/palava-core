@@ -34,13 +34,13 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.multibindings.Multibinder;
 
+import de.cosmocode.palava.bridge.call.filter.Filter;
+import de.cosmocode.palava.bridge.call.filter.definition.FilterDefinition;
+import de.cosmocode.palava.bridge.command.Alias;
+import de.cosmocode.palava.bridge.command.Aliases;
+import de.cosmocode.palava.bridge.command.Command;
+import de.cosmocode.palava.bridge.request.RequestFilter;
 import de.cosmocode.palava.core.CoreModule;
-import de.cosmocode.palava.core.bridge.call.filter.Filter;
-import de.cosmocode.palava.core.bridge.call.filter.definition.FilterDefinition;
-import de.cosmocode.palava.core.bridge.command.Alias;
-import de.cosmocode.palava.core.bridge.command.Aliases;
-import de.cosmocode.palava.core.bridge.command.Command;
-import de.cosmocode.palava.core.bridge.request.RequestFilter;
 import de.cosmocode.palava.core.framework.Service;
 
 /**

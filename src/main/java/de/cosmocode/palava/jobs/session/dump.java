@@ -21,11 +21,11 @@ package de.cosmocode.palava.jobs.session;
 
 import com.google.inject.Singleton;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.command.Command;
-import de.cosmocode.palava.core.bridge.command.CommandException;
-import de.cosmocode.palava.core.bridge.simple.content.Content;
-import de.cosmocode.palava.core.bridge.simple.content.JsonContent;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.command.Command;
+import de.cosmocode.palava.bridge.command.CommandException;
+import de.cosmocode.palava.bridge.simple.content.Content;
+import de.cosmocode.palava.bridge.simple.content.JsonContent;
 
 /**
  * debug job, dumping all session data.

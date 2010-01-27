@@ -22,8 +22,8 @@ package de.project.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cosmocode.palava.core.bridge.request.HttpRequest;
-import de.cosmocode.palava.core.bridge.request.RequestFilter;
+import de.cosmocode.palava.bridge.request.HttpRequest;
+import de.cosmocode.palava.bridge.request.RequestFilter;
 
 final class LogRequestFilter implements RequestFilter {
 

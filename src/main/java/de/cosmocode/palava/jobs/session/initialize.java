@@ -23,12 +23,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import de.cosmocode.palava.core.bridge.call.Call;
-import de.cosmocode.palava.core.bridge.command.Command;
-import de.cosmocode.palava.core.bridge.command.CommandException;
-import de.cosmocode.palava.core.bridge.session.HttpSession;
-import de.cosmocode.palava.core.bridge.simple.content.Content;
-import de.cosmocode.palava.core.bridge.simple.content.TextContent;
+import de.cosmocode.palava.bridge.call.Call;
+import de.cosmocode.palava.bridge.command.Command;
+import de.cosmocode.palava.bridge.command.CommandException;
+import de.cosmocode.palava.bridge.session.HttpSession;
+import de.cosmocode.palava.bridge.simple.content.Content;
+import de.cosmocode.palava.bridge.simple.content.TextContent;
 
 /**
  * Checks whether a session exists and creates new if necessary.

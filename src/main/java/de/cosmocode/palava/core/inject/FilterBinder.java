@@ -21,8 +21,8 @@ package de.cosmocode.palava.core.inject;
 
 import com.google.inject.Key;
 
-import de.cosmocode.palava.core.bridge.call.filter.Filter;
-import de.cosmocode.palava.core.bridge.call.filter.definition.FilterDefinition;
+import de.cosmocode.palava.bridge.call.filter.Filter;
+import de.cosmocode.palava.bridge.call.filter.definition.FilterDefinition;
 
 /**
  * Binds a filter to a key/class/instance.

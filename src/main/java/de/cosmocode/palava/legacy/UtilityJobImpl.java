@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.cosmocode.palava.core.bridge.call.MissingArgumentException;
+import de.cosmocode.palava.bridge.call.MissingArgumentException;
 
 
 public abstract class UtilityJobImpl implements Job, UtilityJob {

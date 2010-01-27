@@ -19,7 +19,7 @@
 
 package de.cosmocode.palava.legacy;
 
-import de.cosmocode.palava.core.bridge.call.MissingArgumentException;
+import de.cosmocode.palava.bridge.call.MissingArgumentException;
 
 
 public interface UtilityJob {
