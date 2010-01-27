@@ -32,11 +32,12 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -86,7 +87,8 @@ final class DefaultFramework implements Framework {
         injector = Guice.createInjector(
             mainModule,
             new PropertiesModule(properties),
-            new ListenerModule()
+            new ListenerModule(),
+            new EmptyServiceModule()
         );
     }
     
@@ -187,20 +189,15 @@ final class DefaultFramework implements Framework {
     }
     
     /**
-     * Private inner class for forcing guice to eagerly initialize all services.
+     * Binds an empty set of services.
      *
      * @author Willi Schoenborn
      */
-    private static final class Bootstrap {
+    private static final class EmptyServiceModule implements Module {
         
-        // will be called by guice
-        @Inject
-        @SuppressWarnings("unused")
-        public Bootstrap(Set<Service> services) {
-            log.debug("Bootstrap created");
-            for (Service service : services) {
-                log.debug("Bootstrapped service {}", service);
-            }
+        @Override
+        public void configure(Binder binder) {
+            Multibinder.newSetBinder(binder, Service.class);
         }
         
     }
@@ -208,9 +205,13 @@ final class DefaultFramework implements Framework {
     @Override
     public void start() {
         state = State.STARTING;
-        injector.getInstance(Bootstrap.class);
+        final Set<Service> bootstrapped = injector.getInstance(Key.get(new TypeLiteral<Set<Service>>() { }));
+        for (Service service : bootstrapped) {
+            log.debug("Bootstrapped service {}", service);
+        }
         state = State.RUNNING;
     }
+    
     @Override
     public State currentState() {
         return state;
