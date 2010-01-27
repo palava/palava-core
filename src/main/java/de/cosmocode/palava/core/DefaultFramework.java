@@ -58,6 +58,8 @@ final class DefaultFramework implements Framework {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultFramework.class);
     
+    private static final Key<Set<Service>> SERVICE_KEY = Key.get(new TypeLiteral<Set<Service>>() { });
+    
     private State state = State.NEW;
     
     private final List<Service> services = Lists.newArrayList();
@@ -205,7 +207,7 @@ final class DefaultFramework implements Framework {
     @Override
     public void start() {
         state = State.STARTING;
-        final Set<Service> bootstrapped = injector.getInstance(Key.get(new TypeLiteral<Set<Service>>() { }));
+        final Set<Service> bootstrapped = injector.getInstance(SERVICE_KEY);
         for (Service service : bootstrapped) {
             log.debug("Bootstrapped service {}", service);
         }
@@ -235,7 +237,6 @@ final class DefaultFramework implements Framework {
     private <T> Iterable<T> filterAndReverse(Class<T> type) {
         return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
     }
-    
     
     private void stopServices() {
         log.info("Stopping services");
