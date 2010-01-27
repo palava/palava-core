@@ -42,10 +42,20 @@ public class MissingArgumentException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * Creates a new MissingArgumentException for a missing argument named `missingArgument`.
+     * @deprecated because the first parameter is ignored; use MissingArgumentException(String) instead
+     */
+    @Deprecated
     public MissingArgumentException(Object ignored, String missingArgument) {
         this(missingArgument);
     }
     
+    /**
+     * Creates a new MissingArgumentException for a missing argument named `missingArgument` of type `type`.
+     * @deprecated because the first parameter is ignored; use MissingArgumentException(String, String) instead
+     */
+    @Deprecated
     public MissingArgumentException(Object ignored, String missingArgument, String type) {
         super(missingArgument + " (" + type + ")");
     }
