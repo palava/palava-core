@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,8 @@ package de.cosmocode.palava.core.concurrent;
 
 import java.util.concurrent.ThreadFactory;
 
+import de.cosmocode.palava.core.framework.Service;
+
 /**
  * {@link ThreadProvider} provides a way to create {@link Thread}s
  * and {@link ThreadFactory}s while simultaneously keeping track
@@ -28,7 +30,7 @@ import java.util.concurrent.ThreadFactory;
  *
  * @author Willi Schoenborn
  */
-public interface ThreadProvider extends ThreadFactory {
+public interface ThreadProvider extends Service, ThreadFactory {
 
     /**
      * Creates a new {@link ThreadFactory} which

@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,8 +22,8 @@ package de.project.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cosmocode.palava.core.request.HttpRequest;
-import de.cosmocode.palava.core.request.RequestFilter;
+import de.cosmocode.palava.core.bridge.request.HttpRequest;
+import de.cosmocode.palava.core.bridge.request.RequestFilter;
 
 final class LogRequestFilter implements RequestFilter {
 

@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.cosmocode.palava.core.call.MissingArgumentException;
+import de.cosmocode.palava.core.bridge.call.MissingArgumentException;
 
 
 public abstract class UtilityJobImpl implements Job, UtilityJob {

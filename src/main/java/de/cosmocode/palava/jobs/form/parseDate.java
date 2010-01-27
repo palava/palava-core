@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,12 +31,12 @@ import org.json.JSONStringer;
 import org.json.extension.JSONConstructor;
 
 import de.cosmocode.json.JSON;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.content.JsonContent;
-import de.cosmocode.palava.core.server.Server;
-import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.core.bridge.command.Response;
+import de.cosmocode.palava.core.bridge.session.HttpSession;
+import de.cosmocode.palava.core.bridge.simple.ConnectionLostException;
+import de.cosmocode.palava.core.bridge.simple.content.JsonContent;
 import de.cosmocode.palava.legacy.CachableJSONJob;
+import de.cosmocode.palava.legacy.server.Server;
 
 public class parseDate extends CachableJSONJob {
 

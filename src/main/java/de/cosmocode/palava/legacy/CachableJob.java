@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,18 +31,18 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Response;
-import de.cosmocode.palava.core.protocol.ConnectionLostException;
-import de.cosmocode.palava.core.protocol.DataCall;
-import de.cosmocode.palava.core.protocol.TextCall;
-import de.cosmocode.palava.core.protocol.content.Content;
-import de.cosmocode.palava.core.protocol.content.JsonContent;
-import de.cosmocode.palava.core.protocol.content.MimeType;
-import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.protocol.content.TextContent;
-import de.cosmocode.palava.core.server.Server;
-import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.core.bridge.call.Call;
+import de.cosmocode.palava.core.bridge.call.DataCall;
+import de.cosmocode.palava.core.bridge.call.TextCall;
+import de.cosmocode.palava.core.bridge.command.Response;
+import de.cosmocode.palava.core.bridge.session.HttpSession;
+import de.cosmocode.palava.core.bridge.simple.ConnectionLostException;
+import de.cosmocode.palava.core.bridge.simple.content.Content;
+import de.cosmocode.palava.core.bridge.simple.content.JsonContent;
+import de.cosmocode.palava.core.bridge.simple.content.MimeType;
+import de.cosmocode.palava.core.bridge.simple.content.PhpContent;
+import de.cosmocode.palava.core.bridge.simple.content.TextContent;
+import de.cosmocode.palava.legacy.server.Server;
 
 /**
  * 

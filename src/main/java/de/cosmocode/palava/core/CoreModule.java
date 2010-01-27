@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,17 +22,17 @@ package de.cosmocode.palava.core;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
-import de.cosmocode.palava.core.call.filter.FilterModule;
-import de.cosmocode.palava.core.command.CommandModule;
+import de.cosmocode.palava.core.bridge.call.filter.FilterModule;
+import de.cosmocode.palava.core.bridge.command.CommandModule;
+import de.cosmocode.palava.core.bridge.request.RequestModule;
+import de.cosmocode.palava.core.bridge.scope.ScopeModule;
+import de.cosmocode.palava.core.bridge.session.SessionModule;
+import de.cosmocode.palava.core.bridge.simple.ProtocolModule;
+import de.cosmocode.palava.core.bridge.simple.socket.DefaultListenerModule;
 import de.cosmocode.palava.core.concurrent.ConcurrencyModule;
 import de.cosmocode.palava.core.inject.InjectionModule;
-import de.cosmocode.palava.core.protocol.ProtocolModule;
 import de.cosmocode.palava.core.registry.RegistryModule;
-import de.cosmocode.palava.core.request.RequestModule;
-import de.cosmocode.palava.core.scope.ScopeModule;
-import de.cosmocode.palava.core.server.ServerModule;
-import de.cosmocode.palava.core.session.SessionModule;
-import de.cosmocode.palava.core.socket.SocketModule;
+import de.cosmocode.palava.legacy.server.ServerModule;
 
 /**
  * The default module which installs the whole palava
@@ -54,7 +54,7 @@ public final class CoreModule implements Module {
         binder.install(new ScopeModule());
         binder.install(new ServerModule());
         binder.install(new SessionModule());
-        binder.install(new SocketModule());
+        binder.install(new DefaultListenerModule());
     }
 
 }

@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,14 @@
 package de.project.main;
 
 import de.cosmocode.palava.core.CoreModule;
-import de.cosmocode.palava.core.inject.PalavaModule;
+import de.cosmocode.palava.core.inject.AbstractApplication;
 
 /**
  * Mock implementation which adds service bindings.
  *
  * @author Willi Schoenborn
  */
-public final class ProjectModule extends PalavaModule {
+public final class ProjectModule extends AbstractApplication {
 
     @Override
     protected void configureApplication() {

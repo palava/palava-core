@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,13 +22,13 @@ package de.cosmocode.palava.jobs.session;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 
-import de.cosmocode.palava.core.call.Arguments;
-import de.cosmocode.palava.core.call.Call;
-import de.cosmocode.palava.core.command.Command;
-import de.cosmocode.palava.core.command.CommandException;
-import de.cosmocode.palava.core.protocol.content.Content;
-import de.cosmocode.palava.core.protocol.content.PhpContent;
-import de.cosmocode.palava.core.session.HttpSession;
+import de.cosmocode.palava.core.bridge.call.Arguments;
+import de.cosmocode.palava.core.bridge.call.Call;
+import de.cosmocode.palava.core.bridge.command.Command;
+import de.cosmocode.palava.core.bridge.command.CommandException;
+import de.cosmocode.palava.core.bridge.session.HttpSession;
+import de.cosmocode.palava.core.bridge.simple.content.Content;
+import de.cosmocode.palava.core.bridge.simple.content.PhpContent;
 
 /**
  * Removes a key from the session.

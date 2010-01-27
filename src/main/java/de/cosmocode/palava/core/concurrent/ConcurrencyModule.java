@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,20 +19,21 @@
 
 package de.cosmocode.palava.core.concurrent;
 
-import com.google.inject.Binder;
 import com.google.inject.Module;
+
+import de.cosmocode.palava.core.inject.AbstractApplication;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.concurrent} package.
  *
  * @author Willi Schoenborn
  */
-public final class ConcurrencyModule implements Module {
+public final class ConcurrencyModule extends AbstractApplication {
 
     @Override
-    public void configure(Binder binder) {
-        binder.bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
-        binder.bind(ThreadProvider.class).to(DefaultThreadProvider.class);
+    protected void configureApplication() {
+        bind(ExecutorBuilder.class).to(DefaultExecutorBuilder.class);
+        serve(ThreadProvider.class).with(DefaultThreadProvider.class);
     }
 
 }

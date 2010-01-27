@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,8 +26,9 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import de.cosmocode.palava.core.Framework;
-import de.cosmocode.palava.core.Palava;
+import de.cosmocode.palava.core.framework.Framework;
+import de.cosmocode.palava.core.framework.Main;
+import de.cosmocode.palava.core.framework.Palava;
 
 /**
  * Tests {@link Main}.
@@ -47,11 +48,12 @@ public final class MainTest {
         properties.load(new FileReader(new File("src/test/resources/configs/settings.properties")));
         final Framework framework = Palava.createFramework(properties);
         framework.start();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        
+        while (true) {
+            Thread.yield();
+            if (framework.isRunning()) break;
         }
+        
         framework.stop();
     }
 
