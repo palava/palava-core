@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007  CosmoCode GmbH
+ * Copyright (C) 2007-2010  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -116,7 +116,7 @@ final class DefaultFramework implements Framework {
         @Override
         public void configure(Binder binder) {
             Names.bindProperties(binder, properties);
-            binder.bind(Map.class).annotatedWith(Settings.class).toInstance(properties);
+            binder.bind(Properties.class).annotatedWith(Settings.class).toInstance(properties);
         }
         
     }
