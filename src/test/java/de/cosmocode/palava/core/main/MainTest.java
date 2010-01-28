@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007-2010  CosmoCode GmbH
+ * Copyright (C) 2007  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -45,7 +45,8 @@ public final class MainTest {
     @Test
     public void main() throws IOException {
         final Properties properties = new Properties();
-        properties.load(new FileReader(new File("src/test/resources/configs/settings.properties")));
+        properties.setProperty("core.main.module", EmptyApplication.class.getName());
+
         final Framework framework = Palava.createFramework(properties);
         framework.start();
         

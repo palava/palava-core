@@ -17,24 +17,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.event;
 
-import com.google.common.base.Function;
+public interface PreFrameworkStop {
 
-/**
- * A {@link Procedure} is comparable to the {@link Function}
- * interface but returns void instead of a value.
- *
- * @author Willi Schoenborn
- * @param <T> the generic parameter type
- */
-public interface Procedure<T> {
-
-    /**
-     * Applies this procedure on an object of type T. 
-     * 
-     * @param input the single parameter for this procedure
-     */
-    void apply(T input);
+    void eventPreFrameworkStop();
     
 }

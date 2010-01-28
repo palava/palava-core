@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007-2010  CosmoCode GmbH
+ * Copyright (C) 2007  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,21 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.main;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import de.cosmocode.palava.core.RegistryModule;
 
 /**
  * Empty module.
  *
  * @author Willi Schoenborn
  */
-final class EmptyApplication implements Module {
+public final class EmptyApplication implements Module {
 
     @Override
     public void configure(Binder binder) {
-        
+        binder.install(new RegistryModule());
     }
 
 }

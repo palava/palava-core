@@ -1,6 +1,6 @@
 /**
  * palava - a java-php-bridge
- * Copyright (C) 2007-2010  CosmoCode GmbH
+ * Copyright (C) 2007  CosmoCode GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import de.cosmocode.palava.core.event.PostFrameworkStart;
+import de.cosmocode.palava.core.event.PreFrameworkStop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ final class DefaultFramework implements Framework {
     private final List<Service> services = Lists.newArrayList();
     
     private final Injector injector;
+    private final Registry registry;
     
     DefaultFramework(Properties properties) {
         Preconditions.checkNotNull(properties, "Properties");
@@ -92,6 +95,8 @@ final class DefaultFramework implements Framework {
             new ListenerModule(),
             new EmptyServiceModule()
         );
+
+        registry = injector.getInstance(Registry.class);
     }
     
     /**
@@ -212,6 +217,16 @@ final class DefaultFramework implements Framework {
             log.debug("Bootstrapped service {}", service);
         }
         state = State.RUNNING;
+
+        // trigger post framework start event
+        registry.notify(PostFrameworkStart.class, new Procedure<PostFrameworkStart>() {
+
+            @Override
+            public void apply(PostFrameworkStart input) {
+                input.eventPostFrameworkStart();
+            }
+
+        });
     }
     
     @Override
@@ -226,6 +241,15 @@ final class DefaultFramework implements Framework {
     
     @Override
     public void stop() {
+        registry.notify(PreFrameworkStop.class, new Procedure<PreFrameworkStop>() {
+
+            @Override
+            public void apply(PreFrameworkStop input) {
+                input.eventPreFrameworkStop();
+            }
+
+        });
+
         state = State.STOPPING;
         log.info("Stopping framework");
         stopServices();
