@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
 @Singleton
 final class DefaultRegistry implements Registry {
     
-    private static final Logger log = LoggerFactory.getLogger(DefaultRegistry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
 
     private final Multimap<Class<? extends Object>, Object> services = LinkedHashMultimap.create();
 
@@ -43,7 +43,7 @@ final class DefaultRegistry implements Registry {
     public <T> void register(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
-        log.debug("Registering {} for {}", listener, type);
+        LOG.debug("Registering {} for {}", listener, type);
         services.put(type, listener);
     }
 
@@ -58,9 +58,9 @@ final class DefaultRegistry implements Registry {
     public <T> void notify(Class<T> type, Procedure<? super T> command) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(command, "Command");
-        log.debug("Notifying all listeners for {} using {}", type, command);
+        LOG.debug("Notifying all listeners for {} using {}", type, command);
         for (T listener : getListeners(type)) {
-            log.debug("Notifying {} for {}", listener, type);
+            LOG.debug("Notifying {} for {}", listener, type);
             command.apply(listener);
         }
     }
@@ -69,14 +69,14 @@ final class DefaultRegistry implements Registry {
     public <T> boolean remove(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
-        log.debug("Removing {} from {}", listener, type);
+        LOG.debug("Removing {} from {}", listener, type);
         return services.remove(type, listener);
     }
 
     @Override
     public <T> boolean remove(T listener) {
         Preconditions.checkNotNull(listener, "Listener");
-        log.debug("Removing {}", listener);
+        LOG.debug("Removing {}", listener);
         return services.values().remove(listener);
     }
 
@@ -84,7 +84,7 @@ final class DefaultRegistry implements Registry {
     @SuppressWarnings("unchecked")
     public <T> Iterable<T> removeAll(Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
-        log.debug("Removing all listeners from {}", type);
+        LOG.debug("Removing all listeners from {}", type);
         return (Iterable<T>) services.removeAll(type);
     }
 

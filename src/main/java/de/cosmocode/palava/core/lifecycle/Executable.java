@@ -36,6 +36,6 @@ public interface Executable {
      * 
      * @throws LifecycleException if execute failed
      */
-    void execute();
+    void execute() throws LifecycleException;
     
 }

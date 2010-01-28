@@ -19,22 +19,12 @@
 
 package de.cosmocode.palava.core;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
-import com.google.inject.internal.UniqueAnnotations;
 import com.google.inject.multibindings.Multibinder;
-
-import de.cosmocode.palava.core.Service;
 
 /**
  * Abstract module for applications.
@@ -65,14 +55,14 @@ public abstract class ServiceModule extends AbstractModule {
         return serve(Key.get(type));
     }
 
-	/**
+    /**
      * Private implementation of the {@link ServiceBinder} interface
      * which holds a reference to the enclosing {@link Module}.
      *
      * @author Willi Schoenborn
      * @param <S> the generic service type
      */
-    private class InternalServiceBinder<S extends Service> implements ServiceBinder<S> {
+    private final class InternalServiceBinder<S extends Service> implements ServiceBinder<S> {
         
         private final Key<S> key;
         

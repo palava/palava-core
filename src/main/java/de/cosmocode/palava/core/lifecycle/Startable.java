@@ -38,13 +38,13 @@ public interface Startable extends Service {
      * 
      * @throws LifecycleException if start failed
      */
-    void start();
+    void start() throws LifecycleException;
     
     /**
      * Stops the service.
      * 
      * @throws LifecycleException if stop failed
      */
-    void stop();
+    void stop() throws LifecycleException;
     
 }

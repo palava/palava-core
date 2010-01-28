@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core;
 
-import de.cosmocode.palava.core.Service;
-
 /**
  * A {@link Registry} is used to provide a publish/subscribe
  * mechanism.

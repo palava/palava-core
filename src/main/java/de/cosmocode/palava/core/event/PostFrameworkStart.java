@@ -19,6 +19,16 @@
 
 package de.cosmocode.palava.core.event;
 
+/**
+ * 
+ *
+ * @author Willi Schoenborn
+ */
 public interface PostFrameworkStart {
+    
+    /**
+     * 
+     */
     void eventPostFrameworkStart();
+    
 }

@@ -38,6 +38,6 @@ public interface Initializable extends Service {
      * 
      * @throws LifecycleException if initialize failed
      */
-    void initialize();
+    void initialize() throws LifecycleException;
     
 }

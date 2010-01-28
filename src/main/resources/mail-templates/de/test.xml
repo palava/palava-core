@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mail>
-  <subject>Das ist ein Test ein Versuch</subject>
-  <from name="${entity.encode('Willi & Schönborn')}">willi.schoenborn@gmx.net</from>
-  <to name="Willi Schönborn">schoenborn@cosmocode.de</to>
-  <message type="plain">
-Hier kommt die Nachricht rein, wenn sie in plain/text ist.
-  </message>
-</mail>

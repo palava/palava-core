@@ -21,8 +21,6 @@ package de.cosmocode.palava.core;
 
 import com.google.inject.Key;
 
-import de.cosmocode.palava.core.Service;
-
 /**
  * Binds services to their implementations and encapsulates
  * multibinding issues.

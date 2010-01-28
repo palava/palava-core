@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import de.cosmocode.palava.core.event.PostFrameworkStart;
-import de.cosmocode.palava.core.event.PreFrameworkStop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +44,8 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import de.cosmocode.commons.State;
+import de.cosmocode.palava.core.event.PostFrameworkStart;
+import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.lifecycle.Disposable;
 import de.cosmocode.palava.core.lifecycle.Initializable;
 import de.cosmocode.palava.core.lifecycle.LifecycleException;
@@ -58,7 +58,7 @@ import de.cosmocode.palava.core.lifecycle.Startable;
  */
 final class DefaultFramework implements Framework {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultFramework.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultFramework.class);
     
     private static final Key<Set<Service>> SERVICE_KEY = Key.get(new TypeLiteral<Set<Service>>() { });
     
@@ -89,6 +89,7 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
         
+        // TODO what if injection failed, shutdown?
         injector = Guice.createInjector(
             mainModule,
             new PropertiesModule(properties),
@@ -139,7 +140,7 @@ final class DefaultFramework implements Framework {
                             
                             @Override
                             public void afterInjection(I injectee) {
-                                log.info("Adding {} to services", injectee);
+                                LOG.info("Adding {} to services", injectee);
                                 services.add(Service.class.cast(injectee));
                             };
                             
@@ -163,12 +164,10 @@ final class DefaultFramework implements Framework {
      */
     private static final class InitializableListener<I> implements InjectionListener<I> {
 
-        private static final Logger log = LoggerFactory.getLogger(InitializableListener.class);
-
         @Override
         public void afterInjection(I injectee) {
             if (injectee instanceof Initializable) {
-                log.info("Initializing service {}", injectee);
+                LOG.info("Initializing service {}", injectee);
                 Initializable.class.cast(injectee).initialize();
             }
         }
@@ -183,12 +182,10 @@ final class DefaultFramework implements Framework {
      */
     private static final class StartableListener<I> implements InjectionListener<I> {
 
-        private static final Logger log = LoggerFactory.getLogger(StartableListener.class);
-
         @Override
         public void afterInjection(I injectee) {
             if (injectee instanceof Startable) {
-                log.info("Starting service {}", injectee);
+                LOG.info("Starting service {}", injectee);
                 Startable.class.cast(injectee).start();
             }
         }
@@ -214,7 +211,7 @@ final class DefaultFramework implements Framework {
         state = State.STARTING;
         final Set<Service> bootstrapped = injector.getInstance(SERVICE_KEY);
         for (Service service : bootstrapped) {
-            log.debug("Bootstrapped service {}", service);
+            LOG.debug("Bootstrapped service {}", service);
         }
         state = State.RUNNING;
 
@@ -242,19 +239,19 @@ final class DefaultFramework implements Framework {
     @Override
     public void stop() {
         registry.notify(PreFrameworkStop.class, new Procedure<PreFrameworkStop>() {
-
+            
             @Override
             public void apply(PreFrameworkStop input) {
                 input.eventPreFrameworkStop();
             }
-
+            
         });
 
         state = State.STOPPING;
-        log.info("Stopping framework");
+        LOG.info("Stopping framework");
         stopServices();
         disposeServices();
-        log.info("Framework stopped");
+        LOG.info("Framework stopped");
         state = State.TERMINATED;
     }
     
@@ -263,27 +260,27 @@ final class DefaultFramework implements Framework {
     }
     
     private void stopServices() {
-        log.info("Stopping services");
+        LOG.info("Stopping services");
         for (Startable startable : filterAndReverse(Startable.class)) {
-            log.info("Stopping {}", startable);
+            LOG.info("Stopping {}", startable);
             try {
                 startable.stop();
             } catch (LifecycleException e) {
                 final String message = String.format("Unable to stop service %s", startable);
-                log.warn(message, e);
+                LOG.warn(message, e);
             }
         }
     }
     
     private void disposeServices() {
-        log.info("Disposing services");
+        LOG.info("Disposing services");
         for (Disposable disposable : filterAndReverse(Disposable.class)) {
-            log.info("Disposing {}", disposable);
+            LOG.info("Disposing {}", disposable);
             try {
                 disposable.dispose();
             } catch (LifecycleException e) {
                 final String message = String.format("Unable to dispose service %s", disposable);
-                log.warn(message, e);
+                LOG.warn(message, e);
             }
         }
     }

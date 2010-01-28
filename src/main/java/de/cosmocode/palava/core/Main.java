@@ -40,7 +40,7 @@ import com.google.common.base.Preconditions;
  */
 public final class Main {
     
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     
     @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
     private File settings;
@@ -86,7 +86,7 @@ public final class Main {
      */
     public static void main(String[] args) throws CmdLineException {
         final Main main = new Main(args);
-        log.debug("Adding shutdown hook");
+        LOG.debug("Adding shutdown hook");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             
             @Override

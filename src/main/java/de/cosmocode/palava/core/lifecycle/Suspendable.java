@@ -36,13 +36,13 @@ public interface Suspendable extends Startable {
      * 
      * @throws LifecycleException if suspend failed
      */
-    void suspend();
+    void suspend() throws LifecycleException;
     
     /**
      * Resumes the service.
      * 
      * @throws LifecycleException if resume failed
      */
-    void resume();
+    void resume() throws LifecycleException;
     
 }

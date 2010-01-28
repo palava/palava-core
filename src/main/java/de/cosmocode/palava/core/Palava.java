@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class Palava {
 
-    private static final Logger log = LoggerFactory.getLogger(Palava.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Palava.class);
     
     private Palava() {
         
@@ -45,7 +45,7 @@ public final class Palava {
      * @throws NullPointerException if properties is null
      */
     public static Framework createFramework(Properties settings) {
-        log.debug("Creating new framework using {}", settings);
+        LOG.debug("Creating new framework using {}", settings);
         return new DefaultFramework(settings);
     }
     

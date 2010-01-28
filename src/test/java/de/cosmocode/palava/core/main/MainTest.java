@@ -19,11 +19,10 @@
 
 package de.cosmocode.palava.core.main;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.cosmocode.palava.core.Framework;
@@ -48,14 +47,11 @@ public final class MainTest {
         properties.setProperty("core.main.module", EmptyApplication.class.getName());
 
         final Framework framework = Palava.createFramework(properties);
+        
         framework.start();
-        
-        while (true) {
-            Thread.yield();
-            if (framework.isRunning()) break;
-        }
-        
+        Assert.assertTrue("Framework should run", framework.isRunning());
         framework.stop();
+        Assert.assertFalse("Framework should not run", framework.isRunning());
     }
 
 }

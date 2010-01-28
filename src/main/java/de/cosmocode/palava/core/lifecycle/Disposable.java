@@ -38,6 +38,6 @@ public interface Disposable extends Service {
      * 
      * @throws LifecycleException if dispose failed
      */
-    void dispose();
+    void dispose() throws LifecycleException;
     
 }
