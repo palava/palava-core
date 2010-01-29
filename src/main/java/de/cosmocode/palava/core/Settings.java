@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 import com.google.inject.BindingAnnotation;
 
 /**
- * Used to inject the global properties.
+ * Used to inject the global settings.
  *
  * @author Willi Schoenborn
  */
