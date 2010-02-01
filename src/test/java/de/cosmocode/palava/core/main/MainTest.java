@@ -22,6 +22,7 @@ package de.cosmocode.palava.core.main;
 import java.io.IOException;
 import java.util.Properties;
 
+import de.cosmocode.palava.core.CoreConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public final class MainTest {
     @Test
     public void main() throws IOException {
         final Properties properties = new Properties();
-        properties.setProperty("core.main.module", EmptyApplication.class.getName());
+        properties.setProperty(CoreConfig.Application, EmptyApplication.class.getName());
 
         final Framework framework = Palava.createFramework(properties);
         
