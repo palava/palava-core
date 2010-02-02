@@ -90,17 +90,12 @@ final class DefaultFramework implements Framework {
         }
         
         // TODO what if injection failed, shutdown?
-        try {
-            injector = Guice.createInjector(
-                mainModule,
-                new PropertiesModule(properties),
-                new ListenerModule(),
-                new EmptyServiceModule()
-            );
-        } catch (RuntimeException e) {
-            LOG.error("Failed to bootstrap the framework", e);
-            throw e;
-        }
+        injector = Guice.createInjector(
+            mainModule,
+            new PropertiesModule(properties),
+            new ListenerModule(),
+            new EmptyServiceModule()
+        );
 
         registry = injector.getInstance(Registry.class);
     }
