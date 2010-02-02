@@ -74,8 +74,8 @@ final class DefaultFramework implements Framework {
 
         final Module mainModule;
         
-        final String className = properties.getProperty(CoreConfig.Application);
-        Preconditions.checkNotNull(className, CoreConfig.Application);
+        final String className = properties.getProperty(CoreConfig.APPLICATION);
+        Preconditions.checkNotNull(className, CoreConfig.APPLICATION);
         final Class<? extends Module> mainModuleClass;
 
         try {

@@ -19,13 +19,18 @@
 
 package de.cosmocode.palava.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/**
+ * 
+ * @author Tobias Sarnowski
+ * @author Willi Schoenborn
+ */
 public final class CoreConfig {
-    private CoreConfig() {}
 
-    public static final String Prefix = "core.";
+    public static final String PREFIX = "core.";
 
-    public static final String Application = Prefix + "application";
+    public static final String APPLICATION = PREFIX + "application";
+    
+    private CoreConfig() {
+        
+    }
 }

@@ -45,7 +45,7 @@ public final class MainTest {
     @Test
     public void main() throws IOException {
         final Properties properties = new Properties();
-        properties.setProperty(CoreConfig.Application, EmptyApplication.class.getName());
+        properties.setProperty(CoreConfig.APPLICATION, EmptyApplication.class.getName());
 
         final Framework framework = Palava.createFramework(properties);
         
