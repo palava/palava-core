@@ -15,11 +15,11 @@ if [ -z "$APPLICATION_PID_FILE" ]; then
 fi
 
 echo_n() {
-	if [ "$(echo -n)" = "$(echo)" ]; then
-		echo -n $*
-	else
-		echo $*
-	fi
+    if [ "$(echo -n)" = "$(echo)" ]; then
+        echo -n $*
+    else
+        echo $*
+    fi
 }
 
 palava_start() {
@@ -32,9 +32,14 @@ palava_start() {
         return 1
     fi
 
+    # check classpath
+    if [ -z "$CLASSPATH" ]; then
+        CLASSPATH=$(echo $(ls lib/*.jar) | sed 's/ /:/g') 
+    fi
+
     # check vm arguments
     if [ -z "$JVM_ARGS" ]; then
-        JVM_ARGS="-Dlog4j.configuration=file:conf/log4j.xml -Xms256m -Xmx1024m -cp lib/*"
+        JVM_ARGS="-Dlog4j.configuration=file:conf/log4j.xml -Xms256m -Xmx1024m -cp $CLASSPATH"
     fi
 
     # configuration file
@@ -57,15 +62,22 @@ palava_start() {
         JAVA=$JRE_HOME/bin/java
     fi
 
-    # check that our state and pid file is writeable
     mkdir -p $(dirname $APPLICATION_STATE_FILE)
     mkdir -p $(dirname $APPLICATION_PID_FILE)
-    if [ ! -w $APPLICATION_STATE_FILE ]; then
+
+    # check write access
+    touch $APPLICATION_STATE_FILE 2>&1 1>/dev/null
+
+    if [ $? -ne 0 ]; then
         echo "FAILED"
         echo "State file [$APPLICATION_STATE_FILE] not writeable" >&2
         return 1
     fi
-    if [ ! -w $APPLICATION_PID_FILE ]; then
+
+    # check write access
+    echo 0 > $APPLICATION_PID_FILE 2>/dev/null
+
+    if [ $? -ne 0 ]; then
         echo "FAILED"
         echo "PID file [$APPLICATION_PID_FILE] not writeable" >&2
         return 1
@@ -82,8 +94,12 @@ palava_start() {
     # set STARTING state
     echo "STARTING" > $APPLICATION_STATE_FILE
 
+    # prepare log directory
+    mkdir -p logs
+
     # start java in the background
-    nohup $JAVA $JVM_ARGS de.cosmocode.palava.core.Main $APPLICATION_ARGS 2>&1 >logs/out.log
+    COMMAND="$JAVA $JVM_ARGS de.cosmocode.palava.core.Main $APPLICATION_ARGS"
+    nohup $COMMAND > logs/stdout.log 2> logs/stderr.log &
     PID=$!
 
     # save pid
