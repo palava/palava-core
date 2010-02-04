@@ -19,11 +19,10 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
+import de.cosmocode.commons.State;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -44,7 +43,10 @@ public final class Main {
     
     @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
     private File settings;
-    
+
+    @Option(name = "-s", required = false, aliases = "--state-file", usage = "Path to state file")
+    private File stateFile;
+
     private final Framework framework;
     
     private Main(String[] args) {
@@ -69,29 +71,54 @@ public final class Main {
         }
         
         framework = Palava.createFramework(properties);
-        framework.start();
     }
-    
-    private Main(Properties properties) {
-        framework = Palava.createFramework(properties);
-        framework.start();
+
+    private void start() {
+        try {
+            framework.start();
+            persistState();
+        } catch (RuntimeException e) {
+            LOG.error("startup failed", e);
+            stop();
+        }
+    }
+
+    private void stop() {
+        framework.stop();
+        persistState();
+    }
+
+    private void persistState() {
+        if (stateFile == null) {
+            return;
+        }
+
+        try {
+            final Writer writer = new FileWriter(stateFile);
+            writer.write(framework.currentState().name() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("cannot persist state to file", e);
+        }
     }
     
     /**
      * Application entry point.
      * 
      * @param args command line arguments
-     * @throws CmdLineException if command line parsing failed
-     * @throws CloseFailedException 
+     * @throws CmdLineException if command line parsing failed 
      */
     public static void main(String[] args) throws CmdLineException {
         final Main main = new Main(args);
+
+        main.start();        
+
         LOG.debug("Adding shutdown hook");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             
             @Override
             public void run() {
-                main.framework.stop();
+                main.stop();
             }
             
         }));

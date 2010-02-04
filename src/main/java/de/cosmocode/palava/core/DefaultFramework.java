@@ -209,7 +209,13 @@ final class DefaultFramework implements Framework {
     @Override
     public void start() {
         state = State.STARTING;
-        final Set<Service> bootstrapped = injector.getInstance(SERVICE_KEY);
+        final Set<Service> bootstrapped;
+        try {
+            bootstrapped = injector.getInstance(SERVICE_KEY);
+        } catch (RuntimeException e) {
+            state = State.FAILED;
+            throw e;
+        }
         for (Service service : bootstrapped) {
             LOG.debug("Bootstrapped service {}", service);
         }
@@ -247,12 +253,19 @@ final class DefaultFramework implements Framework {
             
         });
 
+        final State oldState = state;
+        
         state = State.STOPPING;
         LOG.info("Stopping framework");
         stopServices();
         disposeServices();
         LOG.info("Framework stopped");
-        state = State.TERMINATED;
+        
+        if (oldState == State.FAILED) {
+            state = State.FAILED;
+        } else {
+            state = State.TERMINATED;
+        }
     }
     
     private <T> Iterable<T> filterAndReverse(Class<T> type) {
@@ -265,7 +278,7 @@ final class DefaultFramework implements Framework {
             LOG.info("Stopping {}", startable);
             try {
                 startable.stop();
-            } catch (LifecycleException e) {
+            } catch (RuntimeException e) {
                 final String message = String.format("Unable to stop service %s", startable);
                 LOG.warn(message, e);
             }
@@ -278,7 +291,7 @@ final class DefaultFramework implements Framework {
             LOG.info("Disposing {}", disposable);
             try {
                 disposable.dispose();
-            } catch (LifecycleException e) {
+            } catch (RuntimeException e) {
                 final String message = String.format("Unable to dispose service %s", disposable);
                 LOG.warn(message, e);
             }
