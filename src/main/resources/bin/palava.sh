@@ -1,4 +1,22 @@
 #!/bin/sh
+#
+# palava - a java-php-bridge
+# Copyright (C) 2007-2010  CosmoCode GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
 
 # change current working directory to application root
 # script has to be under bin/
@@ -23,12 +41,12 @@ echo_n() {
 }
 
 palava_start() {
-    echo_n "Starting palava framework...   "
+    echo_n "Starting framework...   "
 
     palava_status
     if [ $? -eq 0 ]; then
         echo "FAILED"
-        echo "palava framework is already running" >&2
+        echo "Framework is already running" >&2
         return 1
     fi
 
@@ -39,8 +57,13 @@ palava_start() {
 
     # check vm arguments
     if [ -z "$JVM_ARGS" ]; then
-        JVM_ARGS="-Dlog4j.configuration=file:conf/log4j.xml -Xms256m -Xmx1024m -cp $CLASSPATH"
+        JVM_ARGS="-Xms256m -Xmx1024m -cp $CLASSPATH -Dlog4j.configuration=file:conf/log4j.xml"
     fi
+    
+    # check for extra vm arguments
+	if [ ! -z "$EXTRA_JVM_ARGS" ]; then
+		JVM_ARGS="$JVM_ARGS $EXTRA_JVM_ARGS"
+	fi
 
     # configuration file
     if [ -z "$APPLICATION_CONFIG" ]; then
@@ -56,10 +79,17 @@ palava_start() {
         echo "No Java available, set JAVA_HOME or JRE_HOME" >&2
         return 1
     fi
+    
     if [ ! -z "$JAVA_HOME" ]; then
         JAVA=$JAVA_HOME/bin/java
     else
         JAVA=$JRE_HOME/bin/java
+    fi
+    
+    if [ ! -f "$JAVA" ]; then
+    	echo "FAILED"
+    	echo "Java interpreter [$JAVA] does not exist" >&2
+    	return 1
     fi
 
     mkdir -p $(dirname $APPLICATION_STATE_FILE)
@@ -124,20 +154,21 @@ palava_start() {
             return 0
         fi
 
-        # something is horribly broken
+        # anything else is considered an error
         echo "FAILED"
-        echo "Application can not boot" >&2
+        echo "Application boot failed. Showing the the last lines of logs/stderr.log:" >&2
+        tail -n 25 logs/stderr.log
         return 1
     done
 }
 
 palava_stop() {
-    echo_n "Stopping palava framework...   "
+    echo_n "Stopping framework...   "
 
     palava_status
     if [ $? -ne 0 ]; then
         echo "FAILED"
-        echo "palava framework does not run" >&2
+        echo "Framework does not run" >&2
         return 1
     fi
 
@@ -156,12 +187,12 @@ palava_stop() {
 }
 
 palava_kill() {
-    echo_n "Killing palava framework...   "
+    echo_n "Killing framework...   "
 
     palava_status
     if [ $? -ne 0 ]; then
         echo "FAILED"
-        echo "palava framework does not run" >&2
+        echo "Framework is not running" >&2
         return 1
     fi
 
@@ -216,10 +247,10 @@ case "$1" in
     "status")
         palava_status
         if [ $? -eq 0 ]; then
-            echo "palava framework is running"
+            echo "Framework is running"
             exit 0
         else
-            echo "palava framework is not running"
+            echo "Framework is not running"
             exit 1
         fi
         ;;
