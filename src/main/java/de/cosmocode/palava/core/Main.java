@@ -62,7 +62,7 @@ public final class Main {
         }
         
         Preconditions.checkNotNull(settings, "Settings file not set");
-        Preconditions.checkState(settings.exists(), "Settings file does not exist");
+        Preconditions.checkState(settings.exists(), "Settings file %s does not exist", settings.getAbsolutePath());
         
         final Properties properties = new Properties();
         
