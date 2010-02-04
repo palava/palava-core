@@ -20,7 +20,6 @@
 package de.cosmocode.palava.core;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -48,7 +47,6 @@ import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.lifecycle.Disposable;
 import de.cosmocode.palava.core.lifecycle.Initializable;
-import de.cosmocode.palava.core.lifecycle.LifecycleException;
 import de.cosmocode.palava.core.lifecycle.Startable;
 
 /**
@@ -89,7 +87,6 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
         
-        // TODO what if injection failed, shutdown?
         injector = Guice.createInjector(
             mainModule,
             new PropertiesModule(properties),
@@ -212,7 +209,9 @@ final class DefaultFramework implements Framework {
         final Set<Service> bootstrapped;
         try {
             bootstrapped = injector.getInstance(SERVICE_KEY);
+        /* CHECKSTYLE:OFF */
         } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
             state = State.FAILED;
             throw e;
         }
@@ -278,7 +277,9 @@ final class DefaultFramework implements Framework {
             LOG.info("Stopping {}", startable);
             try {
                 startable.stop();
+            /* CHECKSTYLE:OFF */
             } catch (RuntimeException e) {
+            /* CHECKSTYLE:ON */
                 final String message = String.format("Unable to stop service %s", startable);
                 LOG.warn(message, e);
             }
@@ -291,7 +292,9 @@ final class DefaultFramework implements Framework {
             LOG.info("Disposing {}", disposable);
             try {
                 disposable.dispose();
+            /* CHECKSTYLE:OFF */
             } catch (RuntimeException e) {
+            /* CHECKSTYLE:ON */
                 final String message = String.format("Unable to dispose service %s", disposable);
                 LOG.warn(message, e);
             }

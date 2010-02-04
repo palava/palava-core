@@ -19,10 +19,13 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Properties;
 
-import de.cosmocode.commons.State;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -30,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-
 
 /**
  * Application entry point.
@@ -77,7 +79,9 @@ public final class Main {
         try {
             framework.start();
             persistState();
+        /* CHECKSTYLE:OFF */
         } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
             LOG.error("startup failed", e);
             stop();
         }

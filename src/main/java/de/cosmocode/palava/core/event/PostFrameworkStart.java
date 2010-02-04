@@ -19,15 +19,19 @@
 
 package de.cosmocode.palava.core.event;
 
+import de.cosmocode.palava.core.Registry;
+
 /**
- * 
+ * Clients being registered as {@link PostFrameworkStart} listeners
+ * in the {@link Registry} will be notified after a successful framework start.
  *
+ * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */
 public interface PostFrameworkStart {
     
     /**
-     * 
+     * Post framework start callback. 
      */
     void eventPostFrameworkStart();
     
