@@ -24,6 +24,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 
 /**
@@ -53,6 +54,17 @@ public abstract class ServiceModule extends AbstractModule {
      */
     protected final <S extends Service> ServiceBinder<S> serve(Class<S> type) {
         return serve(Key.get(type));
+    }
+    
+    /**
+     * Binds a service literal.
+     * 
+     * @param <S> the generic service type
+     * @param literal the service type literal
+     * @return a {@link ServiceBinder}
+     */
+    protected final <S extends Service> ServiceBinder<S> serve(TypeLiteral<S> literal) {
+        return serve(Key.get(literal));
     }
 
     /**
