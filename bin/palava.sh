@@ -34,14 +34,14 @@ fi
 
 echo_n() {
     if [ "$(echo -n)" = "$(echo)" ]; then
-        echo -n $*
+        echo -n "$*   "
     else
-        echo $*
+        echo "$*   "
     fi
 }
 
 palava_start() {
-    echo_n "Starting framework...   "
+    echo_n "Starting framework..."
 
     palava_status
     if [ $? -eq 0 ]; then
@@ -163,7 +163,7 @@ palava_start() {
 }
 
 palava_stop() {
-    echo_n "Stopping framework...   "
+    echo_n "Stopping framework..."
 
     palava_status
     if [ $? -ne 0 ]; then
@@ -187,7 +187,7 @@ palava_stop() {
 }
 
 palava_kill() {
-    echo_n "Killing framework...   "
+    echo_n "Killing framework..."
 
     palava_status
     if [ $? -ne 0 ]; then
