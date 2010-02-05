@@ -156,8 +156,8 @@ palava_start() {
 
         # anything else is considered an error
         echo "FAILED"
-        echo "Application boot failed. Showing the the last lines of logs/stderr.log:" >&2
-        tail -n 25 logs/stderr.log
+        echo "Application boot failed. Showing logs/stderr.log:" >&2
+        cat logs/stderr.log
         return 1
     done
 }
