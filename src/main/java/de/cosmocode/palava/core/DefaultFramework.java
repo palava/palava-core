@@ -46,7 +46,6 @@ import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.lifecycle.Disposable;
-import de.cosmocode.palava.core.lifecycle.Initializable;
 import de.cosmocode.palava.core.lifecycle.Startable;
 
 /**
@@ -149,42 +148,6 @@ final class DefaultFramework implements Framework {
                 }
                 
             });
-        }
-        
-    }
-
-    /**
-     * {@link InjectionListener} which handles {@link Initializable}s.
-     *
-     * @author Willi Schoenborn
-     * @param <I>
-     */
-    private static final class InitializableListener<I> implements InjectionListener<I> {
-
-        @Override
-        public void afterInjection(I injectee) {
-            if (injectee instanceof Initializable) {
-                LOG.info("Initializing service {}", injectee);
-                Initializable.class.cast(injectee).initialize();
-            }
-        }
-        
-    }
-
-    /**
-     * {@link InjectionListener} which handles {@link Startable}s.
-     *
-     * @author Willi Schoenborn
-     * @param <I>
-     */
-    private static final class StartableListener<I> implements InjectionListener<I> {
-
-        @Override
-        public void afterInjection(I injectee) {
-            if (injectee instanceof Startable) {
-                LOG.info("Starting service {}", injectee);
-                Startable.class.cast(injectee).start();
-            }
         }
         
     }
