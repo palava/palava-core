@@ -66,6 +66,16 @@ public abstract class ServiceModule extends AbstractModule {
     protected final <S extends Service> ServiceBinder<S> serve(TypeLiteral<S> literal) {
         return serve(Key.get(literal));
     }
+    
+    /**
+     * Binds a service key to a concrete class.
+     * 
+     * @param type the service type
+     */
+    protected final void serveClass(Class<? extends Service> type) {
+        serve(type);
+        binder().bind(type).in(Singleton.class);
+    }
 
     /**
      * Private implementation of the {@link ServiceBinder} interface
