@@ -29,45 +29,57 @@ public interface Registry extends Service {
 
     /**
      * Register a listener for a specific type.
-     * 
+     *
      * @param <T> the generic type
      * @param type the type's class
      * @param listener the listener
      * @throws NullPointerException if type or listener is null
      */
     <T> void register(Class<T> type, T listener);
-    
+
     /**
      * Provide all listeners for a specific type.
-     * 
+     *
      * <p>
      *   Note: Implementations may provide a live view which
      *   supports write through operations.
      * </p>
-     * 
+     *
      * @param <T> the generic type
      * @param type the type's class
      * @return an iterable over all found listeners for that type
      * @throws NullPointerException if type is null
      */
     <T> Iterable<T> getListeners(Class<T> type);
-    
+
     /**
      * Notify all listeners for a specific type
      * by invoking command on every found listener.
-     * 
+     *
+     * @param <T> the generic type
+     * @param type the type's class
+     * @param command the command being invoked on every listener
+     * @throws NullPointerException if type or command is null
+     * @throws RuntimeException will abort all following notifies
+     */
+    <T> void notify(Class<T> type, Procedure<? super T> command);
+
+    /**
+     * Notify all listeners for a specific type
+     * by invoking command on every found listener.
+     *
      * @param <T> the generic type
      * @param type the type's class
      * @param command the command being invoked on every listener
      * @throws NullPointerException if type or command is null
      */
-    <T> void notify(Class<T> type, Procedure<? super T> command);
-    
+    <T> void notifySilent(Class<T> type, Procedure<? super T> command);
+
     /**
      * Remove a specific listener interested in type from this registry.
      * If the same listener is also registered for other types,
-     * he will still get notified for these. 
-     * 
+     * he will still get notified for these.
+     *
      * @param <T> the generic type
      * @param type the type's class
      * @param listener the listener being removed from this registry
@@ -75,25 +87,25 @@ public interface Registry extends Service {
      * @throws NullPointerException if type is null
      */
     <T> boolean remove(Class<T> type, T listener);
-    
+
     /**
-     * Removes a listener completely from this registry. 
-     * 
+     * Removes a listener completely from this registry.
+     *
      * @param <T> the generic type
      * @param listener the listener being removed
      * @return true if listener was registered before
      * @throws NullPointerException if listener is null
      */
     <T> boolean remove(T listener);
-    
+
     /**
      * Removes a type and its listeners completely from this registry.
-     * 
+     *
      * @param <T> the generic type
      * @param type the type being removed
      * @return an iterable of all listeners that were registered for that type
      * @throws NullPointerException if type is null
      */
     <T> Iterable<T> removeAll(Class<T> type);
-    
+
 }
