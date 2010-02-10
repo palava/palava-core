@@ -57,7 +57,16 @@ palava_start() {
 
     # check vm arguments
     if [ -z "$JVM_ARGS" ]; then
-        JVM_ARGS="-Xms256m -Xmx1024m -cp $CLASSPATH -Dlog4j.configuration=file:conf/log4j.xml"
+        JVM_ARGS="\
+			-Xms256m \
+			-Xmx512m \
+			-XX:-OmitStackTraceInFastThrow \
+			-Dlog4j.configuration=file:conf/log4j.xml \
+			-Dfile.encoding=UTF-8 \
+			-Djava.awt.headless=true \
+			-enableassertions \
+			-classpath $CLASSPATH \
+		"
     fi
     
     # check for extra vm arguments
