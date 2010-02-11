@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Singleton;
@@ -53,7 +54,7 @@ final class DefaultRegistry implements Registry {
     @SuppressWarnings("unchecked")
     public <T> Iterable<T> getListeners(Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
-        return (Iterable<T>) services.get(type);
+        return Iterables.unmodifiableIterable((Iterable<T>) services.get(type));
     }
 
     @Override
@@ -76,8 +77,10 @@ final class DefaultRegistry implements Registry {
             LOG.trace("notifying {} for {}", listener, type);
             try {
                 command.apply(listener);
+            /*CHECKSTYLE:OFF*/
             } catch (RuntimeException e) {
-                LOG.error("{}", e);
+            /*CHECKSTYLE:ON*/
+                LOG.error("Notifying listener failed", e);
             }
         }
     }
