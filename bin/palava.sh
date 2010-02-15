@@ -138,6 +138,7 @@ palava_start() {
 
     # start java in the background
     COMMAND="$JAVA $JVM_ARGS de.cosmocode.palava.core.Main $APPLICATION_ARGS"
+    echo "Executing $COMMAND"
     nohup $COMMAND > logs/stdout.log 2> logs/stderr.log &
     PID=$!
 
