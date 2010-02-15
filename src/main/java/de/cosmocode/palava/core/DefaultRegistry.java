@@ -19,6 +19,11 @@
 
 package de.cosmocode.palava.core;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +60,37 @@ final class DefaultRegistry implements Registry {
     public <T> Iterable<T> getListeners(Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
         return Iterables.unmodifiableIterable((Iterable<T>) services.get(type));
+    }
+    
+    @Override
+    public <T> T proxy(final Class<T> type) {
+        Preconditions.checkNotNull(type, "Type");
+        Preconditions.checkArgument(type.isInterface(), "Type must be an interface");
+        
+        final ClassLoader loader = getClass().getClassLoader();
+        final Class<?>[] interfaces = {type};
+        final InvocationHandler handler = new InvocationHandler() {
+            
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) 
+                throws IllegalAccessException, InvocationTargetException {
+                if (method.getReturnType() == void.class) {
+                    for (T listener : getListeners(type)) {
+                        method.invoke(listener, args);
+                    }
+                    return null;
+                } else {
+                    final String message = String.format("%s must return void", method);
+                    throw new IllegalStateException(message);
+                }
+            }
+            
+        };
+        
+        @SuppressWarnings("unchecked")
+        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
+        LOG.debug("Created proxy for {}", type);
+        return proxy;
     }
 
     @Override

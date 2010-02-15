@@ -53,6 +53,25 @@ public interface Registry extends Service {
     <T> Iterable<T> getListeners(Class<T> type);
 
     /**
+     * Creates a proxy of type T which can be used in third-party
+     * event/callback frameworks to integrate in this registry.
+     * This is used for event systems which do not allow hot un/loading
+     * of listeners.
+     * 
+     * @param <T> the generic type
+     * @param type the type's class literal
+     * @return an instance of type T which itself is not registered
+     *         in this registry but delegates to all registered listeners
+     *         in this registry
+     * @throws NullPointerException if type is null
+     * @throws IllegalArgumentException if type is not an interface
+     * @throws IllegalStateException when a method is invoked which does not return
+     *         void. <strong>Note</strong>: This exception is thrown at invocation time
+     *         not at construction time.
+     */
+    <T> T proxy(Class<T> type);
+    
+    /**
      * Notify all listeners for a specific type
      * by invoking command on every found listener.
      *
