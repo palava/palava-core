@@ -17,22 +17,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.main;
+package de.cosmocode.palava.core;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
-import de.cosmocode.palava.core.RegistryModule;
+import java.util.Properties;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Empty module.
+ * Tests {@link Main}.
  *
  * @author Willi Schoenborn
  */
-public final class EmptyApplication implements Module {
+public final class FrameworkTest {
 
-    @Override
-    public void configure(Binder binder) {
-        binder.install(new RegistryModule());
+    /**
+     * Tests {@link Framework#start()}.
+     */
+    @Test
+    public void start() {
+        final Properties properties = new Properties();
+        properties.setProperty(CoreConfig.APPLICATION, EmptyApplication.class.getName());
+        final Framework framework = Palava.createFramework(properties);
+        
+        framework.start();
+        Assert.assertTrue("Framework should run", framework.isRunning());
+        framework.stop();
+        Assert.assertFalse("Framework should not run", framework.isRunning());
     }
 
 }

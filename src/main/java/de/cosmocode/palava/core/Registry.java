@@ -28,7 +28,9 @@ package de.cosmocode.palava.core;
 public interface Registry extends Service {
 
     /**
-     * Register a listener for a specific type.
+     * Register a listener for a specific type. Registering the same listener
+     * for a type twice does not result in a double binding. The listener
+     * will be notified once and only once per notify invocation.
      *
      * @param <T> the generic type
      * @param type the type's class
@@ -41,13 +43,12 @@ public interface Registry extends Service {
      * Provide all listeners for a specific type.
      *
      * <p>
-     *   Note: Implementations may provide a live view which
-     *   supports write through operations.
+     *   Note: Implementations may provide live view.
      * </p>
      *
      * @param <T> the generic type
      * @param type the type's class
-     * @return an iterable over all found listeners for that type
+     * @return an unmodifable iterable over all found listeners for that type
      * @throws NullPointerException if type is null
      */
     <T> Iterable<T> getListeners(Class<T> type);
@@ -61,8 +62,8 @@ public interface Registry extends Service {
      * @param <T> the generic type
      * @param type the type's class literal
      * @return an instance of type T which itself is not registered
-     *         in this registry but delegates to all registered listeners
-     *         in this registry
+     *         in this registry but delegates to all listeners registered 
+     *         in this registry at invocation time
      * @throws NullPointerException if type is null
      * @throws IllegalArgumentException if type is not an interface
      * @throws IllegalStateException when a method is invoked which does not return
@@ -79,7 +80,8 @@ public interface Registry extends Service {
      * @param type the type's class
      * @param command the command being invoked on every listener
      * @throws NullPointerException if type or command is null
-     * @throws RuntimeException will abort all following notifies
+     * @throws RuntimeException if notifying a listener failed, which
+     *         will abort all following notifications
      */
     <T> void notify(Class<T> type, Procedure<? super T> command);
 
@@ -97,18 +99,20 @@ public interface Registry extends Service {
     /**
      * Remove a specific listener interested in type from this registry.
      * If the same listener is also registered for other types,
-     * he will still get notified for these.
+     * he will still get notified for those.
      *
      * @param <T> the generic type
      * @param type the type's class
      * @param listener the listener being removed from this registry
      * @return true if listener was registered for type before
-     * @throws NullPointerException if type is null
+     * @throws NullPointerException if type or listener is null
      */
     <T> boolean remove(Class<T> type, T listener);
 
     /**
-     * Removes a listener completely from this registry.
+     * Removes a listener completely from this registry. If the listener
+     * is registered for multiple types, he won't get notified for those
+     * after this method has been called.
      *
      * @param <T> the generic type
      * @param listener the listener being removed
@@ -119,7 +123,9 @@ public interface Registry extends Service {
 
     /**
      * Removes a type and its listeners completely from this registry.
-     *
+     * If the a listener is also registered for other types,
+     * he will still get notified for those.
+     * 
      * @param <T> the generic type
      * @param type the type being removed
      * @return an iterable of all listeners that were registered for that type

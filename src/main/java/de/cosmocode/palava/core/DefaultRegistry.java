@@ -28,9 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import com.google.inject.Singleton;
 
 /**
@@ -43,7 +46,12 @@ final class DefaultRegistry implements Registry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
 
-    private final Multimap<Class<? extends Object>, Object> services = LinkedHashMultimap.create();
+    private final Multimap<Class<? extends Object>, Object> services;
+    
+    public DefaultRegistry() {
+        final SetMultimap<Class<? extends Object>, Object> multimap = LinkedHashMultimap.create();
+        this.services = Multimaps.synchronizedSetMultimap(multimap);
+    }
 
     @Override
     public <T> void register(Class<T> type, T listener) {
@@ -66,18 +74,29 @@ final class DefaultRegistry implements Registry {
     public <T> T proxy(final Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkArgument(type.isInterface(), "Type must be an interface");
+        Preconditions.checkArgument(!type.isAnnotation(), "Type must not be an annotation");
         
         final ClassLoader loader = getClass().getClassLoader();
         final Class<?>[] interfaces = {type};
         final InvocationHandler handler = new InvocationHandler() {
             
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args) 
+            public Object invoke(Object proxy, final Method method, final Object[] args) 
                 throws IllegalAccessException, InvocationTargetException {
                 if (method.getReturnType() == void.class) {
-                    for (T listener : getListeners(type)) {
-                        method.invoke(listener, args);
-                    }
+                    DefaultRegistry.this.notify(type, new Procedure<T>() {
+                        
+                        public void apply(T listener) {
+                            try {
+                                method.invoke(listener, args);
+                            } catch (IllegalAccessException e) {
+                                throw new IllegalStateException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new IllegalStateException(e);
+                            }
+                        };
+                        
+                    });
                     return null;
                 } else {
                     final String message = String.format("%s must return void", method);
@@ -136,7 +155,7 @@ final class DefaultRegistry implements Registry {
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("removing {}", listener);
         synchronized (services) {
-            return services.values().remove(listener);
+            return services.values().removeAll(ImmutableSet.of(listener));
         }
     }
 
