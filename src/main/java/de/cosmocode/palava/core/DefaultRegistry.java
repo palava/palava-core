@@ -46,10 +46,10 @@ final class DefaultRegistry implements Registry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
 
-    private final Multimap<Class<? extends Object>, Object> services;
+    private final Multimap<Key<? extends Object>, Object> services;
     
     public DefaultRegistry() {
-        final SetMultimap<Class<? extends Object>, Object> multimap = LinkedHashMultimap.create();
+        final SetMultimap<Key<? extends Object>, Object> multimap = LinkedHashMultimap.create();
         this.services = Multimaps.synchronizedSetMultimap(multimap);
     }
 
@@ -59,15 +59,25 @@ final class DefaultRegistry implements Registry {
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("registering {} for {}", listener, type);
         synchronized (services) {
-            services.put(type, listener);
+            services.put(Key.get(type), listener);
         }
     }
+    
+    @Override
+    public <T> void register(Registry.Key<T> key, T listener) {
+        throw new UnsupportedOperationException();
+    };
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> Iterable<T> getListeners(Class<T> type) {
         Preconditions.checkNotNull(type, "Type");
-        return Iterables.unmodifiableIterable((Iterable<T>) services.get(type));
+        return Iterables.unmodifiableIterable((Iterable<T>) services.get(Key.get(type)));
+    }
+    
+    @Override
+    public <T> Iterable<T> getListeners(Key<T> key) {
+        throw new UnsupportedOperationException();
     }
     
     @Override
@@ -111,6 +121,11 @@ final class DefaultRegistry implements Registry {
         LOG.debug("Created proxy for {}", type);
         return proxy;
     }
+    
+    @Override
+    public <T> T proxy(Key<T> key) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public <T> void notify(Class<T> type, Procedure<? super T> command) {
@@ -121,6 +136,11 @@ final class DefaultRegistry implements Registry {
             LOG.trace("notifying {} for {}", listener, type);
             command.apply(listener);
         }
+    }
+    
+    @Override
+    public <T> void notify(Key<T> key, Procedure<? super T> command) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -141,14 +161,24 @@ final class DefaultRegistry implements Registry {
     }
 
     @Override
+    public <T> void notifiySilent(Key<T> key, Procedure<? super T> command) {
+        throw new UnsupportedOperationException();        
+    }
+    
+    @Override
     public <T> boolean remove(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("removing {} from {}", listener, type);
         synchronized (services) {
-            return services.remove(type, listener);
+            return services.remove(Key.get(type), listener);
         }
     }
+    
+    @Override
+    public <T> boolean remove(Registry.Key<T> key, T listener) {
+        throw new UnsupportedOperationException();        
+    };
 
     @Override
     public <T> boolean remove(T listener) {
@@ -165,8 +195,13 @@ final class DefaultRegistry implements Registry {
         Preconditions.checkNotNull(type, "Type");
         LOG.trace("removing all listeners from {}", type);
         synchronized (services) {
-            return (Iterable<T>) services.removeAll(type);
+            return (Iterable<T>) services.removeAll(Key.get(type));
         }
+    }
+    
+    @Override
+    public <T> Iterable<T> removeAll(Key<T> key) {
+        throw new UnsupportedOperationException();
     }
 
 }

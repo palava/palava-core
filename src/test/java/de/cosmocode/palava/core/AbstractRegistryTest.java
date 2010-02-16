@@ -13,6 +13,8 @@ import com.google.common.collect.Sets;
 
 /**
  * Tests {@link Registry} implementations.
+ * 
+ * TODO add tests for Key-methods
  *
  * @author Willi Schoenborn
  */
@@ -84,7 +86,8 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void registerNullType() {
-        unit().register(null, new Object());
+        final Class<Object> nullType = null;
+        unit().register(nullType, new Object());
     }
     
     /**
@@ -101,7 +104,8 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void registerNulls() {
-        unit().register(null, null);
+        final Class<Object> nullType = null;
+        unit().register(nullType, null);
     }
     
     /**
@@ -156,18 +160,28 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void getListenersNullType() {
-        unit().getListeners(null);
+        final Class<Object> nullType = null;
+        unit().getListeners(nullType);
     }
     
     /**
-     * Dummy interface to test proxying.
+     * Hidden interface to easily mock listeners.
      *
      * @author Willi Schoenborn
      */
-    private static interface Useless {
+    private static interface Listener {
+
+        void doAnything();
         
-        void doNothing(Object input);
-        
+    }
+
+    /**
+     * Tests {@link Registry#proxy(Class)} with no listeners
+     * being registered.
+     */
+    @Test
+    public void proxyEmpty() {
+        unit().proxy(Listener.class).doAnything();
     }
     
     /**
@@ -176,15 +190,85 @@ public abstract class AbstractRegistryTest {
     @Test
     public void proxySingle() {
         final Registry unit = unit();
-        final Useless mock = EasyMock.createMock("mock", Useless.class);
-        final Useless proxy = unit.proxy(Useless.class);
-        final Object input = new Object();
         
-        mock.doNothing(input);
+        final Listener listener = EasyMock.createMock("listener", Listener.class);
+        listener.doAnything();
         EasyMock.expectLastCall();
-        EasyMock.replay(mock);
+        EasyMock.replay(listener);
         
-        proxy.doNothing(input);
+        unit.register(Listener.class, listener);
+
+        unit.proxy(Listener.class).doAnything();
+    }
+    
+    /**
+     * Tests {@link Registry#proxy(Class)} with multiple listeners.
+     */
+    @Test
+    public void proxyMultiple() {
+        final Registry unit = unit();
+        
+        final Listener first = EasyMock.createMock("first", Listener.class);
+        first.doAnything();
+        EasyMock.expectLastCall();
+        EasyMock.replay(first);
+        
+        final Listener second = EasyMock.createMock("second", Listener.class);
+        second.doAnything();
+        EasyMock.expectLastCall();
+        EasyMock.replay(second);
+        
+        unit.register(Listener.class, first);
+        unit.register(Listener.class, second);
+        
+        unit.proxy(Listener.class).doAnything();        
+    }
+    
+    /**
+     * Tests {@link Registry#proxy(Class)} with hot un/loading listeners.
+     */
+    @Test
+    public void proxyConcurrent() {
+        final Registry unit = unit();
+        
+        final Listener proxy = unit.proxy(Listener.class);
+        
+        final Listener first = EasyMock.createMock("first", Listener.class);
+        first.doAnything();
+        EasyMock.expectLastCall();
+        first.doAnything();
+        EasyMock.expectLastCall();
+        EasyMock.replay(first);
+        
+        unit.register(Listener.class, first);
+        
+        proxy.doAnything();
+        
+        final Listener second = EasyMock.createMock("second", Listener.class);
+        second.doAnything();
+        EasyMock.expectLastCall();
+        second.doAnything();
+        EasyMock.expectLastCall();
+        EasyMock.replay(second);
+        
+        unit.register(Listener.class, second);
+        
+        proxy.doAnything();
+        
+        unit.remove(Listener.class, first);
+        
+        proxy.doAnything();
+    }
+    
+    /**
+     * Tests that {@link Registry#proxy(Class)} does not register
+     * the proxy itself.
+     */
+    @Test
+    public void proxyNotRegistered() {
+        final Registry unit = unit();
+        unit.proxy(Listener.class);
+        Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
     }
     
     /**
@@ -203,7 +287,8 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void proxyNullType() {
-        unit().proxy(null);
+        final Class<Object> nullType = null;
+        unit().proxy(nullType);
     }
     
     /**
@@ -231,17 +316,6 @@ public abstract class AbstractRegistryTest {
     }
     
     /**
-     * Hidden interface to easily mock listeners.
-     *
-     * @author Willi Schoenborn
-     */
-    private static interface Listener {
-
-        String sayYourName();
-        
-    }
-    
-    /**
      * Tests {@link Registry#notify(Class, Procedure)}.
      */
     @Test
@@ -249,12 +323,14 @@ public abstract class AbstractRegistryTest {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
-        EasyMock.expect(first.sayYourName()).andReturn(first.toString());
+        first.doAnything();
+        EasyMock.expectLastCall();
         EasyMock.replay(first);
         unit.register(Listener.class, first);
 
         final Listener second = EasyMock.createMock("second", Listener.class);
-        EasyMock.expect(second.sayYourName()).andReturn(second.toString());
+        second.doAnything();
+        EasyMock.expectLastCall();
         EasyMock.replay(second);
         unit.register(Listener.class, second);
         
@@ -262,7 +338,7 @@ public abstract class AbstractRegistryTest {
             
             @Override
             public void apply(Listener input) {
-                input.sayYourName();
+                input.doAnything();
             }
             
         };
@@ -278,7 +354,8 @@ public abstract class AbstractRegistryTest {
         @SuppressWarnings("unchecked")
         final Procedure<? super Object> procedure = EasyMock.createMock("procedure", Procedure.class);
         EasyMock.replay(procedure);
-        unit().notify(null, procedure);
+        final Class<Object> nullType = null;
+        unit().notify(nullType, procedure);
     }
     
     /**
@@ -295,7 +372,8 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void notifyNulls() {
-        unit().notify(null, null);
+        final Class<Object> nullType = null;
+        unit().notify(nullType, null);
     }
     
     /**
@@ -317,7 +395,8 @@ public abstract class AbstractRegistryTest {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
-        EasyMock.expect(first.sayYourName()).andThrow(new CustomRuntimeException());
+        first.doAnything();
+        EasyMock.expectLastCall().andThrow(new CustomRuntimeException());
         EasyMock.replay(first);
         unit.register(Listener.class, first);
 
@@ -329,7 +408,7 @@ public abstract class AbstractRegistryTest {
             
             @Override
             public void apply(Listener input) {
-                input.sayYourName();
+                input.doAnything();
             }
             
         };
@@ -345,12 +424,14 @@ public abstract class AbstractRegistryTest {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
-        EasyMock.expect(first.sayYourName()).andReturn(first.toString());
+        first.doAnything();
+        EasyMock.expectLastCall();
         EasyMock.replay(first);
         unit.register(Listener.class, first);
 
         final Listener second = EasyMock.createMock("second", Listener.class);
-        EasyMock.expect(second.sayYourName()).andReturn(second.toString());
+        second.doAnything();
+        EasyMock.expectLastCall();
         EasyMock.replay(second);
         unit.register(Listener.class, second);
         
@@ -358,7 +439,7 @@ public abstract class AbstractRegistryTest {
             
             @Override
             public void apply(Listener input) {
-                input.sayYourName();
+                input.doAnything();
             }
             
         };
@@ -402,12 +483,14 @@ public abstract class AbstractRegistryTest {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
-        EasyMock.expect(first.sayYourName()).andThrow(new CustomRuntimeException());
+        first.doAnything();
+        EasyMock.expectLastCall().andThrow(new CustomRuntimeException());
         EasyMock.replay(first);
         unit.register(Listener.class, first);
 
         final Listener second = EasyMock.createMock("second", Listener.class);
-        EasyMock.expect(second.sayYourName()).andThrow(new CustomRuntimeException());
+        second.doAnything();
+        EasyMock.expectLastCall().andThrow(new CustomRuntimeException());
         EasyMock.replay(second);
         unit.register(Listener.class, second);
         
@@ -415,7 +498,7 @@ public abstract class AbstractRegistryTest {
             
             @Override
             public void apply(Listener input) {
-                input.sayYourName();
+                input.doAnything();
             }
             
         };
@@ -470,7 +553,8 @@ public abstract class AbstractRegistryTest {
     public void removeTypeListenerNullType() {
         final Listener listener = EasyMock.createMock("listener", Listener.class);
         EasyMock.replay(listener);
-        unit().remove(null, listener);
+        final Class<Object> nullType = null;
+        unit().remove(nullType, listener);
     }
     
     /**
@@ -487,7 +571,8 @@ public abstract class AbstractRegistryTest {
      */
     @Test(expected = NullPointerException.class)
     public void removeTypeListenerNulls() {
-        unit().remove(null, null);
+        final Class<Object> nullType = null;
+        unit().remove(nullType, null);
     }
 
     /**
@@ -586,8 +671,9 @@ public abstract class AbstractRegistryTest {
      * Tests {@link Registry#removeAll(Class)} with a null type.
      */
     @Test(expected = NullPointerException.class)
-    public void removeAllNulLType() {
-        unit().removeAll(null);
+    public void removeAllNullType() {
+        final Class<Object> nullType = null;
+        unit().removeAll(nullType);
     }
     
 }
