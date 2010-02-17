@@ -42,7 +42,7 @@ import com.google.inject.Singleton;
  * @author Willi Schoenborn
  */
 @Singleton
-final class DefaultRegistry implements Registry {
+final class DefaultRegistry extends AbstractRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
 
@@ -54,47 +54,37 @@ final class DefaultRegistry implements Registry {
     }
 
     @Override
-    public <T> void register(Class<T> type, T listener) {
-        Preconditions.checkNotNull(type, "Type");
-        Preconditions.checkNotNull(listener, "Listener");
-        LOG.trace("registering {} for {}", listener, type);
-        synchronized (services) {
-            services.put(Key.get(type), listener);
-        }
-    }
-    
-    @Override
     public <T> void register(Registry.Key<T> key, T listener) {
-        throw new UnsupportedOperationException();
+        Preconditions.checkNotNull(key, "Key");
+        Preconditions.checkNotNull(listener, "Listener");
+        LOG.trace("registering {} for {}", listener, key);
+        synchronized (services) {
+            services.put(key, listener);
+        }
     };
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Iterable<T> getListeners(Class<T> type) {
-        Preconditions.checkNotNull(type, "Type");
-        return Iterables.unmodifiableIterable((Iterable<T>) services.get(Key.get(type)));
-    }
-    
-    @Override
     public <T> Iterable<T> getListeners(Key<T> key) {
-        throw new UnsupportedOperationException();
+        Preconditions.checkNotNull(key, "Key");
+        return Iterables.unmodifiableIterable((Iterable<T>) services.get(key));
     }
     
     @Override
-    public <T> T proxy(final Class<T> type) {
-        Preconditions.checkNotNull(type, "Type");
-        Preconditions.checkArgument(type.isInterface(), "Type must be an interface");
-        Preconditions.checkArgument(!type.isAnnotation(), "Type must not be an annotation");
+    public <T> T proxy(final Key<T> key) {
+        Preconditions.checkNotNull(key, "Key");
+        Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
+        Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
         
         final ClassLoader loader = getClass().getClassLoader();
-        final Class<?>[] interfaces = {type};
+        final Class<?>[] interfaces = {key.getType()};
         final InvocationHandler handler = new InvocationHandler() {
             
             @Override
             public Object invoke(Object proxy, final Method method, final Object[] args) 
                 throws IllegalAccessException, InvocationTargetException {
                 if (method.getReturnType() == void.class) {
-                    DefaultRegistry.this.notify(type, new Procedure<T>() {
+                    DefaultRegistry.this.notify(key, new Procedure<T>() {
                         
                         public void apply(T listener) {
                             try {
@@ -118,38 +108,28 @@ final class DefaultRegistry implements Registry {
         
         @SuppressWarnings("unchecked")
         final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
-        LOG.debug("Created proxy for {}", type);
+        LOG.debug("Created proxy for {}", key);
         return proxy;
-    }
-    
-    @Override
-    public <T> T proxy(Key<T> key) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
-    public <T> void notify(Class<T> type, Procedure<? super T> command) {
-        Preconditions.checkNotNull(type, "Type");
+    public <T> void notify(Key<T> key, Procedure<? super T> command) {
+        Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(command, "Command");
-        LOG.trace("notifying all listeners for {} using {}", type, command);
-        for (T listener : getListeners(type)) {
-            LOG.trace("notifying {} for {}", listener, type);
+        LOG.trace("notifying all listeners for {} using {}", key, command);
+        for (T listener : getListeners(key)) {
+            LOG.trace("notifying {} for {}", listener, key);
             command.apply(listener);
         }
     }
-    
-    @Override
-    public <T> void notify(Key<T> key, Procedure<? super T> command) {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
-    public <T> void notifySilent(Class<T> type, Procedure<? super T> command) {
-        Preconditions.checkNotNull(type, "Type");
+    public <T> void notifySilent(Key<T> key, Procedure<? super T> command) {
+        Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(command, "Command");
-        LOG.trace("notifying all listeners for {} using {}", type, command);
-        for (T listener : getListeners(type)) {
-            LOG.trace("notifying {} for {}", listener, type);
+        LOG.trace("notifying all listeners for {} using {}", key, command);
+        for (T listener : getListeners(key)) {
+            LOG.trace("notifying {} for {}", listener, key);
             try {
                 command.apply(listener);
             /*CHECKSTYLE:OFF*/
@@ -157,27 +137,17 @@ final class DefaultRegistry implements Registry {
             /*CHECKSTYLE:ON*/
                 LOG.error("Notifying listener failed", e);
             }
-        }
-    }
-
-    @Override
-    public <T> void notifiySilent(Key<T> key, Procedure<? super T> command) {
-        throw new UnsupportedOperationException();        
+        }     
     }
     
     @Override
-    public <T> boolean remove(Class<T> type, T listener) {
-        Preconditions.checkNotNull(type, "Type");
+    public <T> boolean remove(Key<T> key, T listener) {
+        Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(listener, "Listener");
-        LOG.trace("removing {} from {}", listener, type);
+        LOG.trace("removing {} from {}", listener, key);
         synchronized (services) {
-            return services.remove(Key.get(type), listener);
-        }
-    }
-    
-    @Override
-    public <T> boolean remove(Registry.Key<T> key, T listener) {
-        throw new UnsupportedOperationException();        
+            return services.remove(key, listener);
+        }    
     };
 
     @Override
@@ -191,17 +161,12 @@ final class DefaultRegistry implements Registry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Iterable<T> removeAll(Class<T> type) {
-        Preconditions.checkNotNull(type, "Type");
-        LOG.trace("removing all listeners from {}", type);
-        synchronized (services) {
-            return (Iterable<T>) services.removeAll(Key.get(type));
-        }
-    }
-    
-    @Override
     public <T> Iterable<T> removeAll(Key<T> key) {
-        throw new UnsupportedOperationException();
+        Preconditions.checkNotNull(key, "Key");
+        LOG.trace("removing all listeners from {}", key);
+        synchronized (services) {
+            return (Iterable<T>) services.removeAll(key);
+        }
     }
 
 }
