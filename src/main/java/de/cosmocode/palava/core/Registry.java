@@ -178,6 +178,11 @@ public interface Registry extends Service {
      * Register a listener for a specific type. Registering the same listener
      * for a type twice does not result in a double binding. The listener
      * will be notified once and only once per notify invocation.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.register(Key.get(type), listener);}
+     * </p>
      *
      * @param <T> the generic type
      * @param type the type's class
@@ -204,6 +209,11 @@ public interface Registry extends Service {
      *
      * <p>
      *   Note: Implementations may provide live views.
+     * </p>
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.getListeners(Key.get(type));}
      * </p>
      *
      * @param <T> the generic type
@@ -232,6 +242,11 @@ public interface Registry extends Service {
      * event/callback frameworks to integrate in this registry.
      * This is used for event systems which do not allow hot un/loading
      * of listeners.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.proxy(Key.get(type));}
+     * </p>
      * 
      * @param <T> the generic type
      * @param type the type's class literal
@@ -268,6 +283,11 @@ public interface Registry extends Service {
     /**
      * Notify all listeners for a specific type
      * by invoking command on every found listener.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.notify(Key.get(type), command);}
+     * </p>
      *
      * @param <T> the generic type
      * @param type the type's class
@@ -294,6 +314,11 @@ public interface Registry extends Service {
     /**
      * Notify all listeners for a specific type
      * by invoking command on every found listener.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.notifySilent(Key.get(type), command);}
+     * </p>
      *
      * @param <T> the generic type
      * @param type the type's class
@@ -317,6 +342,11 @@ public interface Registry extends Service {
      * Remove a specific listener interested in type from this registry.
      * If the same listener is also registered for other types,
      * he will still get notified for those.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.remove(Key.get(type), listener);}
+     * </p>
      *
      * @param <T> the generic type
      * @param type the type's class
@@ -343,7 +373,7 @@ public interface Registry extends Service {
      * Removes a listener completely from this registry. If the listener
      * is registered for multiple types, he won't get notified for those
      * after this method has been called.
-     *
+     * 
      * @param <T> the generic type
      * @param listener the listener being removed
      * @return true if listener was registered before
@@ -355,6 +385,11 @@ public interface Registry extends Service {
      * Removes a type and its listeners completely from this registry.
      * If the a listener is also registered for other types,
      * he will still get notified for those.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.removeAll(Key.get(type));}
+     * </p>
      * 
      * @param <T> the generic type
      * @param type the type being removed
