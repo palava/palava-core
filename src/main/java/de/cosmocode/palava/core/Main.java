@@ -88,17 +88,19 @@ public final class Main {
     }
 
     private void stop() {
-        framework.stop();
-        persistState();
+        try {
+            framework.stop();
+        } finally {
+            persistState();
+        }
     }
 
     private void persistState() {
-        if (stateFile == null) {
-            return;
-        }
+        if (stateFile == null) return;
 
         try {
             final Writer writer = new FileWriter(stateFile);
+            // TODO does this work on windows?
             writer.write(framework.currentState().name() + "\n");
             writer.close();
         } catch (IOException e) {

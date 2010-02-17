@@ -80,6 +80,7 @@ public interface Registry extends Service {
             } else if (this.meta != null && that.meta == null) {
                 return this.meta.equals(null);
             } else {
+                // hack to allow non-symetric equals method to succeed
                 return this.meta.equals(that.meta) || that.meta.equals(this.meta);
             }
         }

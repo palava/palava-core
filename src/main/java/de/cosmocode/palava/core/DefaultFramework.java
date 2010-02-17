@@ -184,7 +184,7 @@ final class DefaultFramework implements Framework {
         state = State.RUNNING;
 
         // trigger post framework start event
-        registry.notify(PostFrameworkStart.class, new Procedure<PostFrameworkStart>() {
+        registry.notifySilent(PostFrameworkStart.class, new Procedure<PostFrameworkStart>() {
 
             @Override
             public void apply(PostFrameworkStart input) {
@@ -206,7 +206,7 @@ final class DefaultFramework implements Framework {
     
     @Override
     public void stop() {
-        registry.notify(PreFrameworkStop.class, new Procedure<PreFrameworkStop>() {
+        registry.notifySilent(PreFrameworkStop.class, new Procedure<PreFrameworkStop>() {
             
             @Override
             public void apply(PreFrameworkStop input) {
