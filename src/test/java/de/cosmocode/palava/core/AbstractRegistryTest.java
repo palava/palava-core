@@ -30,6 +30,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
+import de.cosmocode.junit.UnitProvider;
 import de.cosmocode.palava.core.Registry.Key;
 
 /**
@@ -37,25 +38,7 @@ import de.cosmocode.palava.core.Registry.Key;
  * 
  * @author Willi Schoenborn
  */
-public abstract class AbstractRegistryTest {
-    
-    /**
-     * Hidden interface to easily mock listeners.
-     *
-     * @author Willi Schoenborn
-     */
-    private static interface Listener {
-
-        void doAnything();
-        
-    }
-
-    /**
-     * Provides the unit under testing.
-     * 
-     * @return a new {@link Registry}
-     */
-    protected abstract Registry unit();
+public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
     
     /**
      * Implementations can decide whether they live views

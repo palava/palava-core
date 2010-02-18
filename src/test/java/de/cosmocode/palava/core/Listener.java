@@ -20,20 +20,15 @@
 package de.cosmocode.palava.core;
 
 /**
- * Tests {@link DefaultRegistry}.
+ * Hidden interface to easily mock listeners.
  *
  * @author Willi Schoenborn
  */
-public final class DefaultRegistryTest extends AbstractRegistryTest {
+interface Listener {
 
-    @Override
-    public Registry unit() {
-        return new DefaultRegistry();
-    }
-
-    @Override
-    protected boolean supportsLiveView() {
-        return true;
-    }
+    /**
+     * Is doing anything.
+     */
+    void doAnything();
 
 }
