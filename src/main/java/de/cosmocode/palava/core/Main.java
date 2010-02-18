@@ -20,9 +20,11 @@
 package de.cosmocode.palava.core;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Properties;
 
@@ -66,10 +68,24 @@ public final class Main {
         
         final Properties properties = new Properties();
         
+        final Reader reader;
+        
         try {
-            properties.load(new FileReader(settings));
+            reader = new FileReader(settings);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+        
+        try {
+            properties.load(reader);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
         
         framework = Palava.createFramework(properties);

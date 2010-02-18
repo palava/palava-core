@@ -102,7 +102,7 @@ final class DefaultFramework implements Framework {
      *
      * @author Willi Schoenborn
      */
-    private final class PropertiesModule implements Module {
+    private static final class PropertiesModule implements Module {
         
         private final Properties properties;
         
