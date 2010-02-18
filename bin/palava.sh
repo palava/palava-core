@@ -40,7 +40,7 @@ echo_n() {
     fi
 }
 
-palava_start() {
+palava_internal_start() {
     echo_n "Starting framework..."
 
     palava_status
@@ -138,12 +138,23 @@ palava_start() {
 
     # start java in the background
     COMMAND="$JAVA $JVM_ARGS de.cosmocode.palava.core.Main $APPLICATION_ARGS"
-    echo "Executing $COMMAND"
     nohup $COMMAND > logs/stdout.log 2> logs/stderr.log &
     PID=$!
 
     # save pid
     echo $PID > $APPLICATION_PID_FILE
+    
+    return 0
+}
+
+palava_start() {
+
+	palava_internal_start
+	RESULT=$?
+	
+	if [ 0 -ne $RESULT ]; then
+		return $RESULT
+	fi 
 
     while [ true ]; do
         # current state
@@ -170,6 +181,18 @@ palava_start() {
         cat logs/stderr.log
         return 1
     done
+}
+
+palava_quickstart() {
+	palava_internal_start
+	RESULT=$?
+	
+	if [ 0 -ne $RESULT ]; then
+		return $RESULT
+	fi
+	
+	echo  "done"
+	return 0
 }
 
 palava_stop() {
@@ -239,6 +262,11 @@ case "$1" in
         exit $?
         ;;
 
+	"quickstart")
+		palava_quickstart
+		exit $?
+		;;
+		
     "stop")
         palava_stop
         exit $?

@@ -258,7 +258,7 @@ public interface Registry extends Service {
      * @throws IllegalArgumentException if type is not an interface (annotations are not allowed)
      * @throws IllegalStateException when a method is invoked which does not return
      *         void. <strong>Note</strong>: This exception is thrown at invocation time
-     *         not at construction time.
+     *         not at construction time. (toString, equals and hashCode are supported)
      */
     <T> T proxy(Class<T> type);
     
@@ -277,7 +277,7 @@ public interface Registry extends Service {
      * @throws IllegalArgumentException if T is not an interface (annotations are not allowed)
      * @throws IllegalStateException when a method is invoked which does not return
      *         void. <strong>Note</strong>: This exception is thrown at invocation time
-     *         not at construction time.
+     *         not at construction time. (toString, equals and hashCode are supported)
      */
     <T> T proxy(Key<T> key);
     

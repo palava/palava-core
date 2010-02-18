@@ -45,6 +45,20 @@ import com.google.inject.Singleton;
 final class DefaultRegistry extends AbstractRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
+    
+    private static final Method TO_STRING;
+    private static final Method EQUALS;
+    private static final Method HASHCODE;
+    
+    static {
+        try {
+            TO_STRING = Object.class.getMethod("toString");
+            EQUALS = Object.class.getMethod("equals", Object.class);
+            HASHCODE = Object.class.getMethod("hashCode");
+        } catch (NoSuchMethodException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private final Multimap<Key<? extends Object>, Object> services;
     
@@ -70,6 +84,62 @@ final class DefaultRegistry extends AbstractRegistry {
         return Iterables.unmodifiableIterable((Iterable<T>) services.get(key));
     }
     
+    /**
+     * Inner class allowing to encapsulate proxy invocation handling.
+     *
+     * @author Willi Schoenborn
+     * @param <T>
+     */
+    private final class ProxyHandler<T> implements InvocationHandler {
+        
+        private final Key<T> key;
+        
+        public ProxyHandler(Key<T> key) {
+            this.key = Preconditions.checkNotNull(key, "Key");
+        }
+        
+        @Override
+        public Object invoke(Object proxy, final Method method, final Object[] args) 
+            throws IllegalAccessException, InvocationTargetException {
+            if (method.equals(TO_STRING)) {
+                return String.format("Registry.proxy(%s)", key);
+            } else if (method.equals(EQUALS)) {
+                return equals(args[0]);
+            } else if (method.equals(HASHCODE)) {
+                return hashCode();
+            } else if (method.getReturnType() == void.class) {
+                DefaultRegistry.this.notify(key, new Procedure<T>() {
+                    
+                    public void apply(T listener) {
+                        try {
+                            method.invoke(listener, args);
+                        } catch (IllegalAccessException e) {
+                            throw new IllegalStateException(e);
+                        } catch (InvocationTargetException e) {
+                            throw new IllegalStateException(e);
+                        }
+                    };
+                    
+                });
+                return null;
+            } else {
+                final String message = String.format("%s must return void", method);
+                throw new IllegalStateException(message);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode() + key.hashCode();
+        }
+        
+        @Override
+        public boolean equals(Object that) {
+            return that.equals(key);
+        }
+        
+    }
+    
     @Override
     public <T> T proxy(final Key<T> key) {
         Preconditions.checkNotNull(key, "Key");
@@ -78,33 +148,7 @@ final class DefaultRegistry extends AbstractRegistry {
         
         final ClassLoader loader = getClass().getClassLoader();
         final Class<?>[] interfaces = {key.getType()};
-        final InvocationHandler handler = new InvocationHandler() {
-            
-            @Override
-            public Object invoke(Object proxy, final Method method, final Object[] args) 
-                throws IllegalAccessException, InvocationTargetException {
-                if (method.getReturnType() == void.class) {
-                    DefaultRegistry.this.notify(key, new Procedure<T>() {
-                        
-                        public void apply(T listener) {
-                            try {
-                                method.invoke(listener, args);
-                            } catch (IllegalAccessException e) {
-                                throw new IllegalStateException(e);
-                            } catch (InvocationTargetException e) {
-                                throw new IllegalStateException(e);
-                            }
-                        };
-                        
-                    });
-                    return null;
-                } else {
-                    final String message = String.format("%s must return void", method);
-                    throw new IllegalStateException(message);
-                }
-            }
-            
-        };
+        final InvocationHandler handler = new ProxyHandler<T>(key);
         
         @SuppressWarnings("unchecked")
         final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
