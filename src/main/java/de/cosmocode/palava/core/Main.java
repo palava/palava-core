@@ -100,7 +100,6 @@ public final class Main {
 
         try {
             final Writer writer = new FileWriter(stateFile);
-            // TODO does this work on windows?
             writer.write(framework.currentState().name() + "\n");
             writer.close();
         } catch (IOException e) {
