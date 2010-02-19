@@ -19,6 +19,7 @@
 
 package de.cosmocode.palava.core;
 
+import com.google.inject.Binder;
 import com.google.inject.Module;
 
 /**
@@ -26,11 +27,11 @@ import com.google.inject.Module;
  *
  * @author Willi Schoenborn
  */
-public final class RegistryModule extends ServiceModule {
+public final class RegistryModule implements Module {
 
     @Override
-    protected void configure() {
-        serve(Registry.class).with(DefaultRegistry.class);
+    public void configure(Binder binder) {
+        binder.bind(Registry.class).to(DefaultRegistry.class);
     }
 
 }

@@ -21,7 +21,6 @@ package de.cosmocode.palava.core;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +31,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -57,8 +54,6 @@ import de.cosmocode.palava.core.lifecycle.Startable;
 final class DefaultFramework implements Framework {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultFramework.class);
-    
-    private static final Key<Set<Service>> SERVICE_KEY = Key.get(new TypeLiteral<Set<Service>>() { });
     
     private State state = State.NEW;
     
@@ -90,8 +85,7 @@ final class DefaultFramework implements Framework {
         injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
             mainModule,
             new PropertiesModule(properties),
-            new ListenerModule(),
-            new EmptyServiceModule()
+            new ListenerModule()
         });
 
         registry = injector.getInstance(Registry.class);
@@ -137,7 +131,7 @@ final class DefaultFramework implements Framework {
                             
                             @Override
                             public void afterInjection(I injectee) {
-                                LOG.info("Adding {} to services", injectee);
+                                LOG.info("Bootstrapped service {}", injectee);
                                 services.add(Service.class.cast(injectee));
                             };
                             
@@ -153,36 +147,9 @@ final class DefaultFramework implements Framework {
         
     }
     
-    /**
-     * Binds an empty set of services.
-     *
-     * @author Willi Schoenborn
-     */
-    private static final class EmptyServiceModule implements Module {
-        
-        @Override
-        public void configure(Binder binder) {
-            Multibinder.newSetBinder(binder, Service.class);
-        }
-        
-    }
-    
     @Override
     public void start() {
         state = State.STARTING;
-        final Set<Service> bootstrapped;
-        try {
-            bootstrapped = injector.getInstance(SERVICE_KEY);
-        /* CHECKSTYLE:OFF */
-        } catch (RuntimeException e) {
-        /* CHECKSTYLE:ON */
-            state = State.FAILED;
-            throw e;
-        }
-        for (Service service : bootstrapped) {
-            LOG.debug("Bootstrapped service {}", service);
-        }
-        state = State.RUNNING;
 
         // trigger post framework start event
         registry.notifySilent(PostFrameworkStart.class, new Procedure<PostFrameworkStart>() {
@@ -193,6 +160,8 @@ final class DefaultFramework implements Framework {
             }
 
         });
+        
+        state = State.RUNNING;
     }
     
     @Override
