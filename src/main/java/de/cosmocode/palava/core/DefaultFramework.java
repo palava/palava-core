@@ -34,6 +34,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
@@ -86,12 +87,12 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
         
-        injector = Guice.createInjector(
+        injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
             mainModule,
             new PropertiesModule(properties),
             new ListenerModule(),
             new EmptyServiceModule()
-        );
+        });
 
         registry = injector.getInstance(Registry.class);
     }
