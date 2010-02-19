@@ -39,21 +39,23 @@ public interface Registry extends Service {
      */
     public static final class Key<T> {
         
+        private static final Object NO_META = new Object();
+        
         private final Class<T> type;
         
         private final Object meta;
         
         private Key(Class<T> type, Object meta) {
             this.type = Preconditions.checkNotNull(type, "Type");
-            this.meta = meta;
+            this.meta = Preconditions.checkNotNull(meta, "Meta");
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((meta == null) ? 0 : meta.hashCode());
-            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            result = prime * result + meta.hashCode();
+            result = prime * result + type.hashCode();
             return result;
         }
 
@@ -67,24 +69,16 @@ public interface Registry extends Service {
                 return false;
             }
             final Key<?> that = Key.class.cast(other);
-            return equals(that);
-        }
-        
-        private boolean equals(Key<?> that) {
             if (!this.type.equals(that.type)) {
                 return false;
             } else if (this.meta == that.meta) {
                 return true;
-            } else if (this.meta == null && that.meta != null) {
-                return that.meta.equals(null);
-            } else if (this.meta != null && that.meta == null) {
-                return this.meta.equals(null);
             } else {
                 // hack to allow non-symetric equals method to succeed
                 return this.meta.equals(that.meta) || that.meta.equals(this.meta);
             }
         }
-
+        
         public Class<T> getType() {
             return type;
         }
@@ -103,7 +97,7 @@ public interface Registry extends Service {
          * @throws NullPointerException if type is null
          */
         public static <T> Key<T> get(Class<T> type) {
-            return new Key<T>(type, null);
+            return new Key<T>(type, NO_META);
         }
         
         /**
