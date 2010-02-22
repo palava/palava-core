@@ -34,14 +34,12 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import com.google.inject.Singleton;
 
 /**
  * Default implementation of the {@link Registry} interface.
  *
  * @author Willi Schoenborn
  */
-@Singleton
 final class DefaultRegistry extends AbstractRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);

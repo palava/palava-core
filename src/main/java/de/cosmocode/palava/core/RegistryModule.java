@@ -21,6 +21,7 @@ package de.cosmocode.palava.core;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.Singleton;
 
 /**
  * A {@link Module} for the {@link de.cosmocode.palava.core.registry} package.
@@ -31,7 +32,7 @@ public final class RegistryModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.bind(Registry.class).to(DefaultRegistry.class);
+        binder.bind(Registry.class).to(DefaultRegistry.class).in(Singleton.class);
     }
 
 }
