@@ -22,6 +22,38 @@
 # script has to be under bin/
 cd $(dirname $0)/..
 
+# load global environment variables
+if [ -r /etc/environment ]; then
+    . /etc/environment
+fi
+
+# look for a palava.conf file to include
+CONFIG_FILE=conf/palava.conf
+
+# load it
+if [ -r "$CONFIG_FILE" ]; then
+    . $CONFIG_FILE
+fi
+
+# environment configuration file?
+if [ ! -z "$PALAVA_ENVIRONMENT" ]; then
+    ENV_CONFIG_FILE="conf/palava.$PALAVA_ENVIRONMENT.conf"
+    if [ -r "$ENV_CONFIG_FILE" ]; then
+        . $ENV_CONFIG_FILE
+    fi
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+    if [ ! -z "$PALAVA_USER" ]; then
+        # switch user
+        su $PALAVA_USER $0 $*
+        exit $?
+    else
+        echo "Running as root and no user is configured! aborting!" >&2
+        exit 1
+    fi
+fi
+
 # state file
 if [ -z "$APPLICATION_STATE_FILE" ]; then
     APPLICATION_STATE_FILE=run/application.state
@@ -52,7 +84,7 @@ palava_internal_start() {
 
     # check classpath
     if [ -z "$CLASSPATH" ]; then
-        CLASSPATH=$(echo $(ls lib/*.jar) | sed 's/ /:/g') 
+        CLASSPATH=$(echo $(ls lib/*.jar) | sed 's/ /:/g')
     fi
 
     # check vm arguments
@@ -68,7 +100,7 @@ palava_internal_start() {
 			-classpath $CLASSPATH \
 		"
     fi
-    
+
     # check for extra vm arguments
 	if [ ! -z "$EXTRA_JVM_ARGS" ]; then
 		JVM_ARGS="$JVM_ARGS $EXTRA_JVM_ARGS"
@@ -88,13 +120,13 @@ palava_internal_start() {
         echo "No Java available, set JAVA_HOME or JRE_HOME" >&2
         return 1
     fi
-    
+
     if [ ! -z "$JAVA_HOME" ]; then
         JAVA=$JAVA_HOME/bin/java
     else
         JAVA=$JRE_HOME/bin/java
     fi
-    
+
     if [ ! -f "$JAVA" ]; then
     	echo "FAILED"
     	echo "Java interpreter [$JAVA] does not exist" >&2
@@ -143,7 +175,7 @@ palava_internal_start() {
 
     # save pid
     echo $PID > $APPLICATION_PID_FILE
-    
+
     return 0
 }
 
@@ -151,10 +183,10 @@ palava_start() {
 
 	palava_internal_start
 	RESULT=$?
-	
+
 	if [ 0 -ne $RESULT ]; then
 		return $RESULT
-	fi 
+	fi
 
     while [ true ]; do
         # current state
@@ -186,11 +218,11 @@ palava_start() {
 palava_quickstart() {
 	palava_internal_start
 	RESULT=$?
-	
+
 	if [ 0 -ne $RESULT ]; then
 		return $RESULT
 	fi
-	
+
 	echo  "done"
 	return 0
 }
@@ -266,7 +298,7 @@ case "$1" in
 		palava_quickstart
 		exit $?
 		;;
-		
+
     "stop")
         palava_stop
         exit $?
