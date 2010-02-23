@@ -85,7 +85,8 @@ final class DefaultFramework implements Framework {
         injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
             mainModule,
             new PropertiesModule(properties),
-            new ListenerModule()
+            new ListenerModule(),
+            new InjectionModule()
         });
 
         registry = injector.getInstance(Registry.class);
