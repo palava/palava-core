@@ -37,7 +37,7 @@ fi
 
 # environment configuration file?
 if [ ! -z "$PALAVA_ENVIRONMENT" ]; then
-    ENV_CONFIG_FILE="conf/palava.$PALAVA_ENVIRONMENT.conf"
+    ENV_CONFIG_FILE="conf/palava/$PALAVA_ENVIRONMENT.conf"
     if [ -r "$ENV_CONFIG_FILE" ]; then
         . $ENV_CONFIG_FILE
     fi
