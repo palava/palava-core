@@ -91,7 +91,7 @@ palava_internal_start() {
     if [ -z "$PALAVA_ENVIRONMENT" ]; then
         LOG4J_CONFIG=conf/log4j.xml
     else
-        LOG4J_CONFIG=conf/log4j.$PALAVA_ENVIRONMENT.xml
+        LOG4J_CONFIG=conf/log4j/$PALAVA_ENVIRONMENT.xml
     fi
 
     # check vm arguments
