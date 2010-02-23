@@ -46,7 +46,7 @@ fi
 if [ "$(id -u)" -eq 0 ]; then
     if [ ! -z "$PALAVA_USER" ]; then
         # switch user
-        su $PALAVA_USER $0 $*
+        su $PALAVA_USER --command "$(pwd)/bin/palava.sh $*"
         exit $?
     else
         echo "Running as root and no user is configured! aborting!" >&2
@@ -291,7 +291,7 @@ palava_status() {
 }
 
 palava_usage() {
-    echo "Usage: $0 start|stop|kill|restart|status"
+    echo "Usage: $0 <start|stop|kill|restart|status>"
 }
 
 
