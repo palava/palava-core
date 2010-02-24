@@ -44,6 +44,8 @@ final class InjectionModule implements Module {
 
     private static final Logger LOG = LoggerFactory.getLogger(InjectionModule.class);
     
+    private static final String CLASSPATH_PREFIX = "classpath:";
+    
     private static final TypeConverter FILE_CONVERTER = new TypeConverter() {
         
         @Override
@@ -58,7 +60,12 @@ final class InjectionModule implements Module {
         @Override
         public Object convert(String value, TypeLiteral<?> literal) {
             try {
-                return new URL(value);
+                if (value.startsWith(CLASSPATH_PREFIX)) {
+                    LOG.trace("Considering {} to be a classpath resource", value);
+                    return InjectionModule.class.getResource(value.substring(CLASSPATH_PREFIX.length()));
+                } else {
+                    return new URL(value);
+                }
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException(e);
             }
