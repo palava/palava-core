@@ -42,40 +42,43 @@ import com.google.common.base.Preconditions;
  * @author Willi Schoenborn
  */
 public final class Main {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-    
+
     @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
     private File settings;
 
     @Option(name = "-s", required = false, aliases = "--state-file", usage = "Path to state file")
     private File stateFile;
 
+    @Option(name = "-n", required = false, aliases = "--no-auto-shutdown", usage = "If the framework should shut down as soon as possible after boot")
+    private boolean noAutoShutdown;
+
     private final Framework framework;
-    
+
     private Main(String[] args) {
         final CmdLineParser parser = new CmdLineParser(this);
-        
+
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new IllegalArgumentException(e);
         }
-        
+
         Preconditions.checkNotNull(settings, "Settings file not set");
         Preconditions.checkState(settings.exists(), "Settings file %s does not exist", settings.getAbsolutePath());
-        
+
         final Properties properties = new Properties();
-        
+
         final Reader reader;
-        
+
         try {
             reader = new FileReader(settings);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-        
+
         try {
             properties.load(reader);
         } catch (IOException e) {
@@ -87,7 +90,7 @@ public final class Main {
                 throw new IllegalStateException(e);
             }
         }
-        
+
         framework = Palava.createFramework(properties);
     }
 
@@ -122,27 +125,45 @@ public final class Main {
             throw new IllegalArgumentException("cannot persist state to file", e);
         }
     }
-    
+
+    private boolean isNoAutoShutdown() {
+        return noAutoShutdown;
+    }
+
     /**
      * Application entry point.
-     * 
+     *
      * @param args command line arguments
-     * @throws CmdLineException if command line parsing failed 
+     * @throws CmdLineException if command line parsing failed
      */
     public static void main(String[] args) throws CmdLineException {
         final Main main = new Main(args);
 
-        main.start();        
+        main.start();
 
-        LOG.debug("Adding shutdown hook");
+        LOG.debug("adding shutdown hook");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            
+
             @Override
             public void run() {
                 main.stop();
             }
-            
+
         }));
+
+        if (main.isNoAutoShutdown()) {
+            LOG.debug("automatic shutdown disabled; running until someone else triggers the shutdown");
+
+            // block until someone else triggeres the jvm shutdown
+            synchronized (Thread.currentThread()) {
+                try {
+                    Thread.currentThread().wait();
+                } catch (InterruptedException e) {
+                    // it's ok, shut down
+                    LOG.debug("main thread interrupted", e);
+                }
+            }
+        }
     }
 
 }

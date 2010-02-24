@@ -119,7 +119,7 @@ palava_internal_start() {
     fi
 
     # computed arguments
-    APPLICATION_ARGS="--config $APPLICATION_CONFIG --state-file $APPLICATION_STATE_FILE"
+    APPLICATION_ARGS="--config $APPLICATION_CONFIG --state-file $APPLICATION_STATE_FILE --no-auto-shutdown"
 
     # where is java
     if [ -z "$JAVA_HOME" ] && [ -z "$JRE_HOME" ]; then
