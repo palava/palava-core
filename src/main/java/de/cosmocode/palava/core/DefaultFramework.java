@@ -54,19 +54,19 @@ import de.cosmocode.palava.core.lifecycle.Startable;
 final class DefaultFramework implements Framework {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultFramework.class);
-    
+
     private State state = State.NEW;
-    
+
     private final List<Service> services = Lists.newArrayList();
-    
+
     private final Injector injector;
     private final Registry registry;
-    
+
     DefaultFramework(Properties properties) {
         Preconditions.checkNotNull(properties, "Properties");
 
         final Module mainModule;
-        
+
         final String className = properties.getProperty(CoreConfig.APPLICATION);
         Preconditions.checkNotNull(className, CoreConfig.APPLICATION);
         final Class<? extends Module> mainModuleClass;
@@ -81,7 +81,7 @@ final class DefaultFramework implements Framework {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
-        
+
         injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
             mainModule,
             new PropertiesModule(properties),
@@ -91,7 +91,7 @@ final class DefaultFramework implements Framework {
 
         registry = injector.getInstance(Registry.class);
     }
-    
+
     /**
      * Module which binds properties to constants and the properties
      * map itself to a map annotated with {@link Settings}.
@@ -99,21 +99,21 @@ final class DefaultFramework implements Framework {
      * @author Willi Schoenborn
      */
     private static final class PropertiesModule implements Module {
-        
+
         private final Properties properties;
-        
+
         public PropertiesModule(Properties properties) {
             this.properties = Preconditions.checkNotNull(properties, "Properties");
         }
-        
+
         @Override
         public void configure(Binder binder) {
             Names.bindProperties(binder, properties);
             binder.bind(Properties.class).annotatedWith(Settings.class).toInstance(properties);
         }
-        
+
     }
-    
+
     /**
      * Module which listens for {@link Service}s and registers them locally.
      *
@@ -124,30 +124,30 @@ final class DefaultFramework implements Framework {
         @Override
         public void configure(Binder binder) {
             binder.bindListener(Matchers.any(), new TypeListener() {
-                
+
                 @Override
                 public <I> void hear(final TypeLiteral<I> literal, TypeEncounter<I> encounter) {
                     if (Service.class.isAssignableFrom(literal.getRawType())) {
                         encounter.register(new InjectionListener<I>() {
-                            
+
                             @Override
                             public void afterInjection(I injectee) {
                                 LOG.info("Bootstrapped service {}", injectee);
                                 services.add(Service.class.cast(injectee));
                             };
-                            
+
                         });
-                        
+
                         encounter.register(new InitializableListener<I>());
                         encounter.register(new StartableListener<I>());
                     }
                 }
-                
+
             });
         }
-        
+
     }
-    
+
     @Override
     public void start() {
         state = State.STARTING;
@@ -161,50 +161,51 @@ final class DefaultFramework implements Framework {
             }
 
         });
-        
+
         state = State.RUNNING;
     }
-    
+
     @Override
     public State currentState() {
         return state;
     }
-    
+
     @Override
     public boolean isRunning() {
         return currentState() == State.RUNNING;
     }
-    
+
     @Override
     public void stop() {
+        final State oldState = state;
+
+        state = State.STOPPING;
+        LOG.info("Stopping framework");
+
         registry.notifySilent(PreFrameworkStop.class, new Procedure<PreFrameworkStop>() {
-            
+
             @Override
             public void apply(PreFrameworkStop input) {
                 input.eventPreFrameworkStop();
             }
-            
+
         });
 
-        final State oldState = state;
-        
-        state = State.STOPPING;
-        LOG.info("Stopping framework");
         stopServices();
         disposeServices();
         LOG.info("Framework stopped");
-        
+
         if (oldState == State.FAILED) {
             state = State.FAILED;
         } else {
             state = State.TERMINATED;
         }
     }
-    
+
     private <T> Iterable<T> filterAndReverse(Class<T> type) {
         return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
     }
-    
+
     private void stopServices() {
         LOG.info("Stopping services");
         for (Startable startable : filterAndReverse(Startable.class)) {
@@ -219,7 +220,7 @@ final class DefaultFramework implements Framework {
             }
         }
     }
-    
+
     private void disposeServices() {
         LOG.info("Disposing services");
         for (Disposable disposable : filterAndReverse(Disposable.class)) {
@@ -234,5 +235,5 @@ final class DefaultFramework implements Framework {
             }
         }
     }
-    
+
 }

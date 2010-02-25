@@ -19,13 +19,9 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -160,7 +156,15 @@ public final class Main {
      * @throws CmdLineException if command line parsing failed
      */
     public static void main(String[] args) throws CmdLineException {
-        final Main main = new Main(args);
+        logAsciiArt();
+
+        final Main main;
+        try {
+            main = new Main(args);
+        } catch (RuntimeException e) {
+            LOG.error("configuration error", e);
+            throw e;
+        }
 
         main.start();
 
@@ -187,6 +191,41 @@ public final class Main {
                 }
             }
         }
+    }
+
+    private static void logAsciiArt() {
+        InputStream asciiStream;
+        LOG.info("test");
+
+        File localFile = new File("lib/palava-ascii.txt");
+        int size = 0;
+        try {
+            asciiStream = new FileInputStream(localFile);
+            size = (int)localFile.length();
+        } catch (FileNotFoundException e) {
+            URL resource = Main.class.getClassLoader().getResource("palava-ascii.txt");
+            if (resource == null) {
+                LOG.info("===== PALAVA =====");
+                return;
+            }
+            try {
+                asciiStream = resource.openStream();
+                size = asciiStream.available();
+            } catch (IOException e1) {
+                LOG.info("===== PALAVA =====");
+                return;
+            }
+        }
+
+        byte[] buffer = new byte[size];
+        try {
+            asciiStream.read(buffer);
+        } catch (IOException e) {
+            LOG.info("===== PALAVA =====");
+            return;
+        }
+        String message = new String(buffer, Charset.forName("UTF-8"));
+        LOG.info("initializing palava...\n", message);
     }
 
 }
