@@ -117,9 +117,14 @@ palava_internal_start() {
     if [ -z "$APPLICATION_CONFIG" ]; then
         APPLICATION_CONFIG=conf/application.properties
     fi
+    if [ ! -z "$PALAVA_ENVIRONMENT" ] && [ -r conf/application/$PALAVA_ENVIRONMENT.properties ]; then
+        APPLICATION_ENV_CONFIG=conf/application/$PALAVA_ENVIRONMENT.properties
+    else
+        APPLICATION_ENV_CONFIG=
+    fi
 
     # computed arguments
-    APPLICATION_ARGS="--config $APPLICATION_CONFIG --state-file $APPLICATION_STATE_FILE --no-auto-shutdown"
+    APPLICATION_ARGS=" --state-file $APPLICATION_STATE_FILE --no-auto-shutdown $APPLICATION_CONFIG $APPLICATION_ENV_CONFIG"
 
     # where is java
     if [ -z "$JAVA_HOME" ] && [ -z "$JRE_HOME" ]; then
@@ -239,9 +244,9 @@ palava_stop() {
 
     palava_status
     if [ $? -ne 0 ]; then
-        echo "FAILED"
-        echo "Framework does not run" >&2
-        return 1
+        echo "done"
+        echo "Framework did not run" >&2
+        return 0
     fi
 
     # send shutdown signal to java

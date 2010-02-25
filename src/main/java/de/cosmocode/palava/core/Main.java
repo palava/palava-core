@@ -26,8 +26,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Properties;
+import java.util.*;
 
+import com.google.common.collect.Lists;
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -40,19 +42,21 @@ import com.google.common.base.Preconditions;
  * Application entry point.
  *
  * @author Willi Schoenborn
+ * @author Tobias Sarnowski
  */
 public final class Main {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-
-    @Option(name = "-c",  required = true, aliases = "--config", usage = "Path to settings file")
-    private File settings;
 
     @Option(name = "-s", required = false, aliases = "--state-file", usage = "Path to state file")
     private File stateFile;
 
     @Option(name = "-n", required = false, aliases = "--no-auto-shutdown", usage = "If the framework should shut down as soon as possible after boot")
     private boolean noAutoShutdown;
+
+    @Argument
+    private List<String> arguments = Lists.newArrayList();
+
 
     private final Framework framework;
 
@@ -61,20 +65,35 @@ public final class Main {
 
         try {
             parser.parseArgument(args);
+
+            if (arguments.size() == 0) {
+                throw new CmdLineException("no configuration files given");
+            }
         } catch (CmdLineException e) {
+            System.err.println("Usage:  java [options] configuration-files...");
             parser.printUsage(System.err);
             throw new IllegalArgumentException(e);
         }
 
-        Preconditions.checkNotNull(settings, "Settings file not set");
-        Preconditions.checkState(settings.exists(), "Settings file %s does not exist", settings.getAbsolutePath());
-
+        // merge configuration files
         final Properties properties = new Properties();
+        for (String config: arguments) {
+            File configFile = new File(config);
+            Preconditions.checkState(configFile.exists(), "Configuration file %s does not exist", configFile.getAbsolutePath());
 
+            mergeProperties(properties, configFile);
+        }
+
+        framework = Palava.createFramework(properties);
+    }
+
+    private void mergeProperties(Properties properties, File configFile) {
+        final Properties props = new Properties();
         final Reader reader;
 
         try {
-            reader = new FileReader(settings);
+            LOG.trace("loading config " + configFile.getAbsolutePath());
+            reader = new FileReader(configFile);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
@@ -91,7 +110,9 @@ public final class Main {
             }
         }
 
-        framework = Palava.createFramework(properties);
+        for (Map.Entry<Object,Object> entry: props.entrySet()) {
+            properties.setProperty((String)entry.getKey(), (String)entry.getValue());
+        }
     }
 
     private void start() {
