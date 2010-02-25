@@ -86,7 +86,7 @@ final class DefaultFramework implements Framework {
             mainModule,
             new PropertiesModule(properties),
             new ListenerModule(),
-            new InjectionModule()
+            new TypeConverterModule()
         });
 
         registry = injector.getInstance(Registry.class);
