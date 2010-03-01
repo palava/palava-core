@@ -43,6 +43,7 @@ import com.google.inject.spi.TypeListener;
 import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
+import de.cosmocode.palava.core.inject.TypeConverterModule;
 import de.cosmocode.palava.core.lifecycle.Disposable;
 import de.cosmocode.palava.core.lifecycle.Startable;
 

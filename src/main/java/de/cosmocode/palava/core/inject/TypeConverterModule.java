@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.inject;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import com.google.inject.spi.TypeConverter;
  *
  * @author Willi Schoenborn
  */
-final class TypeConverterModule implements Module {
+public final class TypeConverterModule implements Module {
 
     private static final Logger LOG = LoggerFactory.getLogger(TypeConverterModule.class);
     

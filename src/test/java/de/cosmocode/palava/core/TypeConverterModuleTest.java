@@ -34,6 +34,8 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 
+import de.cosmocode.palava.core.inject.TypeConverterModule;
+
 /**
  * Tests {@link TypeConverterModule}.
  *
