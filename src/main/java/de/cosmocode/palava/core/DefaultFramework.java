@@ -140,7 +140,6 @@ final class DefaultFramework implements Framework {
                         });
 
                         encounter.register(new InitializableListener<I>());
-                        encounter.register(new StartableListener<I>());
                     }
                 }
 
