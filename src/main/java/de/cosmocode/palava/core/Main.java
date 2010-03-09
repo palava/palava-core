@@ -195,10 +195,9 @@ public final class Main {
 
     private static void logAsciiArt() {
         InputStream asciiStream;
-        LOG.info("test");
 
         File localFile = new File("lib/palava-ascii.txt");
-        int size = 0;
+        int size = 4096;
         try {
             asciiStream = new FileInputStream(localFile);
             size = (int)localFile.length();
@@ -210,7 +209,6 @@ public final class Main {
             }
             try {
                 asciiStream = resource.openStream();
-                size = asciiStream.available();
             } catch (IOException e1) {
                 LOG.info("===== PALAVA =====");
                 return;
@@ -218,14 +216,15 @@ public final class Main {
         }
 
         byte[] buffer = new byte[size];
+        int length;
         try {
-            asciiStream.read(buffer);
+            length = asciiStream.read(buffer);
         } catch (IOException e) {
             LOG.info("===== PALAVA =====");
             return;
         }
-        String message = new String(buffer, Charset.forName("UTF-8"));
-        LOG.info("initializing palava...\n", message);
+        String message = new String(buffer, 0, length, Charset.forName("UTF-8"));
+        LOG.info("welcome to\n{}", message);
     }
 
 }
