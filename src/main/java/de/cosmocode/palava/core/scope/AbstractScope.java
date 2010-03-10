@@ -108,8 +108,8 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
     @Override
     public final <T> Provider<T> scope(final Key<T> key, final Provider<T> provider) {
         LOG.trace("Intercepting scoped request with {} to {}", key, provider);
+        Preconditions.checkState(inProgress(), "No %s in progress", getClass().getSimpleName());
         final ScopeContext context = get();
-        Preconditions.checkState(context != null, "No context present. Did you enter the scope?");
         return new Provider<T>() {
 
             @Override
