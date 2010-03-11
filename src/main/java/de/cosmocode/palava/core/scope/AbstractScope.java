@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 
@@ -108,7 +109,11 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
     @Override
     public final <T> Provider<T> scope(final Key<T> key, final Provider<T> provider) {
         LOG.trace("Intercepting scoped request with {} to {}", key, provider);
-        Preconditions.checkState(inProgress(), "No %s in progress", getClass().getSimpleName());
+        if (!inProgress()) {
+            throw new OutOfScopeException(String.format("Can't access %s outside of a %s block", 
+                key, getClass().getSimpleName()
+            ));
+        }
         final ScopeContext context = get();
         return new Provider<T>() {
 
@@ -125,6 +130,11 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
                     LOG.trace("Found cached version for {}: {}", key, cached);
                     return cached;
                 }
+            }
+            
+            @Override
+            public String toString() {
+                return String.format("%s[%s]", provider, AbstractScope.this);
             }
 
         };
@@ -178,6 +188,11 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
                 }
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 
 }
