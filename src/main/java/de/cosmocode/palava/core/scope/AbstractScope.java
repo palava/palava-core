@@ -108,17 +108,17 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
     
     @Override
     public final <T> Provider<T> scope(final Key<T> key, final Provider<T> provider) {
-        LOG.trace("Intercepting scoped request with {} to {}", key, provider);
-        if (!inProgress()) {
-            throw new OutOfScopeException(String.format("Can't access %s outside of a %s block", 
-                key, getClass().getSimpleName()
-            ));
-        }
-        final ScopeContext context = get();
         return new Provider<T>() {
 
             @Override
             public T get() {
+                LOG.trace("Intercepting scoped request with {} to {}", key, provider);
+                if (!inProgress()) {
+                    throw new OutOfScopeException(String.format("Can't access %s outside of a %s block", 
+                        key, AbstractScope.this
+                    ));
+                }
+                final ScopeContext context = AbstractScope.this.get();
                 final T cached = context.<Key<T>, T>get(key);
                 // is there a cached version?
                 if (cached == null && !context.contains(key)) {
