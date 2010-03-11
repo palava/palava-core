@@ -19,23 +19,18 @@
 
 package de.cosmocode.palava.core.scope;
 
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
-
-import de.cosmocode.palava.core.Procedure;
-import de.cosmocode.palava.core.Registry;
-import de.cosmocode.palava.core.lifecycle.Disposable;
-import de.cosmocode.palava.core.lifecycle.Initializable;
-import de.cosmocode.palava.core.lifecycle.LifecycleException;
+import com.google.inject.internal.Sets;
 
 /**
  * Abstract skeleton implementation of the {@link Scope} interface.
@@ -43,40 +38,9 @@ import de.cosmocode.palava.core.lifecycle.LifecycleException;
  * @author Willi Schoenborn
  * @param <S> the generic scope context type
  */
-public abstract class AbstractScope<S extends ScopeContext> implements Scope, ScopeExitEvent, Provider<S>,
-    Initializable, Disposable {
+public abstract class AbstractScope<S extends ScopeContext> implements Scope, Provider<S> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScope.class);
-    
-    private final Procedure<ScopeEnterEvent> enter = new Procedure<ScopeEnterEvent>() {
-        
-        @Override
-        public void apply(ScopeEnterEvent input) {
-            input.eventScopeEnter(get());
-        }
-        
-    };
-    
-    private final Procedure<ScopeExitEvent> exit = new Procedure<ScopeExitEvent>() {
-        
-        @Override
-        public void apply(ScopeExitEvent input) {
-            input.eventScopeExit(get());
-        }
-        
-    };
-
-    private Registry registry;
-    
-    @Inject
-    void setRegistry(Registry registry) {
-        this.registry = registry;
-    }
-    
-    @Override
-    public void initialize() throws LifecycleException {
-        registry.register(ScopeExitEvent.class, this);
-    }
     
     /**
      * Checks whether this scope is currently in progress.
@@ -98,12 +62,8 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
      */
     public final void enter() {
         Preconditions.checkState(!inProgress(), "%s is already in progress", getClass().getSimpleName());
-        try {
-            LOG.trace("Entering {}", getClass().getSimpleName());
-            doEnter();
-        } finally {
-            registry.notifySilent(ScopeEnterEvent.class, enter);
-        }
+        LOG.trace("Entering {}", getClass().getSimpleName());
+        doEnter();
     }
     
     @Override
@@ -157,20 +117,14 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
             return;
         }
         LOG.trace("Exiting {}", getClass().getSimpleName());
-        registry.notifySilent(ScopeExitEvent.class, exit);
-        doExit();
-    }
-    
-    @Override
-    public void dispose() throws LifecycleException {
-        registry.remove(this);
-    }
-    
-    @Override
-    public void eventScopeExit(ScopeContext context) {
+        
+        final ScopeContext context = get();
+        final Set<Object> keys = Sets.newHashSet();
         for (Entry<Object, Object> entry : context) {
+            keys.add(entry.getKey());
             if (entry.getKey() instanceof Destroyable) {
                 try {
+                    LOG.trace("Destroying key {}", entry.getKey());
                     Destroyable.class.cast(entry.getKey()).destroy();
                 /*CHECKSTYLE:OFF*/
                 } catch (RuntimeException e) {
@@ -180,6 +134,7 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
             }
             if (entry.getValue() instanceof Destroyable) {
                 try {
+                    LOG.trace("Destroying value {}", entry.getValue());
                     Destroyable.class.cast(entry.getValue()).destroy();
                 /*CHECKSTYLE:OFF*/
                 } catch (RuntimeException e) {
@@ -188,6 +143,12 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
                 }
             }
         }
+        
+        for (Object key : keys) {
+            context.remove(key);
+        }
+        
+        doExit();
     }
     
     @Override
