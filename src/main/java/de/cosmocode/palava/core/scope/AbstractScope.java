@@ -101,7 +101,7 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
             LOG.trace("Entering {}", getClass().getSimpleName());
             doEnter();
         } finally {
-            registry.notify(ScopeEnterEvent.class, enter);
+            registry.notifySilent(ScopeEnterEvent.class, enter);
         }
     }
     
@@ -146,12 +146,9 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Sc
             LOG.warn("{} already exited", getClass().getSimpleName());
             return;
         }
-        try {
-            LOG.trace("Exiting {}", getClass().getSimpleName());
-            doExit();
-        } finally {
-            registry.notify(ScopeExitEvent.class, exit);
-        }
+        LOG.trace("Exiting {}", getClass().getSimpleName());
+        registry.notifySilent(ScopeExitEvent.class, exit);
+        doExit();
     }
     
     @Override
