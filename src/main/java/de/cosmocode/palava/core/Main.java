@@ -19,7 +19,15 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -49,7 +57,8 @@ public final class Main {
     @Option(name = "-s", required = false, aliases = "--state-file", usage = "Path to state file")
     private File stateFile;
 
-    @Option(name = "-n", required = false, aliases = "--no-auto-shutdown", usage = "If the framework should shut down as soon as possible after boot")
+    @Option(name = "-n", required = false, aliases = "--no-auto-shutdown", 
+        usage = "If the framework should shut down as soon as possible after boot")
     private boolean noAutoShutdown;
 
     @Argument
@@ -75,9 +84,11 @@ public final class Main {
 
         // merge configuration files
         final Properties properties = new Properties();
-        for (String config: arguments) {
-            File configFile = new File(config);
-            Preconditions.checkState(configFile.exists(), "Configuration file %s does not exist", configFile.getAbsolutePath());
+        for (String config : arguments) {
+            final File configFile = new File(config);
+            Preconditions.checkState(configFile.exists(), "Configuration file %s does not exist", 
+                configFile.getAbsolutePath()
+            );
 
             mergeProperties(properties, configFile);
         }
@@ -108,8 +119,8 @@ public final class Main {
             }
         }
 
-        for (Map.Entry<Object,Object> entry: props.entrySet()) {
-            properties.setProperty((String)entry.getKey(), (String)entry.getValue());
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            properties.setProperty((String) entry.getKey(), (String) entry.getValue());
         }
     }
 
@@ -161,7 +172,9 @@ public final class Main {
         final Main main;
         try {
             main = new Main(args);
+        /* CHECKSTYLE:OFF */
         } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
             LOG.error("configuration error", e);
             throw e;
         }
@@ -196,13 +209,13 @@ public final class Main {
     private static void logAsciiArt() {
         InputStream asciiStream;
 
-        File localFile = new File("lib/palava-ascii.txt");
+        final File localFile = new File("lib/palava-ascii.txt");
         int size = 4096;
         try {
             asciiStream = new FileInputStream(localFile);
-            size = (int)localFile.length();
+            size = (int) localFile.length();
         } catch (FileNotFoundException e) {
-            URL resource = Main.class.getClassLoader().getResource("palava-ascii.txt");
+            final URL resource = Main.class.getClassLoader().getResource("palava-ascii.txt");
             if (resource == null) {
                 LOG.info("===== PALAVA =====");
                 return;
@@ -215,7 +228,7 @@ public final class Main {
             }
         }
 
-        byte[] buffer = new byte[size];
+        final byte[] buffer = new byte[size];
         int length;
         try {
             length = asciiStream.read(buffer);
@@ -223,7 +236,7 @@ public final class Main {
             LOG.info("===== PALAVA =====");
             return;
         }
-        String message = new String(buffer, 0, length, Charset.forName("UTF-8"));
+        final String message = new String(buffer, 0, length, Charset.forName("UTF-8"));
         LOG.info("welcome to\n{}", message);
     }
 

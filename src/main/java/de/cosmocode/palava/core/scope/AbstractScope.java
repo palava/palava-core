@@ -19,18 +19,13 @@
 
 package de.cosmocode.palava.core.scope;
 
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.Key;
 import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
-import com.google.inject.internal.Sets;
 
 /**
  * Abstract skeleton implementation of the {@link Scope} interface.
@@ -42,30 +37,6 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Pr
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScope.class);
     
-    /**
-     * Checks whether this scope is currently in progress.
-     * 
-     * @return true if this scope is currently in progress, false otherwise
-     */
-    protected abstract boolean inProgress();
-    
-    /**
-     * Being called by {@link AbstractScope#enter()} to allow
-     * doing work.
-     */
-    protected void doEnter() {
-        
-    }
-    
-    /**
-     * Enters this scope.
-     */
-    public final void enter() {
-        Preconditions.checkState(!inProgress(), "%s is already in progress", getClass().getSimpleName());
-        LOG.trace("Entering {}", getClass().getSimpleName());
-        doEnter();
-    }
-    
     @Override
     public final <T> Provider<T> scope(final Key<T> key, final Provider<T> provider) {
         return new Provider<T>() {
@@ -73,12 +44,12 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Pr
             @Override
             public T get() {
                 LOG.trace("Intercepting scoped request with {} to {}", key, provider);
-                if (!inProgress()) {
+                final ScopeContext context = AbstractScope.this.get();
+                if (context == null) {
                     throw new OutOfScopeException(String.format("Can't access %s outside of a %s block", 
                         key, AbstractScope.this
                     ));
                 }
-                final ScopeContext context = AbstractScope.this.get();
                 final T cached = context.<Key<T>, T>get(key);
                 // is there a cached version?
                 if (cached == null && !context.contains(key)) {
@@ -98,57 +69,6 @@ public abstract class AbstractScope<S extends ScopeContext> implements Scope, Pr
             }
 
         };
-    }
-    
-    /**
-     * Being called by {@link AbstractScope#exit()} to allow
-     * doing work.
-     */
-    protected void doExit() {
-        
-    }
-    
-    /**
-     * Exits this scope.
-     */
-    public final void exit() {
-        if (!inProgress()) {
-            LOG.warn("{} already exited", getClass().getSimpleName());
-            return;
-        }
-        LOG.trace("Exiting {}", getClass().getSimpleName());
-        
-        final ScopeContext context = get();
-        final Set<Object> keys = Sets.newHashSet();
-        for (Entry<Object, Object> entry : context) {
-            keys.add(entry.getKey());
-            if (entry.getKey() instanceof Destroyable) {
-                try {
-                    LOG.trace("Destroying key {}", entry.getKey());
-                    Destroyable.class.cast(entry.getKey()).destroy();
-                /*CHECKSTYLE:OFF*/
-                } catch (RuntimeException e) {
-                /*CHECKSTYLE:ON*/
-                    LOG.error("Failed to destroy scoped key: {}", e);
-                }
-            }
-            if (entry.getValue() instanceof Destroyable) {
-                try {
-                    LOG.trace("Destroying value {}", entry.getValue());
-                    Destroyable.class.cast(entry.getValue()).destroy();
-                /*CHECKSTYLE:OFF*/
-                } catch (RuntimeException e) {
-                /*CHECKSTYLE:ON*/
-                    LOG.error("Failed to destroy scoped value: {}", e);
-                }
-            }
-        }
-        
-        for (Object key : keys) {
-            context.remove(key);
-        }
-        
-        doExit();
     }
     
     @Override
