@@ -86,4 +86,11 @@ public interface ScopeContext extends Iterable<Entry<Object, Object>> {
      * @throws NullPointerException if map is null
      */
     <K, V> void putAll(Map<? extends K, ? extends V> map);
+    
+    /**
+     * Destroys this context by calling {@link Destroyable#destroy()}
+     * on all keys and values implementing {@link Destroyable}.
+     * All entries will be removed after this method returns
+     */
+    void clear();
 }
