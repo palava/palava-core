@@ -21,6 +21,8 @@ package de.cosmocode.palava.core;
 
 import com.google.common.base.Preconditions;
 
+import de.cosmocode.collections.Procedure;
+
 /**
  * Abstract implementation of the {@link Registry} interface.
  *

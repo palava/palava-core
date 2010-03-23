@@ -30,6 +30,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
+import de.cosmocode.collections.Procedure;
 import de.cosmocode.junit.Asserts;
 import de.cosmocode.junit.UnitProvider;
 import de.cosmocode.palava.core.Registry.Key;

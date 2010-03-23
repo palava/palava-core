@@ -35,6 +35,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
+import de.cosmocode.collections.Procedure;
+
 /**
  * Default implementation of the {@link Registry} interface.
  *

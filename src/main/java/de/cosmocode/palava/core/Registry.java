@@ -22,6 +22,8 @@ package de.cosmocode.palava.core;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
+import de.cosmocode.collections.Procedure;
+
 /**
  * A {@link Registry} is used to provide a publish/subscribe
  * mechanism.
