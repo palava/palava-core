@@ -113,6 +113,23 @@ palava_internal_start() {
 		JVM_ARGS="$JVM_ARGS $EXTRA_JVM_ARGS"
 	fi
 
+    # jvm args file?
+    if [ -r conf/jvm.options ]; then
+        JVM_ARGS="
+                    -classpath $CLASSPATH \
+                    -Dlog4j.configuration=file:$LOG4J_CONFIG \
+                    -Dfile.encoding=UTF-8 \
+                    "
+        for line in $(cat conf/jvm.options); do
+            JVM_ARGS="$JVM_ARGS $line"
+        done
+        if [ ! -z "$PALAVA_ENVIRONMENT" ] && [ -r conf/jvm/$PALAVA_ENVIRONMENT.options ]; then
+            for line in $(cat conf/jvm/$PALAVA_ENVIRONMENT.options); do
+                JVM_ARGS="$JVM_ARGS $line"
+            done
+        fi
+    fi
+
     # configuration file
     if [ -z "$APPLICATION_CONFIG" ]; then
         APPLICATION_CONFIG=conf/application.properties
