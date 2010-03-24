@@ -66,9 +66,9 @@ fi
 
 echo_n() {
     if [ "$(echo -n)" = "$(echo)" ]; then
-        echo -n "$*   "
+        echo -n "$*"
     else
-        echo "$*   "
+        echo "$*"
     fi
 }
 
@@ -218,6 +218,9 @@ palava_start() {
 	fi
 
     while [ true ]; do
+        echo "."
+        sleep 1
+
         # current state
         STATE=$(cat $APPLICATION_STATE_FILE)
 
