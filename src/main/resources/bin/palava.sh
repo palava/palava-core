@@ -104,8 +104,7 @@ palava_internal_start() {
 			-Dfile.encoding=UTF-8 \
 			-Djava.awt.headless=true \
 			-enableassertions \
-			-classpath $CLASSPATH \
-		"
+			-classpath $CLASSPATH"
     fi
 
     # check for extra vm arguments
@@ -115,11 +114,10 @@ palava_internal_start() {
 
     # jvm args file?
     if [ -r conf/jvm.options ]; then
-        JVM_ARGS="
-                    -classpath $CLASSPATH \
-                    -Dlog4j.configuration=file:$LOG4J_CONFIG \
-                    -Dfile.encoding=UTF-8 \
-                    "
+        JVM_ARGS="\
+            -classpath $CLASSPATH \
+            -Dlog4j.configuration=file:$LOG4J_CONFIG \
+            -Dfile.encoding=UTF-8"
         for line in $(cat conf/jvm.options); do
             JVM_ARGS="$JVM_ARGS $line"
         done
@@ -218,7 +216,7 @@ palava_start() {
 	fi
 
     while [ true ]; do
-        echo "."
+        echo_n "."
         sleep 1
 
         # current state
@@ -275,6 +273,8 @@ palava_stop() {
 
     # wait until
     while [ true ]; do
+    	echo_n "."
+    	sleep 1
         palava_status
         [ $? -ne 0 ] && break
     done
@@ -284,7 +284,7 @@ palava_stop() {
 }
 
 palava_kill() {
-    echo_n "Killing framework..."
+    echo_n "Killing framework... "
 
     palava_status
     if [ $? -ne 0 ]; then
@@ -316,7 +316,7 @@ palava_status() {
 }
 
 palava_usage() {
-    echo "Usage: $0 <start|stop|kill|restart|status>"
+    echo "Usage: $0 <start|quickstart|stop|kill|restart|force-restart|status>"
 }
 
 
@@ -346,6 +346,11 @@ case "$1" in
         exit $?
         ;;
 
+	"force-restart")
+		palava_kill && palava_start
+		exit $?
+		;;
+		
     "status")
         palava_status
         if [ $? -eq 0 ]; then
