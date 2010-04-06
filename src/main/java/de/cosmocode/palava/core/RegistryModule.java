@@ -24,7 +24,7 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 
 /**
- * A {@link Module} for the {@link de.cosmocode.palava.core.registry} package.
+ * Binds the {@link Registry} to the {@link DefaultRegistry}.
  *
  * @author Willi Schoenborn
  */
