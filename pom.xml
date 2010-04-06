@@ -3,7 +3,7 @@
     <groupId>de.cosmocode.palava</groupId>
     <artifactId>palava-core</artifactId>
     <packaging>jar</packaging>
-    <version>2.3-SNAPSHOT</version>
+    <version>2.2-SNAPSHOT</version>
     <name>Palava Core</name>
     <parent>
         <artifactId>palava-parent</artifactId>
