@@ -31,7 +31,7 @@ public abstract aspect AbstractPalavaAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPalavaAspect.class);
     
-    private boolean alreadyInjected = false;
+    private boolean alreadyInjected;
     
     pointcut createInjector(): call(Injector Guice.createInjector(..));
     
@@ -40,6 +40,7 @@ public abstract aspect AbstractPalavaAspect {
         LOG.trace("Injecting members on {}", this);
         Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", this);
         injector.injectMembers(this);
+        alreadyInjected = true;
     }
 
 }
