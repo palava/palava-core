@@ -93,7 +93,11 @@ public final class Main {
             mergeProperties(properties, configFile);
         }
 
-        framework = Palava.createFramework(properties);
+        try {
+            framework = Palava.createFramework(properties);
+        } finally {
+            persistState();
+        }
     }
 
     private void mergeProperties(Properties properties, File configFile) {
@@ -170,6 +174,7 @@ public final class Main {
         logAsciiArt();
 
         final Main main;
+        
         try {
             main = new Main(args);
         /* CHECKSTYLE:OFF */

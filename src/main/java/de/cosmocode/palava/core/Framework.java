@@ -19,6 +19,10 @@
 
 package de.cosmocode.palava.core;
 
+import com.google.inject.ConfigurationException;
+import com.google.inject.Key;
+import com.google.inject.ProvisionException;
+
 import de.cosmocode.commons.Stateful;
 
 /**
@@ -32,6 +36,28 @@ public interface Framework extends Stateful {
      * Starts the framework.
      */
     void start();
+    
+    /**
+     * Retrieves an initialized bound instance of type T.
+     * 
+     * @param <T> the generic type parameter
+     * @param type the class literal of type t
+     * @return an instance of T
+     * @throws ConfigurationException if no binding exists for type T
+     * @throws ProvisionException if there was a runtime failure while providing an instance
+     */
+    <T> T getInstance(Class<T> type) throws ConfigurationException, ProvisionException;
+    
+    /**
+     * Retrieves an initialized bound instance of type T.
+     * 
+     * @param <T> the generic type parameter
+     * @param key the binding key
+     * @return an instance of T
+     * @throws ConfigurationException if no binding exists for the given key
+     * @throws ProvisionException if there was a runtime failure while providing an instance
+     */
+    <T> T getInstance(Key<T> key) throws ConfigurationException, ProvisionException;
     
     /**
      * Stops the framework.

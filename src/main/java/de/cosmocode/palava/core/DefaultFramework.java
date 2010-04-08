@@ -31,6 +31,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
@@ -84,14 +85,21 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
 
-        injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
-            mainModule,
-            new PropertiesModule(properties),
-            new ListenerModule(),
-            new TypeConverterModule()
-        });
-
-        registry = injector.getInstance(Registry.class);
+        try {
+            injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
+                mainModule,
+                new PropertiesModule(properties),
+                new ListenerModule(),
+                new TypeConverterModule()
+            });
+            
+            registry = injector.getInstance(Registry.class);
+        /* CHECKSTYLE:OFF */
+        } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
+            state = State.FAILED;
+            throw e;
+        }
     }
 
     /**
@@ -174,6 +182,16 @@ final class DefaultFramework implements Framework {
     @Override
     public boolean isRunning() {
         return currentState() == State.RUNNING;
+    }
+    
+    @Override
+    public <T> T getInstance(Class<T> type) {
+        return injector.getInstance(type);
+    }
+    
+    @Override
+    public <T> T getInstance(Key<T> key) {
+        return injector.getInstance(key);
     }
 
     @Override
