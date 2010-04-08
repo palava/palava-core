@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+import de.cosmocode.commons.State;
+
 /**
  * Application entry point.
  *
@@ -153,7 +155,7 @@ public final class Main {
 
         try {
             final Writer writer = new FileWriter(stateFile);
-            writer.write(framework.currentState().name() + "\n");
+            writer.write((framework == null ? State.FAILED : framework.currentState()).name() + "\n");
             writer.close();
         } catch (IOException e) {
             throw new IllegalArgumentException("cannot persist state to file", e);
