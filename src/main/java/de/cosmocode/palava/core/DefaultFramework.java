@@ -22,6 +22,7 @@ package de.cosmocode.palava.core;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +86,11 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
 
+        final String stageName = properties.getProperty(FrameworkConfig.STAGE);
+        final Stage stage = StringUtils.isNotBlank(stageName) ? Stage.valueOf(stageName) : Stage.PRODUCTION;
+        
         try {
-            injector = Guice.createInjector(Stage.PRODUCTION, new Module[] {
+            injector = Guice.createInjector(stage, new Module[] {
                 mainModule,
                 new PropertiesModule(properties),
                 new ListenerModule(),
