@@ -62,21 +62,19 @@ public abstract aspect AbstractPalavaAspect {
         return Iterables.concat(Collections.singleton(module), modules);
     }
     
-    private pointcut notHere(): !withincode(* AbstractPalavaAspect.*(..));
-    
-    Injector around(Module[] modules): call(Injector Guice.createInjector(Module...)) && args(modules) && notHere() {
+    Injector around(Module[] modules): call(Injector Guice.createInjector(Module...)) && args(modules) {
         return proceed(append(modules));
     }
 
-    Injector around(Iterable<? extends Module> modules): call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) && notHere() {
+    Injector around(Iterable<? extends Module> modules): call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) {
         return proceed(append(modules));
     }
 
-    Injector around(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) && notHere() {
+    Injector around(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
     
-    Injector around(Stage stage, Iterable<? extends Module> modules): call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) && notHere() {
+    Injector around(Stage stage, Iterable<? extends Module> modules): call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
     
