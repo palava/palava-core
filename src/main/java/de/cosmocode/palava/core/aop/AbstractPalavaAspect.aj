@@ -19,13 +19,16 @@
 
 package de.cosmocode.palava.core.aop;
 
-import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Stage;
 
 public abstract aspect AbstractPalavaAspect {
 
@@ -33,14 +36,20 @@ public abstract aspect AbstractPalavaAspect {
     
     private boolean alreadyInjected;
     
-    pointcut createInjector(): call(Injector Guice.createInjector(..));
+    pointcut createInjector(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules);
     
-    @SuppressAjWarnings("adviceDidNotMatch")
-    after() returning (Injector injector): createInjector() {
-        LOG.trace("Injecting members on {}", this);
-        Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", this);
-        injector.injectMembers(this);
-        alreadyInjected = true;
+    Injector around(Stage stage, Module[] modules): createInjector(Stage, Module[]) && args(stage, modules) {
+        return Guice.createInjector(stage, Lists.asList(new Module() {
+                
+                @Override
+                public void configure(Binder binder) {
+                    LOG.trace("Injecting members on {}", this);
+                    Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", this);
+                    binder.requestInjection(AbstractPalavaAspect.this);
+                    alreadyInjected = true;
+                }
+                
+        }, modules));
     }
     
     protected final void checkState() {
