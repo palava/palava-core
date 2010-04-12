@@ -42,5 +42,9 @@ public abstract aspect AbstractPalavaAspect {
         injector.injectMembers(this);
         alreadyInjected = true;
     }
+    
+    protected final void checkState() {
+        Preconditions.checkState(alreadyInjected, "Members have not been injected on {}", this);
+    }
 
 }
