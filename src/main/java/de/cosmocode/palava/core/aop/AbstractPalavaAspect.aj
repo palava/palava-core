@@ -19,11 +19,13 @@
 
 package de.cosmocode.palava.core.aop;
 
+import java.util.Collections;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterables;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -34,22 +36,48 @@ public abstract aspect AbstractPalavaAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPalavaAspect.class);
     
+    private final Module module = new Module() {
+        
+        @Override
+        public void configure(Binder binder) {
+            final AbstractPalavaAspect self = AbstractPalavaAspect.this;
+            LOG.trace("Injecting members on {}", self);
+            Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", self);
+            binder.requestInjection(self);
+            alreadyInjected = true;
+        }
+        
+    };
+    
     private boolean alreadyInjected;
     
-    pointcut createInjector(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules);
+    private Module[] append(Module[] modules) {
+        final Module[] array = new Module[modules.length + 1];
+        array[0] = module;
+        System.arraycopy(modules, 0, array, 1, modules.length);
+        return array;
+    }
     
-    Injector around(Stage stage, Module[] modules): createInjector(Stage, Module[]) && args(stage, modules) {
-        return Guice.createInjector(stage, Lists.asList(new Module() {
-                
-                @Override
-                public void configure(Binder binder) {
-                    LOG.trace("Injecting members on {}", this);
-                    Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", this);
-                    binder.requestInjection(AbstractPalavaAspect.this);
-                    alreadyInjected = true;
-                }
-                
-        }, modules));
+    private Iterable<? extends Module> append(Iterable<? extends Module> modules) {
+        return Iterables.concat(Collections.singleton(module), modules);
+    }
+    
+    private pointcut notHere(): !withincode(* AbstractPalavaAspect.*(..));
+    
+    Injector around(Module[] modules): call(Injector Guice.createInjector(Module...)) && args(modules) && notHere() {
+        return proceed(append(modules));
+    }
+
+    Injector around(Iterable<? extends Module> modules): call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) && notHere() {
+        return proceed(append(modules));
+    }
+
+    Injector around(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) && notHere() {
+        return proceed(stage, append(modules));
+    }
+    
+    Injector around(Stage stage, Iterable<? extends Module> modules): call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) && notHere() {
+        return proceed(stage, append(modules));
     }
     
     protected final void checkState() {
