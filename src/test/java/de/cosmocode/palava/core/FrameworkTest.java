@@ -24,26 +24,67 @@ import java.util.Properties;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.inject.Stage;
+
+import de.cosmocode.junit.UnitProvider;
+
 /**
  * Tests {@link Main}.
  *
  * @author Willi Schoenborn
  */
-public final class FrameworkTest {
+public final class FrameworkTest implements UnitProvider<Framework> {
 
+    @Override
+    public Framework unit() {
+        final Properties properties = new Properties();
+        properties.setProperty(CoreConfig.APPLICATION, EmptyApplication.class.getName());
+        return unit(properties);
+    }
+    
+    private Framework unit(Properties properties) {
+        return Palava.createFramework(properties);
+    }
+    
     /**
      * Tests {@link Framework#start()}.
      */
     @Test
     public void start() {
+        final Framework unit = unit();
+        
+        unit.start();
+        Assert.assertTrue("Framework should run", unit.isRunning());
+        
+        unit.stop();
+        Assert.assertFalse("Framework should not run", unit.isRunning());
+    }
+    
+    /**
+     * Tests {@link Framework#getInstance(Class)}.
+     */
+    @Test
+    public void getInstance() {
+        Assert.assertNotNull(unit().getInstance(Registry.class));
+    }
+    
+    /**
+     * Tests whether the default {@link Stage} is {@link Stage#PRODUCTION}.
+     */
+    @Test
+    public void stageProduction() {
+        Assert.assertSame(Stage.PRODUCTION, unit().getInstance(Stage.class));
+    }
+    
+    /**
+     * Tests the configurability of the {@link Stage}.
+     */
+    @Test
+    public void stageConfigurable() {
         final Properties properties = new Properties();
         properties.setProperty(CoreConfig.APPLICATION, EmptyApplication.class.getName());
-        final Framework framework = Palava.createFramework(properties);
-        
-        framework.start();
-        Assert.assertTrue("Framework should run", framework.isRunning());
-        framework.stop();
-        Assert.assertFalse("Framework should not run", framework.isRunning());
+        properties.setProperty(CoreConfig.STAGE, Stage.DEVELOPMENT.name());
+        Assert.assertSame(Stage.DEVELOPMENT, unit(properties).getInstance(Stage.class));
     }
 
 }

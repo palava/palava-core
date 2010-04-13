@@ -31,6 +31,8 @@ public final class CoreConfig {
 
     public static final String APPLICATION = PREFIX + "application";
     
+    public static final String STAGE = PREFIX + "stage";
+    
     private CoreConfig() {
         
     }

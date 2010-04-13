@@ -86,7 +86,7 @@ final class DefaultFramework implements Framework {
             throw new IllegalArgumentException(e);
         }
 
-        final String stageName = properties.getProperty(FrameworkConfig.STAGE);
+        final String stageName = properties.getProperty(CoreConfig.STAGE);
         final Stage stage = StringUtils.isNotBlank(stageName) ? Stage.valueOf(stageName) : Stage.PRODUCTION;
         
         try {
