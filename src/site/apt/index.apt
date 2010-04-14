@@ -1,0 +1,58 @@
+ ---
+ Usage
+ ---
+
+palava-core
+
+ The core provides the basic framework structure for the modular
+ system used by all palava modules. It is based on {{{http://code.google.com/p/google-guice/}Google's Guice}}
+ and you want to be familiar with this.
+
+Lifecycle
+
+ Palava implements a simple lifecycle to start and stop modules. Every binded instance, implementing one of the
+ following Interfaces, will automatically be used by the lifecycle.
+
+  * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/lifecycle/Initializable.html}Initilizable}}
+
+    The initialize() method will be called upon start of the framework.
+
+  * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/lifecycle/Disposable.html}Disposable}}
+
+    The dispose() method will be called on framework shutdown.
+
+ Palava doesn't support hot deployment or removing services on the fly. To keep
+ everything simple a service can only start on boot and stop on shutdown. To change
+ the installed services, you have to reboot the framework completly.
+
+ In addition to the both interfaces above, there are more markup interfaces which can be used by everyone
+ in the application. They are just vaguely documented, so that the application can define what
+ it means.
+
+   * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/lifecycle/package-summary.html}List of all lifecycle interfaces.}}
+
+Events
+
+ The core defines two events which will be triggered after all Initializable services are successfully started and before
+ the framework shuts down and executes the Disposable services.
+
+   * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/event/PostFrameworkStart.html}PostFrameworkStart}}
+
+   * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/event/PreFrameworkStop.html}PreFrameworkStop}}
+
+ Events are triggered through calling all registered objects in the registry implementing the event interface.
+
+Registry
+
+ To have a good application communication, the palava framework defines a publish/subscribe registry
+ which is used as an event system. It can also be used in every case you need a publish/subscribe algorithm.
+
+   * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/Registry.html}Registry}}
+
+Embedding palava
+
+ Palava is fully embeddable. Thanks to the Guice dependency injection, we are not using classic static singletons.
+ You can run multiple instances of palava within your application. You have to initlize the framework, start and stop it.
+ While it is running, you can access the registered services.
+
+   * {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/Framework.html}Framework}}

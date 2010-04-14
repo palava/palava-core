@@ -1,0 +1,11 @@
+<project name="palava-core">
+    <body>
+        <menu name="Documentation">
+            <item name="Back to Overview" href=".."/>
+            <item name="Usage" href="index.html"/>
+            <item name="Implementations" href="implementations.html"/>
+        </menu>
+
+        <menu name="Reports" ref="reports"/>
+    </body>
+</project>

@@ -1,0 +1,19 @@
+ ---
+ Implementations
+ ---
+
+Default Implementation
+
+ The core provides a fully functional default implementation for the framework, the registry
+ and a standlone boot.
+ How to get everything working is explained in the {{{/how.html}initial tutorial}}.
+
+* Framework
+
+ To get an instance of the default Framework, use {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/Palava.html#createFramework(java.util.Properties)}Palava.createFramework}} or just use the standalone boot.
+
+* Registry
+
+ Install the {{{http://www.palava2.org/apidocs/de/cosmocode/palava/core/RegistryModule.html}RegistryModule}} to for the
+ default Registry implementation.
+
