@@ -26,11 +26,9 @@ import com.google.inject.Singleton;
 /**
  * Binds the {@link Registry} to the {@link DefaultRegistry}.
  *
- * @deprecated use {@link DefaultRegistryModule} instead
  * @author Willi Schoenborn
  */
-@Deprecated
-public final class RegistryModule implements Module {
+public final class DefaultRegistryModule implements Module {
 
     @Override
     public void configure(Binder binder) {
