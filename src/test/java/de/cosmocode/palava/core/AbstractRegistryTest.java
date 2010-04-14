@@ -60,6 +60,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         EasyMock.replay(listener);
         unit.register(Listener.class, listener);
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(Listener.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -73,6 +74,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
         unit.register(key, listener);
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(key)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -90,6 +92,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.register(Listener.class, listener);
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(Listener.class)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(Listener.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -108,6 +111,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.register(key, listener);
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(key)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(key)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -128,6 +132,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(Object.class)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(Listener.class)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -149,6 +154,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(Object.class)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(key)));
         Assert.assertSame(listener, Iterables.getOnlyElement(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -233,6 +239,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.remove(Listener.class, first);
         Assert.assertEquals(1, Iterables.size(unit.getListeners(Listener.class)));
         Assert.assertSame(second, Iterables.getOnlyElement(unit.getListeners(Listener.class)));
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -257,6 +264,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.remove(key, first);
         Assert.assertEquals(1, Iterables.size(unit.getListeners(key)));
         Assert.assertSame(second, Iterables.getOnlyElement(unit.getListeners(key)));
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -294,6 +302,8 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             unit.remove(Listener.class, first);
             Assert.assertTrue(Iterables.isEmpty(listeners));
         }
+        
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -333,6 +343,8 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             unit.remove(key, first);
             Assert.assertTrue(Iterables.isEmpty(listeners));
         }
+        
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -386,6 +398,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.register(Listener.class, listener);
 
         unit.proxy(Listener.class).doAnything();
+        EasyMock.verify(listener);
     }
 
     /**
@@ -404,6 +417,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         
         unit.register(key, listener);
         unit.proxy(key).doAnything();
+        EasyMock.verify(listener);
     }
     
     /**
@@ -426,7 +440,8 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.register(Listener.class, first);
         unit.register(Listener.class, second);
         
-        unit.proxy(Listener.class).doAnything();        
+        unit.proxy(Listener.class).doAnything();
+        EasyMock.verify(first, second);     
     }
     
     /**
@@ -452,6 +467,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.register(key, second);
         
         unit.proxy(key).doAnything();   
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -488,6 +504,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.remove(Listener.class, first);
         
         proxy.doAnything();
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -525,6 +542,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.remove(key, first);
         
         proxy.doAnything();
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -713,6 +731,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notify(Listener.class, procedure);
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -746,6 +765,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notify(key, procedure);
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -845,7 +865,11 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notify(Listener.class, procedure);
+        try {
+            unit.notify(Listener.class, procedure);
+        } finally {
+            EasyMock.verify(first, second);  
+        }
     }
     
     /**
@@ -875,7 +899,11 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notify(key, procedure);
+        try {
+            unit.notify(key, procedure);
+        } finally {
+            EasyMock.verify(first, second);  
+        }
     }
     
     /**
@@ -907,6 +935,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notifySilent(Listener.class, procedure);
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -939,6 +968,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notifySilent(key, procedure);
+        EasyMock.verify(first, second);  
     }
 
     /**
@@ -1030,6 +1060,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notifySilent(Listener.class, procedure);
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -1062,6 +1093,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         };
         
         unit.notifySilent(key, procedure);
+        EasyMock.verify(first, second);  
     }
     
     /**
@@ -1078,6 +1110,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(unit.remove(Listener.class, listener));
         Assert.assertFalse(unit.remove(Listener.class, listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
+        EasyMock.verify(listener);  
     }
     
     /**
@@ -1095,6 +1128,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(unit.remove(key, listener));
         Assert.assertFalse(unit.remove(key, listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(key)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -1120,6 +1154,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(unit.remove(Object.class, listener));
         Assert.assertFalse(unit.remove(Object.class, listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
 
     /**
@@ -1146,6 +1181,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(unit.remove(Object.class, listener));
         Assert.assertFalse(unit.remove(Object.class, listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -1222,6 +1258,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(unit.remove(listener));
         Assert.assertFalse(unit.remove(listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -1244,6 +1281,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertFalse(unit.remove(listener));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
     
     /**
@@ -1272,6 +1310,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(unit.removeAll(Listener.class)));
         Assert.assertTrue(Iterables.isEmpty(unit.removeAll(Listener.class)));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -1293,6 +1332,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(unit.removeAll(key)));
         Assert.assertTrue(Iterables.isEmpty(unit.removeAll(key)));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(key)));
+        EasyMock.verify(first, second);
     }
     
     /**
@@ -1315,6 +1355,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(Iterables.isEmpty(unit.removeAll(Listener.class)));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(Listener.class)));
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
 
     /**
@@ -1338,6 +1379,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         Assert.assertTrue(Iterables.isEmpty(unit.removeAll(key)));
         Assert.assertTrue(Iterables.isEmpty(unit.getListeners(key)));
         Assert.assertFalse(Iterables.isEmpty(unit.getListeners(Object.class)));
+        EasyMock.verify(listener);
     }
     
     /**
