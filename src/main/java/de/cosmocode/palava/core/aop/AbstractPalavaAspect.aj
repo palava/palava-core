@@ -21,6 +21,7 @@ package de.cosmocode.palava.core.aop;
 
 import java.util.Collections;
 
+import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,27 +54,31 @@ public abstract aspect AbstractPalavaAspect {
     
     private Module[] append(Module[] modules) {
         final Module[] array = new Module[modules.length + 1];
-        array[0] = module;
-        System.arraycopy(modules, 0, array, 1, modules.length);
+        System.arraycopy(modules, 0, array, 0, modules.length);
+        array[modules.length] = module;
         return array;
     }
     
     private Iterable<? extends Module> append(Iterable<? extends Module> modules) {
-        return Iterables.concat(Collections.singleton(module), modules);
+        return Iterables.concat(modules, Collections.singleton(module));
     }
     
+    @SuppressAjWarnings("adviceDidNotMatch")
     Injector around(Module[] modules): call(Injector Guice.createInjector(Module...)) && args(modules) {
         return proceed(append(modules));
     }
 
+    @SuppressAjWarnings("adviceDidNotMatch")
     Injector around(Iterable<? extends Module> modules): call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) {
         return proceed(append(modules));
     }
 
+    @SuppressAjWarnings("adviceDidNotMatch")
     Injector around(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
-    
+
+    @SuppressAjWarnings("adviceDidNotMatch")
     Injector around(Stage stage, Iterable<? extends Module> modules): call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
