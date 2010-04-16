@@ -14,35 +14,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.event;
+package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.collections.Procedure;
-import de.cosmocode.palava.core.Registry;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
 
 /**
- * Clients being registered as {@link PostFrameworkStart} listeners
- * in the {@link Registry} will be notified after a successful framework start.
+ * Binding annotation for all lifecycle services.
  *
- * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */
-public interface PostFrameworkStart {
-    
-    Procedure<PostFrameworkStart> PROCEDURE = new Procedure<PostFrameworkStart>() {
-        
-        @Override
-        public void apply(PostFrameworkStart input) {
-            input.eventPostFrameworkStart();
-        }
-        
-    };
-    
-    /**
-     * Post framework start callback. 
-     */
-    void eventPostFrameworkStart();
-    
+@Retention(RetentionPolicy.RUNTIME)
+@Target({
+    ElementType.METHOD,
+    ElementType.PARAMETER
+})
+@BindingAnnotation
+public @interface LifecycleServices {
+
 }

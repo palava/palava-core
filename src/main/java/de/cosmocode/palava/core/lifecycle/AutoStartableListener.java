@@ -14,35 +14,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.event;
+package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.collections.Procedure;
-import de.cosmocode.palava.core.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.spi.InjectionListener;
+
 
 /**
- * Clients being registered as {@link PostFrameworkStart} listeners
- * in the {@link Registry} will be notified after a successful framework start.
+ * {@link InjectionListener} which handles {@link AutoStartable}s.
  *
- * @author Tobias Sarnowski
  * @author Willi Schoenborn
+ * @param <I>
  */
-public interface PostFrameworkStart {
-    
-    Procedure<PostFrameworkStart> PROCEDURE = new Procedure<PostFrameworkStart>() {
-        
-        @Override
-        public void apply(PostFrameworkStart input) {
-            input.eventPostFrameworkStart();
+final class AutoStartableListener<I> implements InjectionListener<I> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AutoStartableListener.class);
+
+    @Override
+    public void afterInjection(I injectee) {
+        if (injectee instanceof AutoStartable) {
+            LOG.info("Autostarting service {}", injectee);
+            AutoStartable.class.cast(injectee).start();
         }
-        
-    };
-    
-    /**
-     * Post framework start callback. 
-     */
-    void eventPostFrameworkStart();
+    }
     
 }

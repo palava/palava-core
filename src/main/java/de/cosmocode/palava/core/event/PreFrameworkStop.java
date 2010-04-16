@@ -19,6 +19,7 @@
 
 package de.cosmocode.palava.core.event;
 
+import de.cosmocode.collections.Procedure;
 import de.cosmocode.palava.core.Registry;
 
 /**
@@ -30,6 +31,15 @@ import de.cosmocode.palava.core.Registry;
  */
 public interface PreFrameworkStop {
 
+    Procedure<PreFrameworkStop> PROCEDURE = new Procedure<PreFrameworkStop>() {
+        
+        @Override
+        public void apply(PreFrameworkStop input) {
+            input.eventPreFrameworkStop();
+        }
+        
+    };
+    
     /**
      * Pre framework stop callback. 
      */

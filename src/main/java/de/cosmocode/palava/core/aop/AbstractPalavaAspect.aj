@@ -59,7 +59,7 @@ public abstract aspect AbstractPalavaAspect {
         return array;
     }
     
-    private Iterable<? extends Module> append(Iterable<? extends Module> modules) {
+    private Iterable<Module> append(Iterable<? extends Module> modules) {
         return Iterables.concat(modules, Collections.singleton(module));
     }
     

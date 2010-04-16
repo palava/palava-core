@@ -20,29 +20,47 @@
 
 package de.cosmocode.palava.core;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
+import com.google.inject.Stage;
 
+import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
+import de.cosmocode.palava.core.inject.SettingsModule;
 
 /**
- * Implementation of the {@link Framework} interface which requires
- * a running guice environment.
+ * An implementation of the {@link Framework} which bootstraps guice
+ * using {@link Guice#createInjector(Stage, Module...)}.
+ * This implementations is used for running palava standalone or
+ * in embedded mode in a normal java se environment without guice support.
  *
  * @author Willi Schoenborn
  */
-final class DefaultFramework extends AbstractFramework implements Framework {
+final class BootstrapFramework extends AbstractFramework {
 
     private final Injector injector;
     private final Registry registry;
     
-    @Inject
-    public DefaultFramework(Injector injector, Registry registry) {
-        this.injector = Preconditions.checkNotNull(injector, "Injector");
-        this.registry = Preconditions.checkNotNull(registry, "Registry");
+    public BootstrapFramework(Module module, Properties properties) {
+        final String stageName = properties.getProperty(CoreConfig.STAGE);
+        final Stage stage = StringUtils.isBlank(stageName) ? Stage.PRODUCTION : Stage.valueOf(stageName);
+        
+        try {
+            injector = Guice.createInjector(stage, module, new SettingsModule(properties));
+            registry = getInstance(Registry.class);
+        /* CHECKSTYLE:OFF */
+        } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
+            setState(State.FAILED);
+            throw e;
+        }
     }
 
     @Override

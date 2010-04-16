@@ -14,35 +14,37 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.event;
+package de.cosmocode.palava.core.inject;
 
-import de.cosmocode.collections.Procedure;
-import de.cosmocode.palava.core.Registry;
+import java.util.ServiceLoader;
+
+import com.google.inject.Binder;
+import com.google.inject.Module;
 
 /**
- * Clients being registered as {@link PostFrameworkStart} listeners
- * in the {@link Registry} will be notified after a successful framework start.
+ * Once installed fetches all {@link Module}s configured via
+ * the {@link ServiceLoader} configuration files and installs them.
  *
- * @author Tobias Sarnowski
+ * @since 2.3
  * @author Willi Schoenborn
  */
-public interface PostFrameworkStart {
+public class ServiceLoaderModule implements Module {
+
+    private final Iterable<Module> modules;
     
-    Procedure<PostFrameworkStart> PROCEDURE = new Procedure<PostFrameworkStart>() {
-        
-        @Override
-        public void apply(PostFrameworkStart input) {
-            input.eventPostFrameworkStart();
+    public ServiceLoaderModule() {
+        this.modules = ServiceLoader.load(Module.class);
+    }
+
+    @Override
+    public void configure(Binder binder) {
+        for (Module module : modules) {
+            binder.install(module);
         }
-        
-    };
-    
-    /**
-     * Post framework start callback. 
-     */
-    void eventPostFrameworkStart();
-    
+    }
+
 }

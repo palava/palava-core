@@ -43,7 +43,7 @@ public final class FrameworkTest implements UnitProvider<Framework> {
     }
     
     private Framework unit(Properties properties) {
-        return Palava.createFramework(properties);
+        return Palava.newFramework(properties);
     }
     
     /**

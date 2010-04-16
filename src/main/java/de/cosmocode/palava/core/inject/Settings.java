@@ -17,32 +17,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.event;
+package de.cosmocode.palava.core.inject;
 
-import de.cosmocode.collections.Procedure;
-import de.cosmocode.palava.core.Registry;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
 
 /**
- * Clients being registered as {@link PostFrameworkStart} listeners
- * in the {@link Registry} will be notified after a successful framework start.
+ * Used to inject the global settings. These settings may only be
+ * available when running in traditional embedded or standalone mode.
+ * When running in a pre-existing guice environment, they might not exist
+ * as configuration is up to the surrounding environment.
  *
- * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */
-public interface PostFrameworkStart {
-    
-    Procedure<PostFrameworkStart> PROCEDURE = new Procedure<PostFrameworkStart>() {
-        
-        @Override
-        public void apply(PostFrameworkStart input) {
-            input.eventPostFrameworkStart();
-        }
-        
-    };
-    
-    /**
-     * Post framework start callback. 
-     */
-    void eventPostFrameworkStart();
-    
+@Target({
+    ElementType.METHOD,
+    ElementType.PARAMETER
+})
+@Retention(RetentionPolicy.RUNTIME)
+@BindingAnnotation
+public @interface Settings {
+
 }

@@ -17,32 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package de.cosmocode.palava.core.event;
+package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.collections.Procedure;
-import de.cosmocode.palava.core.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.spi.InjectionListener;
+
+
 
 /**
- * Clients being registered as {@link PostFrameworkStart} listeners
- * in the {@link Registry} will be notified after a successful framework start.
+ * {@link InjectionListener} which handles {@link Initializable}s.
  *
- * @author Tobias Sarnowski
  * @author Willi Schoenborn
+ * @param <I>
  */
-public interface PostFrameworkStart {
+final class InitializableListener<I> implements InjectionListener<I> {
     
-    Procedure<PostFrameworkStart> PROCEDURE = new Procedure<PostFrameworkStart>() {
-        
-        @Override
-        public void apply(PostFrameworkStart input) {
-            input.eventPostFrameworkStart();
+    private static final Logger LOG = LoggerFactory.getLogger(InitializableListener.class);
+
+    @Override
+    public void afterInjection(I injectee) {
+        if (injectee instanceof Initializable) {
+            LOG.info("Initializing service {}", injectee);
+            Initializable.class.cast(injectee).initialize();
         }
-        
-    };
-    
-    /**
-     * Post framework start callback. 
-     */
-    void eventPostFrameworkStart();
+    }
     
 }
