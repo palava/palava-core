@@ -103,13 +103,21 @@ public final class TypeConverterModule implements Module {
         
     };
     
-    private static Matcher<TypeLiteral<?>> subclasseOf(final Class<?> type) {
+    private static final TypeConverter LOGGER_CONVERTER = new TypeConverter() {
+        
+        @Override
+        public Object convert(String value, TypeLiteral<?> literal) {
+            return LoggerFactory.getLogger(value);
+        }
+    };
+    
+    private static Matcher<TypeLiteral<?>> equalsTo(final Class<?> type) {
         Preconditions.checkNotNull(type, "Type");
         return new AbstractMatcher<TypeLiteral<?>>() {
             
             @Override
             public boolean matches(TypeLiteral<?> literal) {
-                return type.isAssignableFrom(literal.getRawType());
+                return literal.getRawType().equals(type);
             }
             
         };
@@ -118,11 +126,13 @@ public final class TypeConverterModule implements Module {
     @Override
     public void configure(Binder binder) {
         LOG.debug("Registering url type converter");
-        binder.convertToTypes(subclasseOf(URL.class), URL_CONVERTER);
+        binder.convertToTypes(equalsTo(URL.class), URL_CONVERTER);
         LOG.debug("Registering file type converter");
-        binder.convertToTypes(subclasseOf(File.class), FILE_CONVERTER);
+        binder.convertToTypes(equalsTo(File.class), FILE_CONVERTER);
         LOG.debug("Registering properties type converter");
-        binder.convertToTypes(subclasseOf(Properties.class), PROPERTIES_CONVERTER);
+        binder.convertToTypes(equalsTo(Properties.class), PROPERTIES_CONVERTER);
+        LOG.debug("Registering logger converter");
+        binder.convertToTypes(equalsTo(Logger.class), LOGGER_CONVERTER);
     }
 
 }

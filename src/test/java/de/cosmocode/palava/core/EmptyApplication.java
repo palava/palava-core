@@ -31,7 +31,7 @@ public final class EmptyApplication implements Module {
 
     @Override
     public void configure(Binder binder) {
-        binder.install(new RegistryModule());
+        binder.install(new DefaultRegistryModule());
     }
 
 }

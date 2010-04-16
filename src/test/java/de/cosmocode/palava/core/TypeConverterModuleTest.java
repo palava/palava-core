@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.ConfigurationException;
@@ -61,6 +62,7 @@ public final class TypeConverterModuleTest {
             bindConstant().annotatedWith(Names.named("properties.missing.cp")).to("classpath:missing.properties");
             bindConstant().annotatedWith(Names.named("properties.missing.http")).to(
                 "http://www.missing.com/properties");
+            bindConstant().annotatedWith(Names.named("log.category")).to("CATEGORY");
         }
         
     };
@@ -183,6 +185,16 @@ public final class TypeConverterModuleTest {
             return;
         }
         Assert.fail("Creation should fail");
+    }
+    
+    /**
+     * Tests type conversion of a {@link Logger}.
+     */
+    @Test
+    public void loggerPresent() {
+        final Logger log = INJECTOR.getInstance(Key.get(Logger.class, Names.named("log.category")));
+        Assert.assertEquals("CATEGORY", log.getName());
+        log.debug("using injected logger");
     }
     
 }
