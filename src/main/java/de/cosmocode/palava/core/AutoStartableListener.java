@@ -33,7 +33,7 @@ import de.cosmocode.palava.core.lifecycle.AutoStartable;
  * @author Willi Schoenborn
  * @param <I>
  */
-public final class AutoStartableListener<I> implements InjectionListener<I> {
+final class AutoStartableListener<I> implements InjectionListener<I> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AutoStartableListener.class);
 

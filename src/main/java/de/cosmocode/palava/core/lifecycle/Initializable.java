@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.Service;
-
 /**
  * A Service which implements {@link Initializable} marks
  * that he wants to get notified after construction.
@@ -31,7 +29,7 @@ import de.cosmocode.palava.core.Service;
  *
  * @author Willi Schoenborn
  */
-public interface Initializable extends Service {
+public interface Initializable {
 
     /**
      * Initializes the service.

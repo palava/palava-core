@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.Service;
-
 /**
  * A Service which implements {@link Disposable} marks
  * that he wants to get notified on server shutdown.
@@ -31,7 +29,7 @@ import de.cosmocode.palava.core.Service;
  *
  * @author Willi Schoenborn
  */
-public interface Disposable extends Service {
+public interface Disposable {
 
     /**
      * Disposes the service.

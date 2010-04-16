@@ -33,7 +33,7 @@ import de.cosmocode.palava.core.lifecycle.Initializable;
  * @author Willi Schoenborn
  * @param <I>
  */
-public final class InitializableListener<I> implements InjectionListener<I> {
+final class InitializableListener<I> implements InjectionListener<I> {
     
     private static final Logger LOG = LoggerFactory.getLogger(InitializableListener.class);
 

@@ -19,8 +19,6 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.Service;
-
 /**
  * A Service which implements {@link Startable} marks
  * that it is possible to start and stop it. 
@@ -31,7 +29,7 @@ import de.cosmocode.palava.core.Service;
  * 
  * @author Willi Schoenborn
  */
-public interface Startable extends Service {
+public interface Startable {
 
     /**
      * Starts the service.

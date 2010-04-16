@@ -19,7 +19,6 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
-import de.cosmocode.palava.core.Service;
 
 /**
  * A Service which implements {@link Executable} marks
@@ -31,7 +30,7 @@ import de.cosmocode.palava.core.Service;
  *
  * @author Willi Schoenborn
  */
-public interface Executable extends Service {
+public interface Executable {
 
     /**
      * Execution entry point.

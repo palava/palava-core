@@ -48,6 +48,7 @@ import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.inject.TypeConverterModule;
 import de.cosmocode.palava.core.lifecycle.Disposable;
+import de.cosmocode.palava.core.lifecycle.Lifecycle;
 import de.cosmocode.palava.core.lifecycle.Startable;
 
 /**
@@ -61,7 +62,7 @@ final class DefaultFramework implements Framework {
 
     private State state = State.NEW;
 
-    private final List<Service> services = Lists.newArrayList();
+    private final List<Object> services = Lists.newArrayList();
 
     private final Injector injector;
     private final Registry registry;
@@ -141,13 +142,13 @@ final class DefaultFramework implements Framework {
 
                 @Override
                 public <I> void hear(final TypeLiteral<I> literal, TypeEncounter<I> encounter) {
-                    if (Service.class.isAssignableFrom(literal.getRawType())) {
+                    if (Lifecycle.isInterface(literal.getRawType())) {
                         encounter.register(new InjectionListener<I>() {
 
                             @Override
                             public void afterInjection(I injectee) {
                                 LOG.info("Bootstrapped service {}", injectee);
-                                services.add(Service.class.cast(injectee));
+                                services.add(injectee);
                             };
 
                         });
@@ -161,7 +162,7 @@ final class DefaultFramework implements Framework {
         }
 
     }
-
+    
     @Override
     public void start() {
         state = State.STARTING;
@@ -239,8 +240,7 @@ final class DefaultFramework implements Framework {
             /* CHECKSTYLE:OFF */
             } catch (RuntimeException e) {
             /* CHECKSTYLE:ON */
-                final String message = String.format("Unable to stop service %s", startable);
-                LOG.warn(message, e);
+                LOG.warn(String.format("Unable to stop service %s", startable), e);
             }
         }
     }
@@ -254,8 +254,7 @@ final class DefaultFramework implements Framework {
             /* CHECKSTYLE:OFF */
             } catch (RuntimeException e) {
             /* CHECKSTYLE:ON */
-                final String message = String.format("Unable to dispose service %s", disposable);
-                LOG.warn(message, e);
+                LOG.warn(String.format("Unable to dispose service %s", disposable), e);
             }
         }
     }

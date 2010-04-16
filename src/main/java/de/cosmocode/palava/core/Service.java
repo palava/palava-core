@@ -22,8 +22,11 @@ package de.cosmocode.palava.core;
 /**
  * Marker interface for all services.
  *
+ * @deprecated has no function anymore
+ *
  * @author Willi Schoenborn
  */
+@Deprecated
 public interface Service {
 
 }

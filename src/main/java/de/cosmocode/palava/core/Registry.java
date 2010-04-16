@@ -30,7 +30,7 @@ import de.cosmocode.collections.Procedure;
  *
  * @author Willi Schoenborn
  */
-public interface Registry extends Service {
+public interface Registry {
 
     /**
      * A key which can be used to add meta information to a type/listener

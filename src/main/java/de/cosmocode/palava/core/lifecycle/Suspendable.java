@@ -45,4 +45,11 @@ public interface Suspendable extends Startable {
      */
     void resume() throws LifecycleException;
     
+    /**
+     * {@inheritDoc}
+     * Stopping a suspended service has no effect.
+     */
+    @Override
+    void stop() throws LifecycleException;
+    
 }
