@@ -38,6 +38,6 @@ import com.google.inject.BindingAnnotation;
     ElementType.PARAMETER
 })
 @BindingAnnotation
-public @interface LifecycleServices {
+@interface LifecycleServices {
 
 }

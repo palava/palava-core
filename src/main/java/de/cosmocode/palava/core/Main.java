@@ -82,7 +82,7 @@ public final class Main {
         /* CHECKSTYLE:ON */
             LOG.error("startup failed", e);
             stop();
-            // TODO no rethrow?
+            throw e;
         }
     }
 

@@ -41,8 +41,11 @@ abstract class AbstractFramework implements Framework {
         return state;
     };
     
-    protected final void setState(State state) {
-        this.state = state;
+    /**
+     * Sets the current state to {@link State#FAILED}.
+     */
+    protected final void fail() {
+        this.state = State.FAILED;
     }
     
     @Override

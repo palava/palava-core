@@ -30,7 +30,6 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 
-import de.cosmocode.commons.State;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.inject.SettingsModule;
@@ -53,12 +52,28 @@ final class BootstrapFramework extends AbstractFramework {
         final Stage stage = StringUtils.isBlank(stageName) ? Stage.PRODUCTION : Stage.valueOf(stageName);
         
         try {
+            injector = Guice.createInjector(stage, 
+                module,
+                new FrameworkModule(this),
+                new SettingsModule(properties)
+            );
+            registry = getInstance(Registry.class);
+        /* CHECKSTYLE:OFF */
+        } catch (RuntimeException e) {
+        /* CHECKSTYLE:ON */
+            fail();
+            throw e;
+        }
+    }
+    
+    public BootstrapFramework(Module module, Stage stage, Properties properties) {
+        try {
             injector = Guice.createInjector(stage, module, new SettingsModule(properties));
             registry = getInstance(Registry.class);
         /* CHECKSTYLE:OFF */
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
-            setState(State.FAILED);
+            fail();
             throw e;
         }
     }
