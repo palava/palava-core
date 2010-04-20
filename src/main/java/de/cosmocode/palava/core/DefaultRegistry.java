@@ -78,10 +78,11 @@ final class DefaultRegistry extends AbstractRegistry {
     };
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> Iterable<T> getListeners(Key<T> key) {
         Preconditions.checkNotNull(key, "Key");
-        return Iterables.unmodifiableIterable((Iterable<T>) services.get(key));
+        @SuppressWarnings("unchecked")
+        final Iterable<T> listeners = (Iterable<T>) services.get(key);
+        return Iterables.unmodifiableIterable(listeners);
     }
     
     /**
@@ -102,7 +103,7 @@ final class DefaultRegistry extends AbstractRegistry {
         public Object invoke(Object proxy, final Method method, final Object[] args) 
             throws IllegalAccessException, InvocationTargetException {
             if (method.equals(TO_STRING)) {
-                return String.format("Registry.proxy(%s)", key);
+                return String.format("%s.proxy(%s)", DefaultRegistry.this, key);
             } else if (method.equals(EQUALS)) {
                 return equals(args[0]);
             } else if (method.equals(HASHCODE)) {
