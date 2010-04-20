@@ -290,7 +290,7 @@ palava_kill() {
     if [ $? -ne 0 ]; then
         echo "FAILED"
         echo "Framework is not running" >&2
-        return 1
+        return 0
     fi
 
     # send shutdown signal to java
