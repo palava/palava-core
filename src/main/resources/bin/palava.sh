@@ -84,7 +84,7 @@ palava_internal_start() {
 
     # check classpath
     if [ -z "$CLASSPATH" ]; then
-        CLASSPATH=$(echo $(ls lib/*.jar) | sed 's/ /:/g')
+        CLASSPATH="$(dirname $0)/../conf/:$(echo $(ls lib/*.jar) | sed 's/ /:/g')"
     fi
 
     # which log4j config
