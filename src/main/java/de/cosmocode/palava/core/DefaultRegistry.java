@@ -1,20 +1,17 @@
 /**
- * palava - a java-php-bridge
- * Copyright (C) 2007-2010  CosmoCode GmbH
+ * Copyright 2010 CosmoCode GmbH
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.cosmocode.palava.core;
@@ -131,12 +128,40 @@ final class DefaultRegistry extends AbstractRegistry {
 
         @Override
         public int hashCode() {
-            return super.hashCode() + key.hashCode();
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((key == null) ? 0 : key.hashCode());
+            return result;
         }
-        
+
         @Override
-        public boolean equals(Object that) {
-            return that.equals(key);
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (!(obj instanceof ProxyHandler<?>)) {
+                return false;
+            }
+            final ProxyHandler<?> other = (ProxyHandler<?>) obj;
+            if (!getOuterType().equals(other.getOuterType())) {
+                return false;
+            }
+            if (key == null) {
+                if (other.key != null) {
+                    return false;
+                }
+            } else if (!key.equals(other.key)) {
+                return false;
+            }
+            return true;
+        }
+
+        private DefaultRegistry getOuterType() {
+            return DefaultRegistry.this;
         }
         
     }

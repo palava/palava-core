@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package de.cosmocode.palava.core.lifecycle;
+package de.cosmocode.palava.core.inject;
+
+import java.io.File;
+
+import com.google.common.base.Preconditions;
+import com.google.inject.spi.TypeConverter;
 
 /**
- * A Service which implements {@link Initializable} marks
- * that he wants to get notified after construction.
- * 
- * <p>
- *   This interface is part of the palava lifecycle framework.
- * </p>
+ * {@link TypeConverter} for {@link File}s.
  *
  * @author Willi Schoenborn
  */
-public interface Initializable {
+public final class FileConverter extends AbstractTypeConverter<File> {
 
-    /**
-     * Initializes the service.
-     * 
-     * @throws LifecycleException if initialize failed
-     */
-    void initialize() throws LifecycleException;
+    private static final String FILE_PREFIX = "file:";
+    
+    private final URLConverter urlConverter = new URLConverter();
+    
+    @Override
+    public File convert(String value) {
+        Preconditions.checkArgument(value.startsWith(FILE_PREFIX), "%s must start with %s", value, FILE_PREFIX);
+        return new File(urlConverter.convert(value).getFile());
+    }
     
 }
