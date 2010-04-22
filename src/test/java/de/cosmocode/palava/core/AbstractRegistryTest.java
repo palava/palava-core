@@ -567,31 +567,6 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
     }
     
     /**
-     * Tests {@link Object#equals(Object)} of {@link Registry#proxy(Key)} using similiar proxies.
-     */
-    @Test
-    public void proxyKeyEquals() {
-        final Registry unit = unit();
-        final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
-        final Listener first = unit.proxy(key);
-        final Listener second = unit.proxy(key);
-        Assert.assertEquals(first, second);
-        Assert.assertEquals(second, first);
-    }
-    
-    /**
-     * Tests {@link Object#equals(Object)} of {@link Registry#proxy(Key)} using different proxies.
-     */
-    @Test
-    public void proxyKeyNotEquals() {
-        final Registry unit = unit();
-        final Listener first = unit.proxy(Key.get(Listener.class, Deprecated.class));
-        final Listener second = unit.proxy(Key.get(Listener.class));
-        Asserts.assertNotEquals(first, second);
-        Asserts.assertNotEquals(second, first);
-    }
-    
-    /**
      * Tests {@link Object#hashCode()} of {@link Registry#proxy(Key)}.
      */
     @Test
