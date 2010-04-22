@@ -18,6 +18,7 @@ package de.cosmocode.palava.core;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Module;
 import com.google.inject.ProvisionException;
+import com.google.inject.Stage;
 
 import de.cosmocode.palava.core.inject.Settings;
 
@@ -41,18 +43,6 @@ public final class Palava {
         
     }
 
-    /**
-     * Constructs a new palava framework using the given properties.
-     * 
-     * @deprecated use {@link Palava#newFramework(Properties)} instead
-     * @param properties the application properties
-     * @return a configured {@link Framework} instance
-     */
-    @Deprecated
-    public static Framework createFramework(Properties properties) {
-        return newFramework(properties);
-    }
-    
     /**
      * Constructs a new {@link Framework} using the specified properties.
      * <p>
@@ -103,6 +93,7 @@ public final class Palava {
      * @param mainModuleClass the class literal of the main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if mainModuleClass or properties is null
      * @throws IllegalArgumentException if creating instance of mainModuleClass failed
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
@@ -133,13 +124,38 @@ public final class Palava {
      * @param mainModule the application main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if mainModule or properties is null
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
      */
     public static Framework newFramework(Module mainModule, Properties properties) {
         Preconditions.checkNotNull(mainModule, "MainModule");
         Preconditions.checkNotNull(properties, "Properties");
-        return new BootstrapFramework(mainModule, properties);
+        final String stageName = properties.getProperty(CoreConfig.STAGE);
+        final Stage stage = StringUtils.isBlank(stageName) ? Stage.PRODUCTION : Stage.valueOf(stageName);
+        return newFramework(mainModule, stage, properties); 
+    }
+    
+    /**
+     * Creates a {@link Framework} which loads the given {@link Module} using the specified
+     * guice {@link Stage}.
+     * <p>
+     *   The specified properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @param mainModule the application main module
+     * @param stage the desired injector stage
+     * @param properties the application properties
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if mainModule, stage or properties is null
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(Module mainModule, Stage stage, Properties properties) {
+        Preconditions.checkNotNull(mainModule, "MainModule");
+        Preconditions.checkNotNull(stage, "Stage");
+        Preconditions.checkNotNull(properties, "Properties");
+        return new BootstrapFramework(mainModule, stage, properties);
     }
     
 }

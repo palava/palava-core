@@ -27,6 +27,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * A {@link TypeConverter} for {@link URL}s.
  * 
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public final class URLConverter extends AbstractTypeConverter<URL> {

@@ -22,6 +22,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * Abstract base class for {@link TypeConverter}s.
  *
+ * @since 2.4
  * @param <T> target type
  * @author Willi Schoenborn
  */

@@ -26,7 +26,6 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 
-
 /**
  * A {@link Module} which binds the given {@link Properties}
  * as {@link Settings}.

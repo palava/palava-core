@@ -24,6 +24,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * {@link TypeConverter} for {@link File}s.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public final class FileConverter extends AbstractTypeConverter<File> {

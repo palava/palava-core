@@ -21,6 +21,10 @@ import com.google.inject.Key;
 import com.google.inject.ProvisionException;
 
 import de.cosmocode.commons.Stateful;
+import de.cosmocode.palava.core.event.FrameworkStart;
+import de.cosmocode.palava.core.event.FrameworkStop;
+import de.cosmocode.palava.core.event.PostFrameworkStart;
+import de.cosmocode.palava.core.event.PreFrameworkStop;
 
 /**
  * Root type for the palava framework.
@@ -30,7 +34,8 @@ import de.cosmocode.commons.Stateful;
 public interface Framework extends Stateful {
 
     /**
-     * Starts the framework.
+     * Starts the framework by firing the {@link FrameworkStart} and {@link PostFrameworkStart}
+     * events.
      */
     void start();
     
@@ -57,7 +62,7 @@ public interface Framework extends Stateful {
     <T> T getInstance(Key<T> key) throws ConfigurationException, ProvisionException;
     
     /**
-     * Stops the framework.
+     * Stops the framework by firing the {@link PreFrameworkStop} and {@link FrameworkStop} events.
      */
     void stop();
 

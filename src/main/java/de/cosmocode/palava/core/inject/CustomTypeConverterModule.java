@@ -26,6 +26,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * Abstract module which allows easy configuration of {@link TypeConverter}s.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public abstract class CustomTypeConverterModule extends AbstractModule {

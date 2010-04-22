@@ -18,8 +18,6 @@ package de.cosmocode.palava.core;
 
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -45,10 +43,7 @@ final class BootstrapFramework extends AbstractFramework {
     private final Injector injector;
     private final Registry registry;
     
-    public BootstrapFramework(Module module, Properties properties) {
-        final String stageName = properties.getProperty(CoreConfig.STAGE);
-        final Stage stage = StringUtils.isBlank(stageName) ? Stage.PRODUCTION : Stage.valueOf(stageName);
-        
+    public BootstrapFramework(Module module, Stage stage, Properties properties) {
         try {
             injector = Guice.createInjector(stage, 
                 module,
@@ -64,18 +59,6 @@ final class BootstrapFramework extends AbstractFramework {
         }
     }
     
-    public BootstrapFramework(Module module, Stage stage, Properties properties) {
-        try {
-            injector = Guice.createInjector(stage, module, new SettingsModule(properties));
-            registry = getInstance(Registry.class);
-        /* CHECKSTYLE:OFF */
-        } catch (RuntimeException e) {
-        /* CHECKSTYLE:ON */
-            fail();
-            throw e;
-        }
-    }
-
     @Override
     protected void doStart() {
         registry.notifySilent(FrameworkStart.class, FrameworkStart.PROCEDURE);
