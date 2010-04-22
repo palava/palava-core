@@ -26,6 +26,8 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 
+import de.cosmocode.palava.core.event.FrameworkStart;
+import de.cosmocode.palava.core.event.FrameworkStop;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 import de.cosmocode.palava.core.inject.SettingsModule;
@@ -76,6 +78,7 @@ final class BootstrapFramework extends AbstractFramework {
 
     @Override
     protected void doStart() {
+        registry.notifySilent(FrameworkStart.class, FrameworkStart.PROCEDURE);
         registry.notifySilent(PostFrameworkStart.class, PostFrameworkStart.PROCEDURE);
     }
     
@@ -92,6 +95,7 @@ final class BootstrapFramework extends AbstractFramework {
     @Override
     protected void doStop() {
         registry.notifySilent(PreFrameworkStop.class, PreFrameworkStop.PROCEDURE);
+        registry.notifySilent(FrameworkStop.class, FrameworkStop.PROCEDURE);
     }
 
 }

@@ -23,19 +23,19 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import de.cosmocode.palava.core.Registry;
+import de.cosmocode.palava.core.event.FrameworkStop;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 
 /**
  * A listener for the {@link PreFrameworkStop} event which stops all
  * {@link Startable} and disposes all {@link Disposable} services.
- *
+ * 
  * @author Willi Schoenborn
  */
-final class DisposableListener implements PreFrameworkStop {
+final class DisposableListener implements FrameworkStop {
 
     private static final Logger LOG = LoggerFactory.getLogger(DisposableListener.class);
 
@@ -44,45 +44,36 @@ final class DisposableListener implements PreFrameworkStop {
     @Inject
     public DisposableListener(@LifecycleServices List<Object> services, Registry registry) {
         this.services = Preconditions.checkNotNull(services, "Services");
-        Preconditions.checkNotNull(registry, "Registry").register(PreFrameworkStop.class, this);
-    }
-
-    private <T> Iterable<T> filterAndReverse(Class<T> type) {
-        return Iterables.reverse(Lists.newArrayList(Iterables.filter(services, type)));
-    }
-
-    private void stopServices() {
-        LOG.info("Stopping services");
-        for (Startable startable : filterAndReverse(Startable.class)) {
-            LOG.info("Stopping {}", startable);
-            try {
-                startable.stop();
-            /* CHECKSTYLE:OFF */
-            } catch (RuntimeException e) {
-            /* CHECKSTYLE:ON */
-                LOG.warn(String.format("Unable to stop service %s", startable), e);
-            }
-        }
-    }
-
-    private void disposeServices() {
-        LOG.info("Disposing services");
-        for (Disposable disposable : filterAndReverse(Disposable.class)) {
-            LOG.info("Disposing {}", disposable);
-            try {
-                disposable.dispose();
-            /* CHECKSTYLE:OFF */
-            } catch (RuntimeException e) {
-            /* CHECKSTYLE:ON */
-                LOG.warn(String.format("Unable to dispose service %s", disposable), e);
-            }
-        }
+        Preconditions.checkNotNull(registry, "Registry").register(FrameworkStop.class, this);
     }
 
     @Override
-    public void eventPreFrameworkStop() {
-        stopServices();
-        disposeServices();
+    public void eventFrameworkStop() {
+        for (Object service : Iterables.reverse(services)) {
+            
+            if (service instanceof Startable) {
+                LOG.info("Stopping {}", service);
+                try {
+                    Startable.class.cast(service).stop();
+                    /* CHECKSTYLE:OFF */
+                } catch (RuntimeException e) {
+                    /* CHECKSTYLE:ON */
+                    LOG.warn(String.format("Unable to stop service %s", service), e);
+                }
+            }
+
+            if (service instanceof Disposable) {
+                LOG.info("Disposing {}", service);
+                try {
+                    Disposable.class.cast(service).dispose();
+                    /* CHECKSTYLE:OFF */
+                } catch (RuntimeException e) {
+                    /* CHECKSTYLE:ON */
+                    LOG.warn(String.format("Unable to dispose service %s", service), e);
+                }
+            }
+            
+        }
     }
 
 }

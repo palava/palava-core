@@ -26,7 +26,7 @@ import com.google.inject.spi.TypeConverter;
 
 /**
  * A {@link TypeConverter} for {@link URL}s.
- *
+ * 
  * @author Willi Schoenborn
  */
 public final class URLConverter extends AbstractTypeConverter<URL> {
@@ -37,15 +37,23 @@ public final class URLConverter extends AbstractTypeConverter<URL> {
 
     @Override
     public URL convert(String value) {
-        try {
-            if (value.startsWith(CLASSPATH_PREFIX)) {
-                LOG.trace("Considering {} to be a classpath resource", value);
-                return getClass().getClassLoader().getResource(value.substring(CLASSPATH_PREFIX.length()));
-            } else {
+        if (value.startsWith(CLASSPATH_PREFIX)) {
+            LOG.trace("Considering {} to be a classpath resource", value);
+            return getClassLoader().getResource(value.substring(CLASSPATH_PREFIX.length()));
+        } else {
+            try {
                 return new URL(value);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(e);
             }
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+        }
+    }
+    
+    private ClassLoader getClassLoader() {
+        try {
+            return Thread.currentThread().getContextClassLoader();
+        } catch (SecurityException e) {
+            return URLConverter.class.getClassLoader();
         }
     }
     
