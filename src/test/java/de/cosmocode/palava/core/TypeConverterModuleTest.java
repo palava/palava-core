@@ -41,7 +41,7 @@ import de.cosmocode.palava.core.inject.TypeConverterModule;
  */
 public final class TypeConverterModuleTest {
 
-    private static final Module MODULE = new AbstractModule() {
+    private final Module module = new AbstractModule() {
         
         @Override
         protected void configure() {
@@ -53,8 +53,9 @@ public final class TypeConverterModuleTest {
                 "file:src/test/resources/present.properties");
             bindConstant().annotatedWith(Names.named("properties.present.cp")).to(
                 "classpath:present.properties");
+            // may produce strange results when file went missing
             bindConstant().annotatedWith(Names.named("properties.present.http")).to(
-                "http://svn.apache.org/repos/asf/incubator/shiro/trunk/core/src/test/resources/log4j.properties");
+                "http://rocoto.googlecode.com/svn/tags/2.0/configuration/src/test/resources/log4j.properties");
             bindConstant().annotatedWith(Names.named("properties.missing.file")).to("file:missing.properties");
             bindConstant().annotatedWith(Names.named("properties.missing.cp")).to("classpath:missing.properties");
             bindConstant().annotatedWith(Names.named("properties.missing.http")).to(
@@ -64,14 +65,14 @@ public final class TypeConverterModuleTest {
         
     };
 
-    private static final Injector INJECTOR = Guice.createInjector(new TypeConverterModule(), MODULE);
+    private final Injector injector = Guice.createInjector(new TypeConverterModule(), module);
     
     /**
      * Tests type conversion of a file which exists.
      */
     @Test
     public void filePresent() {
-        final File file = INJECTOR.getInstance(Key.get(File.class, Names.named("file.present")));
+        final File file = injector.getInstance(Key.get(File.class, Names.named("file.present")));
         Assert.assertNotNull(file);
         Assert.assertTrue(file.exists());
     }
@@ -81,7 +82,7 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void fileMissing() {
-        final File file = INJECTOR.getInstance(Key.get(File.class, Names.named("file.missing")));
+        final File file = injector.getInstance(Key.get(File.class, Names.named("file.missing")));
         Assert.assertNotNull(file);
         Assert.assertFalse(file.exists());
     }
@@ -92,7 +93,7 @@ public final class TypeConverterModuleTest {
     @Test
     public void fileNonLocal() {
         try {
-            INJECTOR.getInstance(Key.get(File.class, Names.named("file.non-local")));
+            injector.getInstance(Key.get(File.class, Names.named("file.non-local")));
         } catch (ConfigurationException e) {
             Assert.assertEquals(1, e.getErrorMessages().size());
             return;
@@ -105,7 +106,7 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void url() {
-        final URL url = INJECTOR.getInstance(Key.get(URL.class, Names.named("url")));
+        final URL url = injector.getInstance(Key.get(URL.class, Names.named("url")));
         Assert.assertEquals("http://www.google.de", url.toExternalForm());
     }
 
@@ -114,7 +115,7 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void propertiesFilePresent() {
-        final Properties properties = INJECTOR.getInstance(Key.get(Properties.class, 
+        final Properties properties = injector.getInstance(Key.get(Properties.class, 
             Names.named("properties.present.file")));
         Assert.assertFalse(properties.isEmpty());
         Assert.assertEquals("value", properties.getProperty("key"));
@@ -125,7 +126,7 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void propertiesClasspathPresent() {
-        final Properties properties = INJECTOR.getInstance(Key.get(Properties.class, 
+        final Properties properties = injector.getInstance(Key.get(Properties.class, 
                 Names.named("properties.present.cp")));
         Assert.assertFalse(properties.isEmpty());
         Assert.assertEquals("value", properties.getProperty("key"));
@@ -136,10 +137,10 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void propertiesHttpPresent() {
-        final Properties properties = INJECTOR.getInstance(Key.get(Properties.class, 
+        final Properties properties = injector.getInstance(Key.get(Properties.class, 
             Names.named("properties.present.http")));
         Assert.assertFalse(properties.isEmpty());
-        Assert.assertEquals("org.apache.log4j.ConsoleAppender", properties.getProperty("log4j.appender.stdout"));
+        Assert.assertEquals("org.apache.log4j.ConsoleAppender", properties.getProperty("log4j.appender.Console"));
     }
     
     /**
@@ -148,7 +149,7 @@ public final class TypeConverterModuleTest {
     @Test
     public void propertiesFileMissing() {
         try {
-            INJECTOR.getInstance(Key.get(Properties.class, Names.named("properties.missing.file")));
+            injector.getInstance(Key.get(Properties.class, Names.named("properties.missing.file")));
         } catch (ConfigurationException e) {
             Assert.assertEquals(1, e.getErrorMessages().size());
             return;
@@ -162,7 +163,7 @@ public final class TypeConverterModuleTest {
     @Test
     public void propertiesClasspathMissing() {
         try {
-            INJECTOR.getInstance(Key.get(Properties.class, Names.named("properties.missing.cp")));
+            injector.getInstance(Key.get(Properties.class, Names.named("properties.missing.cp")));
         } catch (ConfigurationException e) {
             Assert.assertEquals(1, e.getErrorMessages().size());
             return;
@@ -176,7 +177,7 @@ public final class TypeConverterModuleTest {
     @Test
     public void propertiesHttpMissing() {
         try {
-            INJECTOR.getInstance(Key.get(Properties.class, Names.named("properties.missing.http")));
+            injector.getInstance(Key.get(Properties.class, Names.named("properties.missing.http")));
         } catch (ConfigurationException e) {
             Assert.assertEquals(1, e.getErrorMessages().size());
             return;
@@ -189,7 +190,7 @@ public final class TypeConverterModuleTest {
      */
     @Test
     public void loggerPresent() {
-        final Logger log = INJECTOR.getInstance(Key.get(Logger.class, Names.named("log.category")));
+        final Logger log = injector.getInstance(Key.get(Logger.class, Names.named("log.category")));
         Assert.assertEquals("CATEGORY", log.getName());
         log.debug("using injected logger");
     }

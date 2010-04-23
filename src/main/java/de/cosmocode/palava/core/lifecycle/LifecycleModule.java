@@ -18,18 +18,17 @@ package de.cosmocode.palava.core.lifecycle;
 
 import java.util.List;
 
+import org.arakhne.util.ref.WeakArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
-import com.google.inject.internal.Lists;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-
 
 /**
  * Binds {@link InjectionListener} to initialize/start the corresponding lifecycle interfaces.
@@ -42,29 +41,45 @@ public final class LifecycleModule implements Module {
     
     @Override
     public void configure(Binder binder) {
-        final List<Object> services = Lists.newArrayList();
-        binder.bind(new TypeLiteral<List<Object>>() { }).annotatedWith(LifecycleServices.class).toInstance(services);
+        final WeakArrayList<Object> services = new WeakArrayList<Object>();
+        
+        binder.bind(new TypeLiteral<List<Object>>() { 
+        }).annotatedWith(StoppableOrDisposable.class).toInstance(services);
+        
+        binder.bind(new TypeLiteral<WeakArrayList<Object>>() { 
+        }).annotatedWith(StoppableOrDisposable.class).toInstance(services);
+        
         binder.bindListener(Matchers.any(), new TypeListener() {
             
             @Override
             public <I> void hear(TypeLiteral<I> literal, TypeEncounter<I> encounter) {
-                if (Lifecycle.isInterface(literal.getRawType())) {
+                
+                if (Initializable.class.isAssignableFrom(literal.getRawType())) {
+                    encounter.register(new InitializableListener<I>());
+                }
+                
+                if (AutoStartable.class.isAssignableFrom(literal.getRawType())) {
+                    encounter.register(new AutoStartableListener<I>());
+                }
+                
+                final Class<? super I> type = literal.getRawType();
+                if (Startable.class.isAssignableFrom(type) || Disposable.class.isAssignableFrom(type)) {
                     encounter.register(new InjectionListener<I>() {
-
+                        
                         @Override
                         public void afterInjection(I injectee) {
-                            LOG.info("Bootstrapped service {}", injectee);
+                            LOG.debug("Found stoppable/disposable service {}", injectee);
                             services.add(injectee);
-                        };
-
+                        }
+                        
                     });
                 }
-                encounter.register(new AutoStartableListener<I>());
-                encounter.register(new InitializableListener<I>());
+                
             }
             
         });
-        binder.bind(DisposableListener.class).asEagerSingleton();
+        
+        binder.bind(ShutdownListener.class).asEagerSingleton();
     }
 
 }

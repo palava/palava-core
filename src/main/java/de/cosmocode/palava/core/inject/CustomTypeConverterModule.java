@@ -16,6 +16,9 @@
 
 package de.cosmocode.palava.core.inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -31,6 +34,8 @@ import com.google.inject.spi.TypeConverter;
  */
 public abstract class CustomTypeConverterModule extends AbstractModule {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CustomTypeConverterModule.class);
+    
     /**
      * Registers the given converter for the specified type.
      * 
@@ -54,7 +59,8 @@ public abstract class CustomTypeConverterModule extends AbstractModule {
     protected final void register(TypeLiteral<?> literal, TypeConverter converter) {
         Preconditions.checkNotNull(literal, "literal");
         Preconditions.checkNotNull(converter, "Converter");
-        register(Matchers.only(literal), converter);
+        LOG.info("Binding type converter for {} to {}", literal.getRawType(), converter);
+        binder().convertToTypes(Matchers.only(literal), converter);
     }
 
     /**
@@ -67,6 +73,7 @@ public abstract class CustomTypeConverterModule extends AbstractModule {
     protected final void register(Matcher<? super TypeLiteral<?>> matcher, TypeConverter converter) {
         Preconditions.checkNotNull(matcher, "Matcher");
         Preconditions.checkNotNull(converter, "Converter");
+        LOG.info("Binding type converter for {} to {}", matcher, converter);
         binder().convertToTypes(matcher, converter);
     }
 

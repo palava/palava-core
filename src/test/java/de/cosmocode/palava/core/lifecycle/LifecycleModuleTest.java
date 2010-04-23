@@ -26,7 +26,7 @@ import com.google.inject.ProvisionException;
 
 import de.cosmocode.palava.core.DefaultRegistryModule;
 import de.cosmocode.palava.core.Registry;
-import de.cosmocode.palava.core.event.PreFrameworkStop;
+import de.cosmocode.palava.core.event.FrameworkStop;
 
 /**
  * Tests all bindings provided by {@link LifecycleModule}.
@@ -35,9 +35,6 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
  */
 public final class LifecycleModuleTest {
 
-    private static boolean stopped;
-    private static boolean disposed;
-    
     /**
      * Custom exception to test deep nested method invocation.
      *
@@ -89,6 +86,8 @@ public final class LifecycleModuleTest {
      */
     private static class StoppableClass implements Startable {
         
+        private boolean stopped;
+        
         @Override
         public void start() throws LifecycleException {
             
@@ -96,7 +95,11 @@ public final class LifecycleModuleTest {
         
         @Override
         public void stop() throws LifecycleException {
-            LifecycleModuleTest.stopped = true;
+            stopped = true;
+        }
+        
+        public boolean isStopped() {
+            return stopped;
         }
         
     }
@@ -108,19 +111,17 @@ public final class LifecycleModuleTest {
      */
     private static class DisposableClass implements Disposable {
         
+        private boolean disposed;
+        
         @Override
         public void dispose() throws LifecycleException {
-            LifecycleModuleTest.disposed = true;
+            disposed = true;
         }
         
-    }
-    
-    /**
-     * Runs before each test.
-     */
-    public void before() {
-        stopped = false;
-        disposed = false;
+        public boolean isDisposed() {
+            return disposed;
+        }
+        
     }
     
     /**
@@ -173,11 +174,11 @@ public final class LifecycleModuleTest {
             new DefaultRegistryModule()
         );
 
-        injector.getInstance(StoppableClass.class);
+        final StoppableClass stoppable = injector.getInstance(StoppableClass.class);
         final Registry registry = injector.getInstance(Registry.class);
-        Assert.assertFalse(stopped);
-        registry.notify(PreFrameworkStop.class, PreFrameworkStop.PROCEDURE);
-        Assert.assertTrue(stopped);
+        Assert.assertFalse(stoppable.isStopped());
+        registry.notify(FrameworkStop.class, FrameworkStop.PROCEDURE);
+        Assert.assertTrue(stoppable.isStopped());
     }
     
     /**
@@ -190,11 +191,11 @@ public final class LifecycleModuleTest {
             new DefaultRegistryModule()
         );
 
-        injector.getInstance(DisposableClass.class);
+        final DisposableClass disposable = injector.getInstance(DisposableClass.class);
         final Registry registry = injector.getInstance(Registry.class);
-        Assert.assertFalse(disposed);
-        registry.notify(PreFrameworkStop.class, PreFrameworkStop.PROCEDURE);
-        Assert.assertTrue(disposed);
+        Assert.assertFalse(disposable.isDisposed());
+        registry.notify(FrameworkStop.class, FrameworkStop.PROCEDURE);
+        Assert.assertTrue(disposable.isDisposed());
     }
 
 }
