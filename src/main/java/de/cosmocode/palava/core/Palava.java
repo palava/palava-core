@@ -44,11 +44,11 @@ public final class Palava {
     }
 
     /**
-     * Constructs a new {@link Framework} using the specified properties.
+     * Creates a new {@link Framework} using the specified properties.
      * <p>
      *   This method assumes the specified properties contain the fully
      *   qualified class name of the main module under the default configuration
-     *   key {@link CoreConfig#APPLICATION}.
+     *   key {@link CoreConfig#APPLICATION}. The class will be loaded vi reflection.
      * </p>
      * <p>
      *   The specified properties will be bound using the {@link Settings} annotation.
@@ -56,8 +56,8 @@ public final class Palava {
      * 
      * @param properties the settings
      * @return a new configured {@link Framework} instance
-     * @throws NullPointerException if properties is null
-     * @throws IllegalArgumentException if the specified class does not exist
+     * @throws NullPointerException if properties is null or properties do not contain {@link CoreConfig#APPLICATION}
+     * @throws IllegalArgumentException if the specified class does not exist or no instance could be created
      * @throws ClassCastException if the addressed main module class is no subclass of {@link Module}
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
@@ -80,7 +80,7 @@ public final class Palava {
     }
     
     /**
-     * Constructs a new {@link Framework} using the specified properties.
+     * Creates a new {@link Framework} using the specified properties.
      * <p>
      *   This method creates a new instance of the given module class using
      *   {@link Class#newInstance()}. As a consequence this class must provide
