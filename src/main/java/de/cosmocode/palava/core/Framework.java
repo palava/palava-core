@@ -24,6 +24,8 @@ import de.cosmocode.commons.Stateful;
 import de.cosmocode.palava.core.event.FrameworkStart;
 import de.cosmocode.palava.core.event.FrameworkStop;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
+import de.cosmocode.palava.core.event.PostFrameworkStop;
+import de.cosmocode.palava.core.event.PreFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 
 /**
@@ -34,8 +36,8 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
 public interface Framework extends Stateful {
 
     /**
-     * Starts the framework by firing the {@link FrameworkStart} and {@link PostFrameworkStart}
-     * events.
+     * Starts the framework by firing the {@link PreFrameworkStart},
+     * {@link FrameworkStart} and {@link PostFrameworkStart} events.
      */
     void start();
     
@@ -62,7 +64,8 @@ public interface Framework extends Stateful {
     <T> T getInstance(Key<T> key) throws ConfigurationException, ProvisionException;
     
     /**
-     * Stops the framework by firing the {@link PreFrameworkStop} and {@link FrameworkStop} events.
+     * Stops the framework by firing the {@link PreFrameworkStop},
+     * {@link FrameworkStop} and {@link PostFrameworkStop} events.
      */
     void stop();
 

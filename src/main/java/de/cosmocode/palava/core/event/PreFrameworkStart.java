@@ -19,19 +19,19 @@ package de.cosmocode.palava.core.event;
 import de.cosmocode.collections.Procedure;
 
 /**
- * Event interface for framework stop. This event occurs right after
- * {@link PreFrameworkStop} and before {@link PostFrameworkStop}. 
- *
+ * Event interface for pre framework start. This event occurs
+ * right before {@link FrameworkStart}.
+ * 
  * @since 2.4
  * @author Willi Schoenborn
  */
-public interface FrameworkStop {
+public interface PreFrameworkStart {
 
-    Procedure<FrameworkStop> PROCEDURE = new Procedure<FrameworkStop>() {
+    Procedure<PreFrameworkStart> PROCEDURE = new Procedure<PreFrameworkStart>() {
         
         @Override
-        public void apply(FrameworkStop input) {
-            input.eventFrameworkStop();
+        public void apply(PreFrameworkStart input) {
+            input.eventPreFrameworkStart();
         }
         
     };
@@ -39,6 +39,6 @@ public interface FrameworkStop {
     /**
      * Event callback.
      */
-    void eventFrameworkStop();
+    void eventPreFrameworkStart();
     
 }

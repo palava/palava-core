@@ -19,7 +19,8 @@ package de.cosmocode.palava.core.event;
 import de.cosmocode.collections.Procedure;
 
 /**
- * Event interface for framework stop.
+ * Event interface for framework stop. This event occurs right after
+ * {@link PreFrameworkStart} and before {@link PostFrameworkStart}. 
  *
  * @since 2.4
  * @author Willi Schoenborn

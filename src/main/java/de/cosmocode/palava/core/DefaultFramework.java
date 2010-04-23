@@ -24,6 +24,8 @@ import com.google.inject.Key;
 import de.cosmocode.palava.core.event.FrameworkStart;
 import de.cosmocode.palava.core.event.FrameworkStop;
 import de.cosmocode.palava.core.event.PostFrameworkStart;
+import de.cosmocode.palava.core.event.PostFrameworkStop;
+import de.cosmocode.palava.core.event.PreFrameworkStart;
 import de.cosmocode.palava.core.event.PreFrameworkStop;
 
 /**
@@ -45,6 +47,7 @@ final class DefaultFramework extends AbstractFramework implements Framework {
 
     @Override
     protected void doStart() {
+        registry.notifySilent(PreFrameworkStart.class, PreFrameworkStart.PROCEDURE);
         registry.notifySilent(FrameworkStart.class, FrameworkStart.PROCEDURE);
         registry.notifySilent(PostFrameworkStart.class, PostFrameworkStart.PROCEDURE);
     }
@@ -63,6 +66,7 @@ final class DefaultFramework extends AbstractFramework implements Framework {
     protected void doStop() {
         registry.notifySilent(PreFrameworkStop.class, PreFrameworkStop.PROCEDURE);
         registry.notifySilent(FrameworkStop.class, FrameworkStop.PROCEDURE);
+        registry.notifySilent(PostFrameworkStop.class, PostFrameworkStop.PROCEDURE);
     }
 
 }
