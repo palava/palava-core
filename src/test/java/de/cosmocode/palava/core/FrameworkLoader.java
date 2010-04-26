@@ -12,10 +12,26 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-public final class Testing {
+/**
+ * Static utility class for test environments.
+ *
+ * @author Willi Schoenborn
+ */
+public final class FrameworkLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Testing.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FrameworkLoader.class);
     
+    private FrameworkLoader() {
+        
+    }
+
+    /**
+     * Load properties from either {@code src/test/resources/application.properties}
+     * or {@code classath:application.properties} and creates a new {@link Framework}
+     * using {@link Palava#newFramework(Properties)}.
+     * 
+     * @return a new configured framwork
+     */
     public static Framework load() {
         final File file = new File("src/test/resources/application.properties");
         final Properties properties = new Properties();
@@ -34,7 +50,8 @@ public final class Testing {
             }
         } else {
             LOG.info("{} does not exist, looking for classpath resources", file);
-            final InputStream stream = Testing.class.getClassLoader().getResourceAsStream("application.properties");
+            final ClassLoader loader = FrameworkLoader.class.getClassLoader();
+            final InputStream stream = loader.getResourceAsStream("application.properties");
             Preconditions.checkState(stream != null, "No application.properties found");
             try {
                 try {
