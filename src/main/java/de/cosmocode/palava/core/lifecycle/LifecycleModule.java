@@ -53,16 +53,16 @@ public final class LifecycleModule implements Module {
             
             @Override
             public <I> void hear(TypeLiteral<I> literal, TypeEncounter<I> encounter) {
+                final Class<? super I> type = literal.getRawType();
                 
-                if (Initializable.class.isAssignableFrom(literal.getRawType())) {
+                if (Initializable.class.isAssignableFrom(type)) {
                     encounter.register(new InitializableListener<I>());
                 }
                 
-                if (AutoStartable.class.isAssignableFrom(literal.getRawType())) {
+                if (AutoStartable.class.isAssignableFrom(type)) {
                     encounter.register(new AutoStartableListener<I>());
                 }
                 
-                final Class<? super I> type = literal.getRawType();
                 if (Startable.class.isAssignableFrom(type) || Disposable.class.isAssignableFrom(type)) {
                     encounter.register(new InjectionListener<I>() {
                         

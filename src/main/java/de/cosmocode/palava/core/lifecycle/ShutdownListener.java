@@ -59,9 +59,9 @@ final class ShutdownListener implements FrameworkStop {
                 LOG.info("Stopping {}", service);
                 try {
                     Startable.class.cast(service).stop();
-                    /* CHECKSTYLE:OFF */
+                /* CHECKSTYLE:OFF */
                 } catch (RuntimeException e) {
-                    /* CHECKSTYLE:ON */
+                /* CHECKSTYLE:ON */
                     LOG.warn(String.format("Unable to stop service %s", service), e);
                 }
             }
@@ -70,9 +70,9 @@ final class ShutdownListener implements FrameworkStop {
                 LOG.info("Disposing {}", service);
                 try {
                     Disposable.class.cast(service).dispose();
-                    /* CHECKSTYLE:OFF */
+                /* CHECKSTYLE:OFF */
                 } catch (RuntimeException e) {
-                    /* CHECKSTYLE:ON */
+                /* CHECKSTYLE:ON */
                     LOG.warn(String.format("Unable to dispose service %s", service), e);
                 }
             }
