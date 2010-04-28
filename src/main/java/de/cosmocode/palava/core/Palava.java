@@ -66,7 +66,7 @@ public final class Palava {
         Preconditions.checkNotNull(properties, "Properties");
 
         final String className = properties.getProperty(CoreConfig.APPLICATION);
-        Preconditions.checkNotNull(className, CoreConfig.APPLICATION);
+        Preconditions.checkNotNull(className, "Missing %s", CoreConfig.APPLICATION);
         final Class<? extends Module> mainModuleClass;
 
         try {
