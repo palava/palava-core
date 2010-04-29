@@ -68,10 +68,8 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> void register(Registry.Key<T> key, T listener) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(listener, "Listener");
-        LOG.trace("registering {} for {}", listener, key);
-        synchronized (services) {
-            services.put(key, listener);
-        }
+        LOG.trace("Registering {} for {}", listener, key);
+        services.put(key, listener);
     };
 
     @Override
@@ -186,7 +184,7 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> void notify(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(command, "Command");
-        LOG.trace("notifying all listeners for {} using {}", key, command);
+        LOG.trace("Notifying all listeners for {} using {}", key, command);
         for (T listener : getListeners(key)) {
             LOG.trace("notifying {} for {}", listener, key);
             command.apply(listener);
@@ -197,7 +195,7 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> void notifySilent(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(command, "Command");
-        LOG.trace("notifying all listeners for {} using {}", key, command);
+        LOG.trace("Notifying all listeners for {} using {}", key, command);
         for (T listener : getListeners(key)) {
             LOG.trace("notifying {} for {}", listener, key);
             try {
@@ -214,29 +212,23 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> boolean remove(Key<T> key, T listener) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(listener, "Listener");
-        LOG.trace("removing {} from {}", listener, key);
-        synchronized (services) {
-            return services.remove(key, listener);
-        }    
+        LOG.trace("Removing {} from {}", listener, key);
+        return services.remove(key, listener);
     };
 
     @Override
     public <T> boolean remove(T listener) {
         Preconditions.checkNotNull(listener, "Listener");
-        LOG.trace("removing {}", listener);
-        synchronized (services) {
-            return services.values().removeAll(ImmutableSet.of(listener));
-        }
+        LOG.trace("Removing {}", listener);
+        return services.values().removeAll(ImmutableSet.of(listener));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> Iterable<T> removeAll(Key<T> key) {
         Preconditions.checkNotNull(key, "Key");
-        LOG.trace("removing all listeners from {}", key);
-        synchronized (services) {
-            return (Iterable<T>) services.removeAll(key);
-        }
+        LOG.trace("Removing all listeners from {}", key);
+        return (Iterable<T>) services.removeAll(key);
     }
 
 }
