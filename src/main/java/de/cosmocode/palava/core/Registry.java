@@ -206,6 +206,13 @@ public interface Registry {
      * Finds all listeners of Type where the associated meta
      * information of the key satisfies the specified predicate.
      * 
+     * <p>
+     *   This method can be used to find listeners with or without any
+     *   specific meta information attached to their keys. To get all
+     *   listeners of type T, no matter which meta information use:
+     *   {@code registry.find(T.class, Predicates.alwaysTrue());}
+     * </p>
+     * 
      * @param <T> the generic type
      * @param type the type's class literal
      * @param predicate a predicate which defines matching meta information
