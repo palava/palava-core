@@ -30,7 +30,7 @@ import com.google.inject.spi.TypeConverter;
 public final class LoggerConverter extends AbstractTypeConverter<Logger> {
 
     @Override
-    Logger convert(String value) {
+    protected Logger convert(String value) {
         return LoggerFactory.getLogger(value);
     }
 

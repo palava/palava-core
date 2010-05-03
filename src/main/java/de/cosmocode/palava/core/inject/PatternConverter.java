@@ -29,7 +29,7 @@ import com.google.inject.spi.TypeConverter;
 public final class PatternConverter extends AbstractTypeConverter<Pattern> {
 
     @Override
-    Pattern convert(String value) {
+    protected Pattern convert(String value) {
         return Pattern.compile(value);
     }
 

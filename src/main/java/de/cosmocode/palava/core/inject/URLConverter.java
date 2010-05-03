@@ -38,7 +38,7 @@ public final class URLConverter extends AbstractTypeConverter<URL> {
     private static final String CLASSPATH_PREFIX = "classpath:";
 
     @Override
-    URL convert(String value) {
+    protected URL convert(String value) {
         if (value.startsWith(CLASSPATH_PREFIX)) {
             LOG.trace("Considering {} to be a classpath resource", value);
             final ClassLoader loader = getClassLoader();

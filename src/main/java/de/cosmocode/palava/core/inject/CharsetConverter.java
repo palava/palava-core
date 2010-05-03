@@ -29,7 +29,7 @@ import com.google.inject.spi.TypeConverter;
 public final class CharsetConverter extends AbstractTypeConverter<Charset> {
 
     @Override
-    Charset convert(String value) {
+    protected Charset convert(String value) {
         return Charset.forName(value);
     }
 

@@ -37,7 +37,7 @@ public abstract class AbstractTypeConverter<T> implements TypeConverter {
      * @return value converted to T
      * @throws IllegalArgumentException if conversion failed
      */
-    abstract T convert(String value);
+    protected abstract T convert(String value);
     
     @Override
     public final Object convert(String value, TypeLiteral<?> typeLiteral) {

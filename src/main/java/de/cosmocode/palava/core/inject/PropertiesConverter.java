@@ -36,7 +36,7 @@ public final class PropertiesConverter extends AbstractTypeConverter<Properties>
     private final URLConverter urlConverter = new URLConverter();
     
     @Override
-    Properties convert(String value) {
+    protected Properties convert(String value) {
         final URL url = urlConverter.convert(value);
         final Properties properties = new Properties();
         final InputStream stream = openStream(url);
