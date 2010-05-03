@@ -16,6 +16,7 @@
 
 package de.cosmocode.palava.core;
 
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import org.easymock.EasyMock;
@@ -23,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
@@ -38,12 +40,20 @@ import de.cosmocode.palava.core.Registry.Key;
 public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
     
     /**
-     * Implementations can decide whether they live views
-     * when using {@link Registry#getListeners(Class)}.
+     * Implementations can decide whether they return live views
+     * for {@link Registry#getListeners(Class)}.
      * 
      * @return true if live view is supported, false otherwise
      */
-    protected abstract boolean supportsLiveView();
+    protected abstract boolean supportsGetListenersLiveView();
+    
+    /**
+     * Implementations can decide whether they return live views
+     * for {@link Registry#find(Class, Predicate)}.
+     * 
+     * @return true if live view is supported, false otherwise
+     */
+    protected abstract boolean supportsFindLiveView();
     
     /**
      * Tests {@link Registry#register(Class, Object)}.
@@ -263,7 +273,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         final Listener second = EasyMock.createMock("second", Listener.class);
         EasyMock.replay(first, second);
         
-        if (supportsLiveView()) {
+        if (supportsGetListenersLiveView()) {
             final Registry unit = unit();
             unit.register(Listener.class, first);
             final Iterable<Listener> listeners = unit.getListeners(Listener.class);
@@ -304,7 +314,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         
         final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
         
-        if (supportsLiveView()) {
+        if (supportsGetListenersLiveView()) {
             final Registry unit = unit();
             unit.register(key, first);
             final Iterable<Listener> listeners = unit.getListeners(key);
@@ -352,6 +362,151 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit().getListeners(nullKey);
     }
 
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} without expected matches.
+     */
+    @Test
+    public void findEmpty() {
+        Assert.assertTrue(Iterables.isEmpty(unit().find(Object.class, Predicates.alwaysFalse())));
+    }
+    
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} with matches using a always-true predicate.
+     */
+    @Test
+    public void findMatches() {
+        final Listener a = EasyMock.createMock("a", Listener.class);
+        final Listener b = EasyMock.createMock("b", Listener.class);
+        EasyMock.replay(a, b);
+        final Registry unit = unit();
+        unit.register(Listener.class, a);
+        unit.register(Listener.class, b);
+        
+        final Predicate<Object> predicate = new Predicate<Object>() {
+            
+            @Override
+            public boolean apply(Object input) {
+                return input == null;
+            }
+            
+        };
+        
+        final Iterable<Listener> listeners = unit.find(Listener.class, predicate);
+        Assert.assertTrue(Iterables.size(listeners) == 2);
+        Assert.assertTrue(Iterables.contains(listeners, a));
+        Assert.assertTrue(Iterables.contains(listeners, b));
+        EasyMock.verify(a, b);
+    }
+
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} with matches using a selective predicate.
+     */
+    @Test
+    public void findSelectedMatches() {
+        final Listener a = EasyMock.createMock("a", Listener.class);
+        final Listener b = EasyMock.createMock("b", Listener.class);
+        final Listener c = EasyMock.createMock("c", Listener.class);
+        EasyMock.replay(a, b, c);
+        final Registry unit = unit();
+        final Object meta = new Object();
+        unit.register(Listener.class, a);
+        unit.register(Key.get(Listener.class, meta), b);
+        unit.register(Key.get(Listener.class, meta), c);
+        
+        final Predicate<Object> predicate = new Predicate<Object>() {
+            
+            @Override
+            public boolean apply(Object input) {
+                return input == meta;
+            }
+            
+        };
+        
+        final Iterable<Listener> listeners = unit.find(Listener.class, predicate);
+        Assert.assertTrue(Iterables.size(listeners) == 2);
+        Assert.assertTrue(Iterables.contains(listeners, b));
+        Assert.assertTrue(Iterables.contains(listeners, c));
+        EasyMock.verify(a, b);
+    }
+    
+    /**
+     * Tests whether {@link Registry#find(Class, Predicate)} supports live view.
+     */
+    @Test
+    public void findLiveView() {
+        final Listener a = EasyMock.createMock("a", Listener.class);
+        final Listener b = EasyMock.createMock("b", Listener.class);
+        final Listener c = EasyMock.createMock("c", Listener.class);
+        EasyMock.replay(a, b, c);
+        final Registry unit = unit();
+        final Object meta = new Object();
+        unit.register(Key.get(Listener.class, meta), a);
+        unit.register(Key.get(Listener.class, meta), b);
+        
+        final Predicate<Object> predicate = new Predicate<Object>() {
+            
+            @Override
+            public boolean apply(Object input) {
+                return input == meta;
+            }
+            
+        };
+        
+        final Iterable<Listener> listeners = unit.find(Listener.class, predicate);
+        Assert.assertTrue(Iterables.size(listeners) == 2);
+        Assert.assertTrue(Iterables.contains(listeners, a));
+        Assert.assertTrue(Iterables.contains(listeners, b));
+        
+        unit.register(Key.get(Listener.class, meta), c);
+        
+        if (supportsFindLiveView()) {
+            Assert.assertTrue(Iterables.size(listeners) == 3);
+            Assert.assertTrue(Iterables.contains(listeners, a));
+            Assert.assertTrue(Iterables.contains(listeners, b));
+            Assert.assertTrue(Iterables.contains(listeners, c));
+        } else {
+            Assert.assertTrue(Iterables.size(listeners) == 2);
+            Assert.assertTrue(Iterables.contains(listeners, a));
+            Assert.assertTrue(Iterables.contains(listeners, b));
+        }
+        
+        EasyMock.verify(a, b);
+    }
+    
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} whether it returns
+     * an immutable iterable.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void findImmutable() {
+        final Registry unit = unit();
+        final Listener listener = EasyMock.createMock("listener", Listener.class);
+        EasyMock.replay(listener);
+        unit.register(Listener.class, listener);
+        final Iterable<Listener> listeners = unit.find(Listener.class, Predicates.alwaysTrue());
+        EasyMock.verify(listener);
+        final Iterator<Listener> iterator = listeners.iterator();
+        Assert.assertTrue(iterator.hasNext());
+        Assert.assertSame(listener, iterator.next());
+        iterator.remove();
+    }
+    
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} with a null type.
+     */
+    @Test(expected = NullPointerException.class)
+    public void findNullType() {
+        unit().find(null, Predicates.alwaysTrue());
+    }
+    
+    /**
+     * Tests {@link Registry#find(Class, Predicate)} with a null predicate.
+     */
+    @Test(expected = NullPointerException.class)
+    public void findNullPredicate() {
+        unit().find(Object.class, null);
+    }
+    
     /**
      * Tests {@link Registry#proxy(Class)} with no listeners
      * being registered.

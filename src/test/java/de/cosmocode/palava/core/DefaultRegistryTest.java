@@ -29,8 +29,13 @@ public final class DefaultRegistryTest extends AbstractRegistryTest {
     }
 
     @Override
-    protected boolean supportsLiveView() {
+    protected boolean supportsGetListenersLiveView() {
         return true;
     }
 
+    @Override
+    protected boolean supportsFindLiveView() {
+        return true;
+    }
+    
 }

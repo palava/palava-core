@@ -89,6 +89,10 @@ public interface Registry {
             return type;
         }
         
+        public Object getMeta() {
+            return meta;
+        }
+        
         @Override
         public String toString() {
             return String.format("Key [type=%s, meta=%s]", type, meta);
@@ -118,6 +122,7 @@ public interface Registry {
          *   meta properly. Otherwise we can't guarantee that future retrieve
          *   operations will succeed. In fact we can guarantee that these
          *   operations will fail if equals is not implemented properly.
+         *   The specified meta information should be immutable.
          * </p>
          * 
          * @param <T> the generic type
@@ -196,6 +201,18 @@ public interface Registry {
      * @throws NullPointerException if key is null
      */
     <T> Iterable<T> getListeners(Key<T> key);
+    
+    /**
+     * Finds all listeners of Type where the associated meta
+     * information of the key satisfies the specified predicate.
+     * 
+     * @param <T> the generic type
+     * @param type the type's class literal
+     * @param predicate a predicate which defines matching meta information
+     * @return an unmodifiable iterable over all found listeners of type T which match the given predicate
+     * @throws NullPointerException if type or predicate is null
+     */
+    <T> Iterable<T> find(Class<T> type, Predicate<? super Object> predicate);
 
     /**
      * Creates a proxy of type T which can be used in third-party

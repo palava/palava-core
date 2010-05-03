@@ -16,6 +16,7 @@
 
 package de.cosmocode.palava.core;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ForwardingObject;
 
 import de.cosmocode.collections.Procedure;
@@ -40,6 +41,11 @@ public abstract class ForwardingRegistry extends ForwardingObject implements Reg
         return delegate().getListeners(key);
     }
 
+    @Override
+    public <T> Iterable<T> find(Class<T> type, Predicate<? super Object> predicate) {
+        return delegate().find(type, predicate);
+    }
+    
     @Override
     public <T> void notify(Class<T> type, Procedure<? super T> command) {
         delegate().notify(type, command);

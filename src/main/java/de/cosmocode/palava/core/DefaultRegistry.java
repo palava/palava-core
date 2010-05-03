@@ -20,11 +20,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
@@ -57,27 +61,77 @@ final class DefaultRegistry extends AbstractRegistry {
         }
     }
 
-    private final Multimap<Key<? extends Object>, Object> services;
+    private final Multimap<Key<? extends Object>, Object> mapping;
     
     public DefaultRegistry() {
         final SetMultimap<Key<? extends Object>, Object> multimap = LinkedHashMultimap.create();
-        this.services = Multimaps.synchronizedSetMultimap(multimap);
+        this.mapping = Multimaps.synchronizedSetMultimap(multimap);
     }
 
     @Override
-    public <T> void register(Registry.Key<T> key, T listener) {
+    public <T> void register(Key<T> key, T listener) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("Registering {} for {}", listener, key);
-        services.put(key, listener);
+        mapping.put(key, listener);
     };
 
     @Override
     public <T> Iterable<T> getListeners(Key<T> key) {
         Preconditions.checkNotNull(key, "Key");
         @SuppressWarnings("unchecked")
-        final Iterable<T> listeners = (Iterable<T>) services.get(key);
+        final Iterable<T> listeners = (Iterable<T>) mapping.get(key);
         return Iterables.unmodifiableIterable(listeners);
+    }
+    
+    @Override
+    public <T> Iterable<T> find(final Class<T> type, final Predicate<? super Object> predicate) {
+        Preconditions.checkNotNull(type, "Type");
+        Preconditions.checkNotNull(predicate, "Predicate");
+        
+        return new Iterable<T>() {
+            
+            @Override
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    
+                    private final Iterator<Entry<Key<? extends Object>, Object>> iterator = 
+                        mapping.entries().iterator();
+                    
+                    @Override
+                    protected T computeNext() {
+                        while (iterator.hasNext()) {
+                            final Entry<Key<? extends Object>, Object> entry = iterator.next();
+                            final Key<? extends Object> key = entry.getKey();
+                            if (key.getType().equals(type) && predicate.apply(key.getMeta())) {
+                                @SuppressWarnings("unchecked")
+                                final T listener = (T) entry.getValue();
+                                return listener;
+                            }
+                        }
+                        return endOfData();
+                    }
+                    
+                };
+            }
+            
+        };
+    }
+    
+    @Override
+    public <T> T proxy(final Key<T> key) {
+        Preconditions.checkNotNull(key, "Key");
+        Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
+        Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
+        
+        final ClassLoader loader = getClass().getClassLoader();
+        final Class<?>[] interfaces = {key.getType()};
+        final InvocationHandler handler = new ProxyHandler<T>(key);
+        
+        @SuppressWarnings("unchecked")
+        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
+        LOG.debug("Created proxy for {}", key);
+        return proxy;
     }
     
     /**
@@ -163,22 +217,6 @@ final class DefaultRegistry extends AbstractRegistry {
         }
         
     }
-    
-    @Override
-    public <T> T proxy(final Key<T> key) {
-        Preconditions.checkNotNull(key, "Key");
-        Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
-        Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
-        
-        final ClassLoader loader = getClass().getClassLoader();
-        final Class<?>[] interfaces = {key.getType()};
-        final InvocationHandler handler = new ProxyHandler<T>(key);
-        
-        @SuppressWarnings("unchecked")
-        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
-        LOG.debug("Created proxy for {}", key);
-        return proxy;
-    }
 
     @Override
     public <T> void notify(Key<T> key, Procedure<? super T> command) {
@@ -213,14 +251,14 @@ final class DefaultRegistry extends AbstractRegistry {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("Removing {} from {}", listener, key);
-        return services.remove(key, listener);
+        return mapping.remove(key, listener);
     };
 
     @Override
     public <T> boolean remove(T listener) {
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("Removing {}", listener);
-        return services.values().removeAll(ImmutableSet.of(listener));
+        return mapping.values().removeAll(ImmutableSet.of(listener));
     }
 
     @Override
@@ -228,7 +266,7 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> Iterable<T> removeAll(Key<T> key) {
         Preconditions.checkNotNull(key, "Key");
         LOG.trace("Removing all listeners from {}", key);
-        return (Iterable<T>) services.removeAll(key);
+        return (Iterable<T>) mapping.removeAll(key);
     }
 
 }
