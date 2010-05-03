@@ -31,7 +31,7 @@ import de.cosmocode.commons.Locales;
 public final class LocaleConverter extends AbstractTypeConverter<Locale> {
 
     @Override
-    public Locale convert(String value) {
+    Locale convert(String value) {
         return Locales.parse(value);
     }
 

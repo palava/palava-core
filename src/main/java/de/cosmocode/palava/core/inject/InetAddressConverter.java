@@ -29,7 +29,7 @@ import com.google.inject.spi.TypeConverter;
 public final class InetAddressConverter extends AbstractTypeConverter<InetAddress> {
 
     @Override
-    public InetAddress convert(String value) {
+    InetAddress convert(String value) {
         try {
             return InetAddress.getByName(value);
         } catch (UnknownHostException e) {

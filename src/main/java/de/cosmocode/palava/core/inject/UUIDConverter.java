@@ -29,7 +29,7 @@ import com.google.inject.spi.TypeConverter;
 public final class UUIDConverter extends AbstractTypeConverter<UUID> {
 
     @Override
-    public UUID convert(String value) {
+    UUID convert(String value) {
         return UUID.fromString(value);
     }
     

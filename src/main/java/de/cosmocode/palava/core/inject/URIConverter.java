@@ -30,7 +30,7 @@ import com.google.inject.spi.TypeConverter;
 public final class URIConverter extends AbstractTypeConverter<URI> {
 
     @Override
-    public URI convert(String value) {
+    URI convert(String value) {
         try {
             return new URI(value);
         } catch (URISyntaxException e) {

@@ -34,7 +34,7 @@ public final class FileConverter extends AbstractTypeConverter<File> {
     private final URLConverter urlConverter = new URLConverter();
     
     @Override
-    public File convert(String value) {
+    File convert(String value) {
         Preconditions.checkArgument(value.startsWith(FILE_PREFIX), "%s must start with %s", value, FILE_PREFIX);
         return new File(urlConverter.convert(value).getFile());
     }
