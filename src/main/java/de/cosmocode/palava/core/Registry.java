@@ -25,6 +25,7 @@ import de.cosmocode.collections.Procedure;
  * A {@link Registry} is used to provide a publish/subscribe
  * mechanism.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public interface Registry {
@@ -213,6 +214,7 @@ public interface Registry {
      *   {@code registry.find(T.class, Predicates.alwaysTrue());}
      * </p>
      * 
+     * @since 2.4
      * @param <T> the generic type
      * @param type the type's class literal
      * @param predicate a predicate which defines matching meta information

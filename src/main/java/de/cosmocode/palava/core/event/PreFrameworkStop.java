@@ -23,6 +23,7 @@ import de.cosmocode.palava.core.Registry;
  * Clients being registered as {@link PostFrameworkStart} listeners
  * in the {@link Registry} will be notified before a framework stop.
  *
+ * @since 2.0
  * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */

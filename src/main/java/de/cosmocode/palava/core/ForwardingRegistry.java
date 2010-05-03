@@ -24,6 +24,7 @@ import de.cosmocode.collections.Procedure;
 /**
  * Abstract decorator for {@link Registry}s.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public abstract class ForwardingRegistry extends ForwardingObject implements Registry {

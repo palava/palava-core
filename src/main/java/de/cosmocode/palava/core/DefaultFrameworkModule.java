@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
 /**
  * Binds {@link Framework} to {@link DefaultFramework}.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public final class DefaultFrameworkModule implements Module {

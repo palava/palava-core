@@ -30,6 +30,13 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 
+/**
+ * Abstract aspect which intercepts {@link Guice#createInjector(..)} calls
+ * to get hands on the injector.
+ *
+ * @since 2.0
+ * @author Willi Schoenborn
+ */
 public abstract aspect AbstractPalavaAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPalavaAspect.class);
@@ -66,17 +73,20 @@ public abstract aspect AbstractPalavaAspect {
     }
 
     @SuppressAjWarnings("adviceDidNotMatch")
-    Injector around(Iterable<? extends Module> modules): call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) {
+    Injector around(Iterable<? extends Module> modules): 
+        call(Injector Guice.createInjector(Iterable<? extends Module>)) && args(modules) {
         return proceed(append(modules));
     }
 
     @SuppressAjWarnings("adviceDidNotMatch")
-    Injector around(Stage stage, Module[] modules): call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) {
+    Injector around(Stage stage, Module[] modules): 
+        call(Injector Guice.createInjector(Stage, Module...)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
 
     @SuppressAjWarnings("adviceDidNotMatch")
-    Injector around(Stage stage, Iterable<? extends Module> modules): call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) {
+    Injector around(Stage stage, Iterable<? extends Module> modules): 
+        call(Injector Guice.createInjector(Stage, Iterable<? extends Module>)) && args(stage, modules) {
         return proceed(stage, append(modules));
     }
     

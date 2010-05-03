@@ -26,6 +26,7 @@ import de.cosmocode.palava.core.lifecycle.LifecycleModule;
  * A module which combines the {@link DefaultFrameworkModule}, {@link LifecycleModule}, {@link TypeConverterModule}
  * and {@link DefaultRegistryModule}.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public final class PalavaModule implements Module {

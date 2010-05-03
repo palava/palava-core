@@ -26,6 +26,7 @@ import com.google.inject.BindingAnnotation;
 /**
  * Binding annotation for all lifecycle services.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 @Retention(RetentionPolicy.RUNTIME)

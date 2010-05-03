@@ -19,6 +19,7 @@ package de.cosmocode.palava.core;
 /**
  * Constant holder class for configuration keys.
  * 
+ * @since 2.0
  * @author Tobias Sarnowski
  * @author Willi Schoenborn
  */

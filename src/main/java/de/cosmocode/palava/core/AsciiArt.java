@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A utility class for printing the palava ascii art.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 final class AsciiArt {

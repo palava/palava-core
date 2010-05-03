@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 /**
  * Reusable simple implementation of the Config interface.
  *
+ * @since 2.4 
  * @author Willi Schoenborn
  */
 public final class Config {

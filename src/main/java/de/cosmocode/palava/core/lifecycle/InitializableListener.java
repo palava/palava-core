@@ -26,8 +26,9 @@ import com.google.inject.spi.InjectionListener;
 /**
  * {@link InjectionListener} which handles {@link Initializable}s.
  *
+ * @since 2.3
  * @author Willi Schoenborn
- * @param <I>
+ * @param <I> generic injectee type
  */
 final class InitializableListener<I> implements InjectionListener<I> {
     

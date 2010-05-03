@@ -38,6 +38,7 @@ import de.cosmocode.palava.core.inject.SettingsModule;
  * This implementations is used for running palava standalone or
  * in embedded mode in a normal java se environment without guice support.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 final class BootstrapFramework extends AbstractFramework {

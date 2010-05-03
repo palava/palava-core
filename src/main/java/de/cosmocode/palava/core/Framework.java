@@ -31,6 +31,7 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
 /**
  * Root type for the palava framework.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public interface Framework extends Stateful {

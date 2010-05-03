@@ -29,6 +29,7 @@ import com.google.inject.BindingAnnotation;
  * When running in a pre-existing guice environment, they might not exist
  * as configuration is up to the surrounding environment.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 @Target({

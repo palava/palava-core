@@ -24,6 +24,7 @@ import de.cosmocode.commons.State;
 /**
  * Abstract base implementation of the {@link Framework} interface.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 abstract class AbstractFramework implements Framework {

@@ -34,6 +34,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * A {@link Module} for custom {@link TypeConverter}s.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public final class TypeConverterModule extends CustomTypeConverterModule {

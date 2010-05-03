@@ -33,6 +33,7 @@ import de.cosmocode.commons.State;
 /**
  * Application entry point.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  * @author Tobias Sarnowski
  */

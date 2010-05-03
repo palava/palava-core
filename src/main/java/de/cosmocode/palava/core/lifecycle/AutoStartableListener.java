@@ -25,8 +25,9 @@ import com.google.inject.spi.InjectionListener;
 /**
  * {@link InjectionListener} which handles {@link AutoStartable}s.
  *
+ * @since 2.3
  * @author Willi Schoenborn
- * @param <I>
+ * @param <I> generic injectee type
  */
 final class AutoStartableListener<I> implements InjectionListener<I> {
 

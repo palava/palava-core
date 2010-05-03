@@ -32,6 +32,7 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
  * Implementation of the {@link Framework} interface which requires
  * a running guice environment.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 final class DefaultFramework extends AbstractFramework implements Framework {

@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
 /**
  * Binds the {@link Registry} to the {@link DefaultRegistry}.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public final class DefaultRegistryModule implements Module {

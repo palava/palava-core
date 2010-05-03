@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 /**
  * A bean which holds the corresponding command line parameters.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 final class Options {

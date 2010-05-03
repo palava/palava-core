@@ -24,6 +24,7 @@ import com.google.inject.spi.TypeConverter;
 /**
  * A {@link TypeConverter} for {@link InetAddress}es.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public final class InetAddressConverter extends AbstractTypeConverter<InetAddress> {

@@ -33,6 +33,7 @@ import de.cosmocode.palava.core.inject.Settings;
 /**
  * Static factory class for framework instances.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public final class Palava {
@@ -54,6 +55,7 @@ public final class Palava {
      *   The specified properties will be bound using the {@link Settings} annotation.
      * </p>
      * 
+     * @since 2.3
      * @param properties the settings
      * @return a new configured {@link Framework} instance
      * @throws NullPointerException if properties is null or properties do not contain {@link CoreConfig#APPLICATION}
@@ -90,6 +92,7 @@ public final class Palava {
      *   The specified properties will be bound using the {@link Settings} annotation.
      * </p>
      * 
+     * @since 2.3
      * @param mainModuleClass the class literal of the main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
@@ -121,6 +124,7 @@ public final class Palava {
      *   The specified properties will be bound using the {@link Settings} annotation.
      * </p>
      * 
+     * @since 2.3
      * @param mainModule the application main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
@@ -143,6 +147,7 @@ public final class Palava {
      *   The specified properties will be bound using the {@link Settings} annotation.
      * </p>
      * 
+     * @since 2.3
      * @param mainModule the application main module
      * @param stage the desired injector stage
      * @param properties the application properties

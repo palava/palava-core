@@ -23,6 +23,7 @@ import com.google.inject.PrivateModule;
  * An abstract {@link PrivateModule} which forces implementors to specify every single
  * step when writing re-binding modules. This should reduce errors.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public abstract class AbstractRebindingModule extends PrivateModule implements RebindModule {

@@ -33,6 +33,7 @@ import com.google.inject.spi.TypeListener;
 /**
  * Binds {@link InjectionListener} to initialize/start the corresponding lifecycle interfaces.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public final class LifecycleModule implements Module {

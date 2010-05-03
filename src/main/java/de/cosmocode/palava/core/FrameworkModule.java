@@ -23,6 +23,7 @@ import com.google.inject.Module;
 /**
  * Binds {@link Framework} to the given instance.
  *
+ * @since 2.3
  * @author Willi Schoenborn
  */
 final class FrameworkModule implements Module {

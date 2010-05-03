@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.lifecycle;
 /**
  * Indicates an error in a service lifycycle.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public class LifecycleException extends RuntimeException {

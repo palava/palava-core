@@ -30,6 +30,7 @@ import com.google.inject.name.Names;
  * A {@link Module} which binds the given {@link Properties}
  * as {@link Settings}.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public final class SettingsModule implements Module {

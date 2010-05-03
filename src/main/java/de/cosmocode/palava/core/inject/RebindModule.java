@@ -21,6 +21,7 @@ import com.google.inject.Module;
 /**
  * A {@link Module} which allows overriding defaults.
  *
+ * @since 2.4
  * @author Willi Schoenborn
  */
 public interface RebindModule extends Module {

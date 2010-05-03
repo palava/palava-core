@@ -35,6 +35,7 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
  * A listener for the {@link PreFrameworkStop} event which stops all
  * {@link Startable} and disposes all {@link Disposable} services.
  * 
+ * @since 2.4
  * @author Willi Schoenborn
  */
 final class ShutdownListener implements FrameworkStop {

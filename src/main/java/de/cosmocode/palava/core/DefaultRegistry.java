@@ -41,6 +41,7 @@ import de.cosmocode.collections.Procedure;
 /**
  * Default implementation of the {@link Registry} interface.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 final class DefaultRegistry extends AbstractRegistry {

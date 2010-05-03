@@ -23,6 +23,7 @@ import de.cosmocode.collections.Procedure;
 /**
  * Abstract implementation of the {@link Registry} interface.
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public abstract class AbstractRegistry implements Registry {

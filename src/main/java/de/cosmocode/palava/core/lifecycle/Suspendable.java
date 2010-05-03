@@ -24,6 +24,7 @@ package de.cosmocode.palava.core.lifecycle;
  *   This interface is part of the palava lifecycle framework.
  * </p>
  *
+ * @since 2.0
  * @author Willi Schoenborn
  */
 public interface Suspendable extends Startable {

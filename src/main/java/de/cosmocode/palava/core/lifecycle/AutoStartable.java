@@ -23,6 +23,7 @@ package de.cosmocode.palava.core.lifecycle;
  *   This interface is part of the palava lifecycle framework.
  * </p>
  * 
+ * @since 2.3
  * @author Willi Schoenborn
  */
 public interface AutoStartable extends Startable {

@@ -20,6 +20,7 @@ package de.cosmocode.palava.core.lifecycle;
 /**
  * Static utility class for {@link Executable}s.
  *
+ * @since 2.1
  * @author Willi Schoenborn
  */
 public final class Executables {
