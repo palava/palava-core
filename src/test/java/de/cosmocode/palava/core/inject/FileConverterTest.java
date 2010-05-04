@@ -56,6 +56,14 @@ public final class FileConverterTest implements UnitProvider<FileConverter> {
     }
     
     /**
+     * Tests {@link FileConverter#convert(String, TypeLiteral)} with a remote file (http). 
+     */
+    @Test(expected = RuntimeException.class)
+    public void remote() {
+        unit().convert("http://www.google.de/index.html", LITERAL);
+    }
+    
+    /**
      * Tests {@link FileConverter#convert(String, TypeLiteral)} with an illegal input.
      */
     @Test(expected = RuntimeException.class)
