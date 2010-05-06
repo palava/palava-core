@@ -16,6 +16,11 @@
 
 package de.cosmocode.palava.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.Closeables;
+import com.google.common.io.Resources;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Module;
 import com.google.inject.ProvisionException;
@@ -40,10 +47,179 @@ public final class Palava {
 
     private static final Logger LOG = LoggerFactory.getLogger(Palava.class);
     
+    private static final String RESOURCE_NAME = "application.properties";
+    
     private Palava() {
         
     }
 
+    /**
+     * Creates a new {@link Framework} using properties provided as a classpath
+     * resource.
+     * <p>
+     *   This method assumes there is a classpath resource named "application.properties".
+     * </p>
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @return a new configured {@link Framework} instance
+     * @throws IllegalArgumentException if the application.properties resource does not exist
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework() {
+        return newFramework(Resources.getResource(RESOURCE_NAME));
+    }
+    
+    /**
+     * Creates a new {@link Framework} using the specified module and properties
+     * provided as a classpath resource.
+     * <p>
+     *   This method assumes there is a classpath resource named "application.properties".
+     * </p>
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @param module the application main module
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if module is null
+     * @throws IllegalArgumentException if the application.properties resource does not exist
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(Module module) {
+        Preconditions.checkNotNull(module, "Module");
+        return newFramework(module, Resources.getResource(RESOURCE_NAME));
+    }
+    
+    /**
+     * Creates a new {@link Framework} using a properties file.
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @param file the file pointing to the properties file
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if file is null
+     * @throws IllegalArgumentException if the file does not exist
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(File file) {
+        Preconditions.checkNotNull(file, "File");
+        Preconditions.checkArgument(file.exists(), "%s does not exist", file);
+        try {
+            return newFramework(file.toURI().toURL());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        } 
+    }
+    
+    /**
+     * Creates a new {@link Framework} using a properties url.
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @param url the url pointing to the properties file
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if url is null
+     * @throws IllegalArgumentException if reading from the specified url failed
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(URL url) {
+        Preconditions.checkNotNull(url, "URL");
+        final InputStream stream;
+        
+        try {
+            stream = url.openStream();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        
+        try {
+            final Properties properties = new Properties();
+            properties.load(stream);
+            return newFramework(properties);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        } finally {
+            Closeables.closeQuietly(stream);
+        }
+    }
+    
+    /**
+     * Creates a new {@link Framework} using the specified module and
+     * a properties file.
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @param module the application main module
+     * @param file the file pointing to the properties file
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if module or file is null
+     * @throws IllegalArgumentException if the file does not exist
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(Module module, File file) {
+        Preconditions.checkNotNull(module, "Module");
+        Preconditions.checkNotNull(file, "File");
+        Preconditions.checkArgument(file.exists(), "%s does not exist", file);
+        try {
+            return newFramework(module, file.toURI().toURL());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        } 
+    }
+    
+    /**
+     * Creates a new {@link Framework} using the specified module and
+     * a properties url.
+     * <p>
+     *   The loaded properties will be bound using the {@link Settings} annotation.
+     * </p>
+     * 
+     * @since 2.4
+     * @param module the application main module
+     * @param url the url pointing to the properties file
+     * @return a new configured {@link Framework} instance
+     * @throws NullPointerException if module or url is null
+     * @throws IllegalArgumentException if reading from the specified url failed
+     * @throws ConfigurationException if guice configuration failed
+     * @throws ProvisionException if providing an instance during creation failed
+     */
+    public static Framework newFramework(Module module, URL url) {
+        Preconditions.checkNotNull(module, "Module");
+        Preconditions.checkNotNull(url, "URL");
+        final InputStream stream;
+        
+        try {
+            stream = url.openStream();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        
+        try {
+            final Properties properties = new Properties();
+            properties.load(stream);
+            return newFramework(module, properties);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        } finally {
+            Closeables.closeQuietly(stream);
+        }
+    }
+    
     /**
      * Creates a new {@link Framework} using the specified properties.
      * <p>
@@ -93,7 +269,7 @@ public final class Palava {
      * </p>
      * 
      * @since 2.3
-     * @param mainModuleClass the class literal of the main module
+     * @param moduleClass the class literal of the main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
      * @throws NullPointerException if mainModuleClass or properties is null
@@ -101,21 +277,21 @@ public final class Palava {
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
      */
-    public static Framework newFramework(Class<? extends Module> mainModuleClass, Properties properties) {
-        Preconditions.checkNotNull(mainModuleClass, "MainModuleClass");
+    public static Framework newFramework(Class<? extends Module> moduleClass, Properties properties) {
+        Preconditions.checkNotNull(moduleClass, "ModuleClass");
         Preconditions.checkNotNull(properties, "Properties");
         
-        final Module mainModule;
+        final Module module;
 
         try {
-            mainModule = mainModuleClass.newInstance();
+            module = moduleClass.newInstance();
         } catch (InstantiationException e) {
             throw new IllegalArgumentException(e);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
         
-        return newFramework(mainModule, properties);
+        return newFramework(module, properties);
     }
     
     /**
@@ -125,19 +301,19 @@ public final class Palava {
      * </p>
      * 
      * @since 2.3
-     * @param mainModule the application main module
+     * @param module the application main module
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
      * @throws NullPointerException if mainModule or properties is null
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
      */
-    public static Framework newFramework(Module mainModule, Properties properties) {
-        Preconditions.checkNotNull(mainModule, "MainModule");
+    public static Framework newFramework(Module module, Properties properties) {
+        Preconditions.checkNotNull(module, "Module");
         Preconditions.checkNotNull(properties, "Properties");
         final String stageName = properties.getProperty(CoreConfig.STAGE);
         final Stage stage = StringUtils.isBlank(stageName) ? Stage.PRODUCTION : Stage.valueOf(stageName);
-        return newFramework(mainModule, stage, properties); 
+        return newFramework(module, stage, properties); 
     }
     
     /**
@@ -148,7 +324,7 @@ public final class Palava {
      * </p>
      * 
      * @since 2.3
-     * @param mainModule the application main module
+     * @param module the application main module
      * @param stage the desired injector stage
      * @param properties the application properties
      * @return a new configured {@link Framework} instance
@@ -156,11 +332,11 @@ public final class Palava {
      * @throws ConfigurationException if guice configuration failed
      * @throws ProvisionException if providing an instance during creation failed
      */
-    public static Framework newFramework(Module mainModule, Stage stage, Properties properties) {
-        Preconditions.checkNotNull(mainModule, "MainModule");
+    public static Framework newFramework(Module module, Stage stage, Properties properties) {
+        Preconditions.checkNotNull(module, "Module");
         Preconditions.checkNotNull(stage, "Stage");
         Preconditions.checkNotNull(properties, "Properties");
-        return new BootstrapFramework(mainModule, stage, properties);
+        return new BootstrapFramework(module, stage, properties);
     }
     
 }
