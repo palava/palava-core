@@ -84,20 +84,12 @@ palava_internal_start() {
         CLASSPATH="$(dirname $0)/../conf/:$(echo $(ls lib/*.jar) | sed 's/ /:/g')"
     fi
 
-    # which log4j config
-    if [ ! -z "$PALAVA_ENVIRONMENT" ] && [ -r conf/log4j/$PALAVA_ENVIRONMENT.xml ]; then
-        LOG4J_CONFIG=conf/log4j/$PALAVA_ENVIRONMENT.xml
-    else
-        LOG4J_CONFIG=conf/log4j.xml
-    fi
-
     # check vm arguments
     if [ -z "$JVM_ARGS" ]; then
         JVM_ARGS="\
 			-Xms256m \
 			-Xmx512m \
 			-XX:-OmitStackTraceInFastThrow \
-			-Dlog4j.configuration=file:$LOG4J_CONFIG \
 			-Dfile.encoding=UTF-8 \
 			-Djava.awt.headless=true \
 			-enableassertions \
@@ -113,7 +105,6 @@ palava_internal_start() {
     if [ -r conf/jvm.options ]; then
         JVM_ARGS="\
             -classpath $CLASSPATH \
-            -Dlog4j.configuration=file:$LOG4J_CONFIG \
             -Dfile.encoding=UTF-8"
         for line in $(cat conf/jvm.options); do
             JVM_ARGS="$JVM_ARGS $line"
