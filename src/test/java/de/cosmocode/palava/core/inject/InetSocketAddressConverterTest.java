@@ -29,7 +29,7 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
      */
     @Test
     public void hostname() {
-        Assert.assertEquals(InetSocketAddress.createUnresolved("localhost", 8080), 
+        Assert.assertEquals(new InetSocketAddress("localhost", 8080), 
             unit().convert("localhost:8080", LITERAL));
     }
 
@@ -38,7 +38,7 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
      */
     @Test
     public void loopback() {
-        Assert.assertEquals(InetSocketAddress.createUnresolved("127.0.0.1", 8080), 
+        Assert.assertEquals(new InetSocketAddress("127.0.0.1", 8080), 
             unit().convert("127.0.0.1:8080", LITERAL));
     }
 
@@ -48,7 +48,7 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
      */
     @Test
     public void all() {
-        Assert.assertEquals(InetSocketAddress.createUnresolved("0.0.0.0", 8080), 
+        Assert.assertEquals(new InetSocketAddress("0.0.0.0", 8080), 
                 unit().convert("0.0.0.0:8080", LITERAL));
     }
     

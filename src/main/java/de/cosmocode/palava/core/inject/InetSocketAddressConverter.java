@@ -23,7 +23,7 @@ public final class InetSocketAddressConverter extends AbstractTypeConverter<Inet
         Preconditions.checkArgument(matcher.matches(), "%s does not match %s", value, PATTERN);
         final String host = matcher.group(1);
         final int port = Integer.parseInt(matcher.group(2));
-        return InetSocketAddress.createUnresolved(host, port);
+        return new InetSocketAddress(host, port);
     }
     
 }
