@@ -35,7 +35,7 @@ import de.cosmocode.palava.core.event.PreFrameworkStop;
  * @since 2.3
  * @author Willi Schoenborn
  */
-final class DefaultFramework extends AbstractFramework implements Framework {
+final class DefaultFramework extends AbstractFramework {
 
     private final Injector injector;
     private final Registry registry;

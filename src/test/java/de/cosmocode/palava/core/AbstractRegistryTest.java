@@ -38,23 +38,7 @@ import de.cosmocode.palava.core.Registry.Key;
  * @author Willi Schoenborn
  */
 public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
-    
-    /**
-     * Implementations can decide whether they return live views
-     * for {@link Registry#getListeners(Class)}.
-     * 
-     * @return true if live view is supported, false otherwise
-     */
-    protected abstract boolean supportsGetListenersLiveView();
-    
-    /**
-     * Implementations can decide whether they return live views
-     * for {@link Registry#find(Class, Predicate)}.
-     * 
-     * @return true if live view is supported, false otherwise
-     */
-    protected abstract boolean supportsFindLiveView();
-    
+
     /**
      * Tests {@link Registry#register(Class, Object)}.
      */
@@ -273,32 +257,18 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         final Listener second = EasyMock.createMock("second", Listener.class);
         EasyMock.replay(first, second);
         
-        if (supportsGetListenersLiveView()) {
-            final Registry unit = unit();
-            unit.register(Listener.class, first);
-            final Iterable<Listener> listeners = unit.getListeners(Listener.class);
-            Assert.assertSame(first, Iterables.getOnlyElement(listeners));
+        final Registry unit = unit();
+        unit.register(Listener.class, first);
+        final Iterable<Listener> listeners = unit.getListeners(Listener.class);
+        Assert.assertSame(first, Iterables.getOnlyElement(listeners));
 
-            unit.register(Listener.class, second);
-            Assert.assertEquals(2, Iterables.size(listeners));
-            Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(listeners));
+        unit.register(Listener.class, second);
+        Assert.assertEquals(2, Iterables.size(listeners));
+        Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(listeners));
 
-            unit.remove(Listener.class, first);
-            Assert.assertEquals(1, Iterables.size(listeners));
-            Assert.assertSame(second, Iterables.getOnlyElement(listeners));
-        } else {
-            final Registry unit = unit();
-            unit.register(Listener.class, first);
-            final Iterable<Listener> listeners = unit.getListeners(Listener.class);
-            Assert.assertSame(first, Iterables.getOnlyElement(listeners));
-
-            unit.register(Listener.class, second);
-            Assert.assertEquals(1, Iterables.size(listeners));
-            Assert.assertEquals(Sets.newHashSet(first), Sets.newHashSet(listeners));
-
-            unit.remove(Listener.class, first);
-            Assert.assertTrue(Iterables.isEmpty(listeners));
-        }
+        unit.remove(Listener.class, first);
+        Assert.assertEquals(1, Iterables.size(listeners));
+        Assert.assertSame(second, Iterables.getOnlyElement(listeners));
         
         EasyMock.verify(first, second);
     }
@@ -314,32 +284,18 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         
         final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
         
-        if (supportsGetListenersLiveView()) {
-            final Registry unit = unit();
-            unit.register(key, first);
-            final Iterable<Listener> listeners = unit.getListeners(key);
-            Assert.assertSame(first, Iterables.getOnlyElement(listeners));
+        final Registry unit = unit();
+        unit.register(key, first);
+        final Iterable<Listener> listeners = unit.getListeners(key);
+        Assert.assertSame(first, Iterables.getOnlyElement(listeners));
 
-            unit.register(key, second);
-            Assert.assertEquals(2, Iterables.size(listeners));
-            Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(listeners));
+        unit.register(key, second);
+        Assert.assertEquals(2, Iterables.size(listeners));
+        Assert.assertEquals(Sets.newHashSet(first, second), Sets.newHashSet(listeners));
 
-            unit.remove(key, first);
-            Assert.assertEquals(1, Iterables.size(listeners));
-            Assert.assertSame(second, Iterables.getOnlyElement(listeners));
-        } else {
-            final Registry unit = unit();
-            unit.register(key, first);
-            final Iterable<Listener> listeners = unit.getListeners(key);
-            Assert.assertSame(first, Iterables.getOnlyElement(listeners));
-
-            unit.register(key, second);
-            Assert.assertEquals(1, Iterables.size(listeners));
-            Assert.assertEquals(Sets.newHashSet(first), Sets.newHashSet(listeners));
-
-            unit.remove(key, first);
-            Assert.assertTrue(Iterables.isEmpty(listeners));
-        }
+        unit.remove(key, first);
+        Assert.assertEquals(1, Iterables.size(listeners));
+        Assert.assertSame(second, Iterables.getOnlyElement(listeners));
         
         EasyMock.verify(first, second);
     }
@@ -459,16 +415,10 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         
         unit.register(Key.get(Listener.class, meta), c);
         
-        if (supportsFindLiveView()) {
-            Assert.assertTrue(Iterables.size(listeners) == 3);
-            Assert.assertTrue(Iterables.contains(listeners, a));
-            Assert.assertTrue(Iterables.contains(listeners, b));
-            Assert.assertTrue(Iterables.contains(listeners, c));
-        } else {
-            Assert.assertTrue(Iterables.size(listeners) == 2);
-            Assert.assertTrue(Iterables.contains(listeners, a));
-            Assert.assertTrue(Iterables.contains(listeners, b));
-        }
+        Assert.assertTrue(Iterables.size(listeners) == 3);
+        Assert.assertTrue(Iterables.contains(listeners, a));
+        Assert.assertTrue(Iterables.contains(listeners, b));
+        Assert.assertTrue(Iterables.contains(listeners, c));
         
         EasyMock.verify(a, b);
     }

@@ -52,17 +52,19 @@ abstract class AbstractFramework implements Framework {
     
     @Override
     public final void start() {
-        state = State.STARTING;
-        try {
-            log.info("Starting framework");
-            doStart();
-            state = State.RUNNING;
-            log.info("Framework is running");
-        /* CHECKSTYLE:OFF */
-        } catch (Exception e) {
-        /* CHECKSTYLE:ON */
-            state = State.FAILED;
-            log.error("Starting framework failed", e);
+        if (state == State.NEW) {
+            state = State.STARTING;
+            try {
+                log.info("Starting framework");
+                doStart();
+                state = State.RUNNING;
+                log.info("Framework is running");
+                /* CHECKSTYLE:OFF */
+            } catch (Exception e) {
+                /* CHECKSTYLE:ON */
+                state = State.FAILED;
+                log.error("Starting framework failed", e);
+            }
         }
     }
     
@@ -73,18 +75,20 @@ abstract class AbstractFramework implements Framework {
     
     @Override
     public final void stop() {
-        final State oldState = state;
-        state = State.STOPPING;
-        try {
-            log.info("Stopping framework");
-            doStop();
-            state = oldState == State.FAILED ? State.FAILED : State.TERMINATED;
-            log.info("Framework stopped");
-        /* CHECKSTYLE:OFF */
-        } catch (Exception e) {
-        /* CHECKSTYLE:ON */
-            state = State.FAILED;
-            log.warn("Stopping framework failed", e);
+        if (state == State.RUNNING || state == State.FAILED) {
+            final State oldState = state;
+            state = State.STOPPING;
+            try {
+                log.info("Stopping framework");
+                doStop();
+                state = oldState == State.FAILED ? State.FAILED : State.TERMINATED;
+                log.info("Framework stopped");
+                /* CHECKSTYLE:OFF */
+            } catch (Exception e) {
+                /* CHECKSTYLE:ON */
+                state = State.FAILED;
+                log.warn("Stopping framework failed", e);
+            }
         }
     }
     

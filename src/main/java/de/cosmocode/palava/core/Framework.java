@@ -39,6 +39,11 @@ public interface Framework extends Stateful {
     /**
      * Starts the framework by firing the {@link PreFrameworkStart},
      * {@link FrameworkStart} and {@link PostFrameworkStart} events.
+     * 
+     * <p>
+     *   Calling this method when the framework is starting or already started
+     *   has no effect.
+     * </p>
      */
     void start();
     
@@ -67,6 +72,11 @@ public interface Framework extends Stateful {
     /**
      * Stops the framework by firing the {@link PreFrameworkStop},
      * {@link FrameworkStop} and {@link PostFrameworkStop} events.
+     * 
+     * <p>
+     *   Calling this method when the framework is stopping or already terminated
+     *   has no effect.
+     * </p>
      */
     void stop();
 

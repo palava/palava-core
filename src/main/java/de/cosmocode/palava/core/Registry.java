@@ -171,12 +171,10 @@ public interface Registry {
     <T> void register(Key<T> key, T listener);
 
     /**
-     * Provide all listeners for a specific type.
+     * Provide all listeners for a specific type. The returned
+     * iterable is immutable and provides a live-view. Changes in this
+     * registry will be instantly visible in the returned iterable.
      *
-     * <p>
-     *   Note: Implementations may provide live views.
-     * </p>
-     * 
      * <p>
      *   Using this method is equivalent to: <br />
      *   {@code registry.getListeners(Key.get(type));}
@@ -190,11 +188,9 @@ public interface Registry {
     <T> Iterable<T> getListeners(Class<T> type);
     
     /**
-     * Provides all listeners for a specific type.
-     * 
-     * <p>
-     *   Note: Implementations may provide live views.
-     * </p>
+     * Provides all listeners for a specific type. The returned
+     * iterable is immutable and provides a live-view. Changes in this
+     * registry will be instantly visible in the returned iterable.
      * 
      * @param <T> the generic type
      * @param key the binding key
