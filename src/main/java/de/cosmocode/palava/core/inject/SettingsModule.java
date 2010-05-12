@@ -53,7 +53,7 @@ public final class SettingsModule implements Module {
         binder.bind(Properties.class).annotatedWith(Settings.class).toInstance(properties);
 
         final String environment = System.getenv(PALAVA_ENVIRONMENT);
-        if (environment != null) {
+        if (environment != null || !environment.equals("")) {
             LOG.info("Palava Environment is '{}'", environment);
             binder.bind(String.class).annotatedWith(PalavaEnvironment.class).toInstance(environment);
         } else {
