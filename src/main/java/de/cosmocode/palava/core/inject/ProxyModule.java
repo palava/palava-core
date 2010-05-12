@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import de.cosmocode.palava.core.Registry;
 import de.cosmocode.palava.core.Registry.Proxy;
@@ -37,7 +38,7 @@ public abstract class ProxyModule extends AbstractModule {
         Preconditions.checkNotNull(type, "Type");
         bind(type).annotatedWith(Proxy.class).toProvider(new ProxyProvider<T>(
             getProvider(Registry.class), type
-        ));
+        )).in(Singleton.class);
     }
 
     /**
@@ -59,7 +60,7 @@ public abstract class ProxyModule extends AbstractModule {
         Preconditions.checkNotNull(type, "Type");
         bind(type).annotatedWith(SilentProxy.class).toProvider(new ProxyProvider<T>(
             getProvider(Registry.class), type, true
-        ));
+        )).in(Singleton.class);
     }
     
     /**
