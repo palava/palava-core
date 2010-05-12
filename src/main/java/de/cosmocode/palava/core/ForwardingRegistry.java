@@ -58,13 +58,25 @@ public abstract class ForwardingRegistry extends ForwardingObject implements Reg
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public <T> void notifySilent(Class<T> type, Procedure<? super T> command) {
         delegate().notifySilent(type, command);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public <T> void notifySilent(Key<T> key, Procedure<? super T> command) {
         delegate().notifySilent(key, command);
+    }
+    
+    @Override
+    public <T> void notifySilently(Class<T> type, Procedure<? super T> command) {
+        delegate().notifySilently(type, command);
+    }
+    
+    @Override
+    public <T> void notifySilently(Key<T> key, Procedure<? super T> command) {
+        delegate().notifySilently(key, command);
     }
 
     @Override
@@ -75,6 +87,16 @@ public abstract class ForwardingRegistry extends ForwardingObject implements Reg
     @Override
     public <T> T proxy(Key<T> key) {
         return delegate().proxy(key);
+    }
+    
+    @Override
+    public <T> T silentProxy(Class<T> type) {
+        return delegate().silentProxy(type);
+    }
+
+    @Override
+    public <T> T silentProxy(Key<T> key) {
+        return delegate().silentProxy(key);
     }
 
     @Override

@@ -261,6 +261,59 @@ public interface Registry {
      *         not at construction time. (toString, equals and hashCode are supported)
      */
     <T> T proxy(Key<T> key);
+
+    /**
+     * Creates a proxy of type T which can be used in third-party
+     * event/callback frameworks to integrate in this registry.
+     * This is used for event systems which do not allow hot un/loading
+     * of listeners.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.silentProxy(Key.get(type));}
+     * </p>
+     * 
+     * <p>
+     *   This method differs from {@link #proxy(Class)} as the returned proxy uses silent
+     *   notifying as defined by {@link #notifySilent(Class, Procedure)}.
+     * </p>
+     * 
+     * @param <T> the generic type
+     * @param type the type's class literal
+     * @return an instance of type T which itself is not registered
+     *         in this registry but delegates to all listeners registered 
+     *         in this registry at invocation time
+     * @throws NullPointerException if type is null
+     * @throws IllegalArgumentException if type is not an interface (annotations are not allowed)
+     * @throws IllegalStateException when a method is invoked which does not return
+     *         void. <strong>Note</strong>: This exception is thrown at invocation time
+     *         not at construction time. (toString, equals and hashCode are supported)
+     */
+    <T> T silentProxy(Class<T> type);
+
+    /**
+     * Creates a proxy of type T which can be used in third-party
+     * event/callback frameworks to integrate in this registry.
+     * This is used for event systems which do not allow hot un/loading
+     * of listeners.
+     * 
+     * <p>
+     *   This method differs from {@link #proxy(Key)} as the returned proxy uses silent
+     *   notifying as defined by {@link #notifySilent(Key, Procedure)}.
+     * </p>
+     * 
+     * @param <T> the generic type
+     * @param key the binding key
+     * @return an instance of type T which itself is not registered
+     *         in this registry but delegates to all listeners registered 
+     *         in this registry at invocation time
+     * @throws NullPointerException if key is null
+     * @throws IllegalArgumentException if T is not an interface (annotations are not allowed)
+     * @throws IllegalStateException when a method is invoked which does not return
+     *         void. <strong>Note</strong>: This exception is thrown at invocation time
+     *         not at construction time. (toString, equals and hashCode are supported)
+     */
+    <T> T silentProxy(Key<T> key);
     
     /**
      * Notify all listeners for a specific type
@@ -302,12 +355,43 @@ public interface Registry {
      *   {@code registry.notifySilent(Key.get(type), command);}
      * </p>
      *
+     * @deprecated use {@link #notifySilently(Class, Procedure)} instead
      * @param <T> the generic type
      * @param type the type's class
      * @param command the command being invoked on every listener
      * @throws NullPointerException if type or command is null
      */
+    @Deprecated
     <T> void notifySilent(Class<T> type, Procedure<? super T> command);
+
+    /**
+     * Notify all listeners for a specific type
+     * by invoking command on every found listener.
+     * 
+     * <p>
+     *   Using this method is equivalent to: <br />
+     *   {@code registry.notifySilently(Key.get(type), command);}
+     * </p>
+     *
+     * @param <T> the generic type
+     * @param type the type's class
+     * @param command the command being invoked on every listener
+     * @throws NullPointerException if type or command is null
+     */
+    <T> void notifySilently(Class<T> type, Procedure<? super T> command);
+
+    /**
+     * Notify all listeners for a specific binding key
+     * by invoking command on every found listener.
+     * 
+     * @deprecated use {@link #notifySilently(Key, Procedure)} instead
+     * @param <T> the generic type
+     * @param key the binding key
+     * @param command the command being invoked on every listener
+     * @throws NullPointerException if key or command is null
+     */
+    @Deprecated
+    <T> void notifySilent(Key<T> key, Procedure<? super T> command);
 
     /**
      * Notify all listeners for a specific binding key
@@ -318,7 +402,7 @@ public interface Registry {
      * @param command the command being invoked on every listener
      * @throws NullPointerException if key or command is null
      */
-    <T> void notifySilent(Key<T> key, Procedure<? super T> command);
+    <T> void notifySilently(Key<T> key, Procedure<? super T> command);
     
     /**
      * Remove a specific listener interested in type from this registry.

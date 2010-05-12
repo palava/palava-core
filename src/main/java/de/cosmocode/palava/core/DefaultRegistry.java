@@ -135,6 +135,22 @@ final class DefaultRegistry extends AbstractRegistry {
         return proxy;
     }
     
+    @Override
+    public <T> T silentProxy(Key<T> key) {
+        Preconditions.checkNotNull(key, "Key");
+        Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
+        Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
+        
+        final ClassLoader loader = getClass().getClassLoader();
+        final Class<?>[] interfaces = {key.getType()};
+        final InvocationHandler handler = new ProxyHandler<T>(key, true);
+        
+        @SuppressWarnings("unchecked")
+        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
+        LOG.debug("Created proxy for {}", key);
+        return proxy;
+    }
+    
     /**
      * Inner class allowing to encapsulate proxy invocation handling.
      *
@@ -145,8 +161,15 @@ final class DefaultRegistry extends AbstractRegistry {
         
         private final Key<T> key;
         
+        private final boolean silent;
+        
         public ProxyHandler(Key<T> key) {
+            this(key, false);
+        }
+        
+        public ProxyHandler(Key<T> key, boolean silent) {
             this.key = Preconditions.checkNotNull(key, "Key");
+            this.silent = silent;
         }
         
         @Override
@@ -159,23 +182,38 @@ final class DefaultRegistry extends AbstractRegistry {
             } else if (method.equals(HASHCODE)) {
                 return hashCode();
             } else if (method.getReturnType() == void.class) {
-                DefaultRegistry.this.notify(key, new Procedure<T>() {
-                    
-                    public void apply(T listener) {
-                        try {
-                            method.invoke(listener, args);
-                        } catch (IllegalAccessException e) {
-                            throw new IllegalStateException(e);
-                        } catch (InvocationTargetException e) {
-                            throw new IllegalStateException(e);
-                        }
-                    };
-                    
-                });
+                if (silent) {
+                    DefaultRegistry.this.notifySilently(key, new Procedure<T>() {
+                        
+                        public void apply(T listener) {
+                            try {
+                                method.invoke(listener, args);
+                            } catch (IllegalAccessException e) {
+                                throw new IllegalStateException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new IllegalStateException(e);
+                            }
+                        };
+                        
+                    });
+                } else {
+                    DefaultRegistry.this.notify(key, new Procedure<T>() {
+                        
+                        public void apply(T listener) {
+                            try {
+                                method.invoke(listener, args);
+                            } catch (IllegalAccessException e) {
+                                throw new IllegalStateException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new IllegalStateException(e);
+                            }
+                        };
+                        
+                    });
+                }
                 return null;
             } else {
-                final String message = String.format("%s must return void", method);
-                throw new IllegalStateException(message);
+                throw new IllegalStateException(String.format("%s must return void", method));
             }
         }
 
@@ -218,7 +256,7 @@ final class DefaultRegistry extends AbstractRegistry {
         }
         
     }
-
+    
     @Override
     public <T> void notify(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
@@ -232,6 +270,11 @@ final class DefaultRegistry extends AbstractRegistry {
 
     @Override
     public <T> void notifySilent(Key<T> key, Procedure<? super T> command) {
+        notifySilently(key, command);
+    }
+    
+    @Override
+    public <T> void notifySilently(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(command, "Command");
         LOG.trace("Notifying all listeners for {} using {}", key, command);
@@ -244,7 +287,7 @@ final class DefaultRegistry extends AbstractRegistry {
             /*CHECKSTYLE:ON*/
                 LOG.error("Notifying listener failed", e);
             }
-        }     
+        }    
     }
     
     @Override

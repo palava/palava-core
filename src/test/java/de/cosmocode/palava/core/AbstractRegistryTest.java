@@ -977,7 +977,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * Tests {@link Registry#notifySilent(Class, Procedure)}.
      */
     @Test
-    public void notifySilentType() {
+    public void notifySilentlyType() {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
@@ -1001,7 +1001,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notifySilent(Listener.class, procedure);
+        unit.notifySilently(Listener.class, procedure);
         EasyMock.verify(first, second);  
     }
     
@@ -1009,7 +1009,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * Tests {@link Registry#notifySilent(Key, Procedure)}.
      */
     @Test
-    public void notifySilentKey() {
+    public void notifySilentlyKey() {
         final Registry unit = unit();
         final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
         
@@ -1034,7 +1034,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notifySilent(key, procedure);
+        unit.notifySilently(key, procedure);
         EasyMock.verify(first, second);  
     }
 
@@ -1042,40 +1042,40 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * Tests {@link Registry#notifySilent(Class, Procedure)} with a null type.
      */
     @Test(expected = NullPointerException.class)
-    public void notifySilentTypeNullType() {
+    public void notifySilentlyTypeNullType() {
         @SuppressWarnings("unchecked")
         final Procedure<? super Object> procedure = EasyMock.createMock("procedure", Procedure.class);
         EasyMock.replay(procedure);
         final Class<Object> nullType = null;
-        unit().notifySilent(nullType, procedure);
+        unit().notifySilently(nullType, procedure);
     }
     
     /**
      * Tests {@link Registry#notifySilent(Key, Procedure)} with a null key.
      */
     @Test(expected = NullPointerException.class)
-    public void notifySilentKeyNullKey() {
+    public void notifySilentlyKeyNullKey() {
         @SuppressWarnings("unchecked")
         final Procedure<? super Object> procedure = EasyMock.createMock("procedure", Procedure.class);
         EasyMock.replay(procedure);
         final Key<Object> nullKey = null;
-        unit().notifySilent(nullKey, procedure);
+        unit().notifySilently(nullKey, procedure);
     }
 
     /**
      * Tests {@link Registry#notifySilent(Class, Procedure)} with a null procedure.
      */
     @Test(expected = NullPointerException.class)
-    public void notifySilentTypeNullProcedure() {
-        unit().notifySilent(Object.class, null);
+    public void notifySilentlyTypeNullProcedure() {
+        unit().notifySilently(Object.class, null);
     }
     
     /**
      * Tests {@link Registry#notifySilent(Key, Procedure)} with a null procedure.
      */
     @Test(expected = NullPointerException.class)
-    public void notifySilentKeyNullProcedure() {
-        unit().notifySilent(Key.get(Listener.class, Deprecated.class), null); 
+    public void notifySilentlyKeyNullProcedure() {
+        unit().notifySilently(Key.get(Listener.class, Deprecated.class), null); 
     }
     
     /**
@@ -1083,9 +1083,9 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * and a null procedure.
      */
     @Test(expected = NullPointerException.class)
-    public void notifyTypeSilentNulls() {
+    public void notifySilentlyTypeNulls() {
         final Class<Object> nullType = null;
-        unit().notifySilent(nullType, null);
+        unit().notifySilently(nullType, null);
     }
     
     /**
@@ -1093,16 +1093,16 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * and a null procedure.
      */
     @Test(expected = NullPointerException.class)
-    public void notifyKeySilentNulls() {
+    public void notifySilentlyKeyNulls() {
         final Key<Object> nullKey = null;
-        unit().notifySilent(nullKey, null);
+        unit().notifySilently(nullKey, null);
     }
     
     /**
      * Tests {@link Registry#notifySilent(Class, Procedure)} with failing procedure.
      */
     @Test
-    public void notifySilentTypeRuntime() {
+    public void notifySilentlyTypeRuntime() {
         final Registry unit = unit();
         
         final Listener first = EasyMock.createMock("first", Listener.class);
@@ -1126,7 +1126,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notifySilent(Listener.class, procedure);
+        unit.notifySilently(Listener.class, procedure);
         EasyMock.verify(first, second);  
     }
     
@@ -1134,7 +1134,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
      * Tests {@link Registry#notifySilent(Key, Procedure)} with a failing procedure.
      */
     @Test
-    public void notifySilentKeyRuntime() {
+    public void notifySilentlyKeyRuntime() {
         final Registry unit = unit();
         final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
         
@@ -1159,7 +1159,7 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
             
         };
         
-        unit.notifySilent(key, procedure);
+        unit.notifySilently(key, procedure);
         EasyMock.verify(first, second);  
     }
     

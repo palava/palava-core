@@ -24,6 +24,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Binding annotation for the environment variable PALAVA_ENVIRONMENT.
+ * This binding may only exist if the variable is set.
+ * 
  * @author Tobias Sarnowski
  */
 @Target({
@@ -33,4 +36,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @BindingAnnotation
 public @interface PalavaEnvironment {
+    
 }

@@ -31,6 +31,7 @@ public abstract class AbstractRegistry implements Registry {
     @Override
     public <T> void register(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
+        Preconditions.checkNotNull(listener, "Listener");
         register(Key.get(type), listener);
     };
     
@@ -47,15 +48,30 @@ public abstract class AbstractRegistry implements Registry {
     }
     
     @Override
+    public <T> T silentProxy(Class<T> type) {
+        Preconditions.checkNotNull(type, "Type");
+        return silentProxy(Key.get(type));
+    }
+    
+    @Override
     public <T> void notify(Class<T> type, Procedure<? super T> command) {
         Preconditions.checkNotNull(type, "Type");
+        Preconditions.checkNotNull(command, "Command");
         notify(Key.get(type), command);
     }
     
     @Override
     public <T> void notifySilent(Class<T> type, Procedure<? super T> command) {
         Preconditions.checkNotNull(type, "Type");
-        notifySilent(Key.get(type), command);
+        Preconditions.checkNotNull(command, "Command");
+        notifySilently(Key.get(type), command);
+    }
+    
+    @Override
+    public <T> void notifySilently(Class<T> type, Procedure<? super T> command) {
+        Preconditions.checkNotNull(type, "Type");
+        Preconditions.checkNotNull(command, "Command");
+        notifySilently(Key.get(type), command);
     }
     
     @Override

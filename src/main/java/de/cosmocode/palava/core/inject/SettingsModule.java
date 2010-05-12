@@ -18,6 +18,7 @@ package de.cosmocode.palava.core.inject;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public final class SettingsModule implements Module {
         binder.bind(Properties.class).annotatedWith(Settings.class).toInstance(properties);
 
         final String environment = System.getenv(PALAVA_ENVIRONMENT);
-        if (environment != null && !environment.equals("")) {
+        if (StringUtils.isNotBlank(environment)) {
             LOG.info("Palava Environment is '{}'", environment);
             binder.bind(String.class).annotatedWith(PalavaEnvironment.class).toInstance(environment);
         } else {
