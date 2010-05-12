@@ -120,29 +120,22 @@ final class DefaultRegistry extends AbstractRegistry {
     
     @Override
     public <T> T proxy(final Key<T> key) {
-        Preconditions.checkNotNull(key, "Key");
-        Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
-        Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
-        
-        final ClassLoader loader = getClass().getClassLoader();
-        final Class<?>[] interfaces = {key.getType()};
-        final InvocationHandler handler = new ProxyHandler<T>(key);
-        
-        @SuppressWarnings("unchecked")
-        final T proxy = (T) java.lang.reflect.Proxy.newProxyInstance(loader, interfaces, handler);
-        LOG.debug("Created proxy for {}", key);
-        return proxy;
+        return proxy(key, false);
     }
     
     @Override
     public <T> T silentProxy(Key<T> key) {
+        return proxy(key, true);
+    }
+    
+    private <T> T proxy(Key<T> key, boolean silent) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
         Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
         
         final ClassLoader loader = getClass().getClassLoader();
         final Class<?>[] interfaces = {key.getType()};
-        final InvocationHandler handler = new ProxyHandler<T>(key, true);
+        final InvocationHandler handler = new ProxyHandler<T>(key, silent);
         
         @SuppressWarnings("unchecked")
         final T proxy = (T) java.lang.reflect.Proxy.newProxyInstance(loader, interfaces, handler);
@@ -161,10 +154,6 @@ final class DefaultRegistry extends AbstractRegistry {
         private final Key<T> key;
         
         private final boolean silent;
-        
-        public ProxyHandler(Key<T> key) {
-            this(key, false);
-        }
         
         public ProxyHandler(Key<T> key, boolean silent) {
             this.key = Preconditions.checkNotNull(key, "Key");
