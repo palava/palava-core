@@ -19,7 +19,6 @@ package de.cosmocode.palava.core;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -130,7 +129,7 @@ final class DefaultRegistry extends AbstractRegistry {
         final InvocationHandler handler = new ProxyHandler<T>(key);
         
         @SuppressWarnings("unchecked")
-        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
+        final T proxy = (T) java.lang.reflect.Proxy.newProxyInstance(loader, interfaces, handler);
         LOG.debug("Created proxy for {}", key);
         return proxy;
     }
@@ -146,7 +145,7 @@ final class DefaultRegistry extends AbstractRegistry {
         final InvocationHandler handler = new ProxyHandler<T>(key, true);
         
         @SuppressWarnings("unchecked")
-        final T proxy = (T) Proxy.newProxyInstance(loader, interfaces, handler);
+        final T proxy = (T) java.lang.reflect.Proxy.newProxyInstance(loader, interfaces, handler);
         LOG.debug("Created proxy for {}", key);
         return proxy;
     }

@@ -16,8 +16,14 @@
 
 package de.cosmocode.palava.core;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.inject.BindingAnnotation;
 
 import de.cosmocode.collections.Procedure;
 
@@ -137,6 +143,23 @@ public interface Registry {
             Preconditions.checkNotNull(meta, "Meta");
             return new Key<T>(type, meta);
         }
+        
+    }
+    
+    /**
+     * Binding annotation for {@link Registry} proxies provided by
+     * {@link Registry#proxy(Key)} or {@link Registry#silentProxy(Key)}.
+     *
+     * @since 1.0
+     * @author Willi Schoenborn
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({
+        ElementType.METHOD,
+        ElementType.PARAMETER
+    })
+    @BindingAnnotation
+    public static @interface Proxy {
         
     }
     
