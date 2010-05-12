@@ -147,8 +147,7 @@ public interface Registry {
     }
     
     /**
-     * Binding annotation for {@link Registry} proxies provided by
-     * {@link Registry#proxy(Key)} or {@link Registry#silentProxy(Key)}.
+     * Binding annotation for {@link Registry} proxies provided by {@link Registry#proxy(Key)}.
      *
      * @since 1.0
      * @author Willi Schoenborn
@@ -160,6 +159,22 @@ public interface Registry {
     })
     @BindingAnnotation
     public static @interface Proxy {
+        
+    }
+    
+    /**
+     * Binding annotation for {@link Registry} proxies provided by {@link Registry#silentProxy(Key)}.
+     *
+     * @since 1.0
+     * @author Willi Schoenborn
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({
+        ElementType.METHOD,
+        ElementType.PARAMETER
+    })
+    @BindingAnnotation
+    public static @interface SilentProxy {
         
     }
     
