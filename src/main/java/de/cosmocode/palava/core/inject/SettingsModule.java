@@ -57,7 +57,7 @@ public final class SettingsModule implements Module {
             LOG.info("Palava Environment is '{}'", environment);
             binder.bind(String.class).annotatedWith(PalavaEnvironment.class).toInstance(environment);
         } else {
-            LOG.warn("Palava Environment is not set '{}'", environment);
+            LOG.warn("Palava Environment is not set");
         }
     }
 
