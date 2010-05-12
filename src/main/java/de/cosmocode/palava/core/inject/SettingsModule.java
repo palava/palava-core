@@ -32,10 +32,13 @@ import com.google.inject.name.Names;
  *
  * @since 2.0
  * @author Willi Schoenborn
+ * @author Tobias Sarnowski
  */
 public final class SettingsModule implements Module {
 
     private static final Logger LOG = LoggerFactory.getLogger(SettingsModule.class);
+
+    private static final String PALAVA_ENVIRONMENT = "PALAVA_ENVIRONMENT";
 
     private final Properties properties;
 
@@ -48,6 +51,10 @@ public final class SettingsModule implements Module {
         Names.bindProperties(binder, properties);
         LOG.debug("Binding properties {} as settings", properties);
         binder.bind(Properties.class).annotatedWith(Settings.class).toInstance(properties);
+
+        final String environment = System.getenv(PALAVA_ENVIRONMENT);
+        LOG.info("Palava Environment is '{}'", environment);
+        binder.bind(String.class).annotatedWith(PalavaEnvironment.class).toInstance(environment);
     }
 
 }
