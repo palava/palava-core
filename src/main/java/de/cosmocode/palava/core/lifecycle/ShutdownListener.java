@@ -47,7 +47,8 @@ final class ShutdownListener implements FrameworkStop {
     @Inject
     public ShutdownListener(@StoppableOrDisposable WeakArrayList<Object> services, Registry registry) {
         this.services = Preconditions.checkNotNull(services, "Services");
-        Preconditions.checkNotNull(registry, "Registry").register(FrameworkStop.class, this);
+        Preconditions.checkNotNull(registry, "Registry");
+        registry.register(FrameworkStop.class, this);
     }
 
     @Override
