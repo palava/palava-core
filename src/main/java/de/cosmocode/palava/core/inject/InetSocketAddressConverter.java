@@ -32,6 +32,7 @@ import com.google.inject.spi.TypeConverter;
 public final class InetSocketAddressConverter extends AbstractTypeConverter<InetSocketAddress> {
 
     private static final Pattern PATTERN = Pattern.compile("^([^:]+):(\\d+)$");
+    private static final String WILDCARD = "*";
     
     @Override
     protected InetSocketAddress convert(String value) {
@@ -39,7 +40,7 @@ public final class InetSocketAddressConverter extends AbstractTypeConverter<Inet
         Preconditions.checkArgument(matcher.matches(), "%s does not match %s", value, PATTERN);
         final String host = matcher.group(1);
         final int port = Integer.parseInt(matcher.group(2));
-        return new InetSocketAddress(host, port);
+        return WILDCARD.equals(host) ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
     }
     
 }

@@ -41,7 +41,7 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
     }
     
     /**
-     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (hostname).
+     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (hostname:8080).
      */
     @Test
     public void hostname() {
@@ -50,7 +50,7 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
     }
 
     /**
-     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (127.0.0.1).
+     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (127.0.0.1:8080).
      */
     @Test
     public void loopback() {
@@ -60,12 +60,23 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
 
 
     /**
-     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (0.0.0.0).
+     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (0.0.0.0:8080).
      */
     @Test
     public void all() {
         Assert.assertEquals(new InetSocketAddress("0.0.0.0", 8080), 
-                unit().convert("0.0.0.0:8080", LITERAL));
+            unit().convert("0.0.0.0:8080", LITERAL));
+    }
+    
+    /**
+     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a valid input (*:8080).
+     * 
+     * @since
+     */
+    @Test
+    public void wildcard() {
+        Assert.assertEquals(new InetSocketAddress(8080),
+            unit().convert("*:8080", LITERAL));
     }
     
     /**
@@ -82,6 +93,14 @@ public final class InetSocketAddressConverterTest implements UnitProvider<InetSo
     @Test(expected = IllegalArgumentException.class)
     public void noHost() {
         unit().convert(":8080", LITERAL);
+    }
+
+    /**
+     * Tests {@link InetSocketAddressConverter#convert(String, TypeLiteral)} with a single port.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void port() {
+        unit().convert("8080", LITERAL);
     }
     
 }
