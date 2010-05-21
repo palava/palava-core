@@ -103,7 +103,7 @@ final class DefaultRegistry extends AbstractRegistry {
                         while (iterator.hasNext()) {
                             final Entry<Key<? extends Object>, Object> entry = iterator.next();
                             final Key<? extends Object> key = entry.getKey();
-                            if (key.getType().equals(type) && predicate.apply(key.getMeta())) {
+                            if (key.getType() == type && predicate.apply(key.getMeta())) {
                                 @SuppressWarnings("unchecked")
                                 final T listener = (T) entry.getValue();
                                 return listener;
