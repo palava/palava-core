@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.inject;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -50,6 +51,7 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
         register(Logger.class, new LoggerConverter());
         register(Pattern.class, new PatternConverter());
         register(Properties.class, new PropertiesConverter());
+        register(SocketAddress.class, new InetSocketAddressConverter());
         register(URI.class, new URIConverter());
         register(URL.class, new URLConverter());
         register(UUID.class, new UUIDConverter());
