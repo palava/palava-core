@@ -56,6 +56,10 @@ public final class Main {
             throw new IllegalArgumentException(e);
         }
 
+	    LOG.info("Options: {}", options);
+	    LOG.info("Environment: {}", System.getenv());
+	    LOG.info("System: {}", System.getProperties());
+
         final Properties properties;
         
         try {

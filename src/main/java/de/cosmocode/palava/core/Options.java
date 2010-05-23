@@ -29,6 +29,7 @@ import com.google.common.collect.Lists;
  *
  * @since 2.3
  * @author Willi Schoenborn
+ * @author Tobias Sarnowski
  */
 final class Options {
 
@@ -53,5 +54,13 @@ final class Options {
     public List<File> getConfigs() {
         return configs;
     }
-    
+
+	@Override
+	public String toString() {
+		return "Options{" +
+				"stateFile=" + stateFile +
+				", noAutoShutdown=" + noAutoShutdown +
+				", configs=" + configs +
+				'}';
+	}
 }
