@@ -26,7 +26,7 @@ import com.google.inject.PrivateModule;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public abstract class AbstractRebindingModule extends PrivateModule implements RebindModule {
+public abstract class AbstractRebindModule extends PrivateModule implements RebindModule {
 
     private boolean overridden;
     

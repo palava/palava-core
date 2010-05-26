@@ -36,8 +36,9 @@ public final class Providers {
      * @param <T> generic return type
      * @return a provider which always returns null
      */
+    @SuppressWarnings("unchecked")
     public static <T> Provider<T> nullProvider() {
-        return new NullProvider<T>();
+        return (Provider<T>) NullProvider.INSTANCE;
     }
     
     /**
@@ -46,10 +47,12 @@ public final class Providers {
      * @author Willi Schoenborn
      * @param <T> generic return type
      */
-    private static final class NullProvider<T> implements Provider<T> {
+    private static enum NullProvider implements Provider<Object> {
+        
+        INSTANCE;
         
         @Override
-        public T get() {
+        public Object get() {
             return null;
         }
         
