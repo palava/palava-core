@@ -55,12 +55,10 @@ final class Options {
         return configs;
     }
 
-	@Override
-	public String toString() {
-		return "Options{" +
-				"stateFile=" + stateFile +
-				", noAutoShutdown=" + noAutoShutdown +
-				", configs=" + configs +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return String.format("Options [configs=%s, noAutoShutdown=%s, stateFile=%s]", 
+            configs, noAutoShutdown, stateFile);
+    }
+    
 }
