@@ -64,8 +64,8 @@ final class BootstrapFramework extends AbstractFramework {
     
     @Override
     protected void doStart() {
-        registry.notifySilently(PreFrameworkStart.class, PreFrameworkStart.PROCEDURE);
-        registry.notifySilently(FrameworkStart.class, FrameworkStart.PROCEDURE);
+        registry.notify(PreFrameworkStart.class, PreFrameworkStart.PROCEDURE);
+        registry.notify(FrameworkStart.class, FrameworkStart.PROCEDURE);
         registry.notifySilently(PostFrameworkStart.class, PostFrameworkStart.PROCEDURE);
     }
     
