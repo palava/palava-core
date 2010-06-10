@@ -144,6 +144,7 @@ public final class Main {
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
             LOG.error("configuration error", e);
+            System.exit(1);
             throw e;
         }
 
@@ -155,6 +156,7 @@ public final class Main {
             @Override
             public void run() {
                 main.stop();
+                System.exit(0);
             }
 
         }));
