@@ -63,7 +63,7 @@ abstract class AbstractFramework implements Framework {
             } catch (Exception e) {
                 /* CHECKSTYLE:ON */
                 state = State.FAILED;
-                log.error("Starting framework failed", e);
+                throw new RuntimeException(e);
             }
         }
     }

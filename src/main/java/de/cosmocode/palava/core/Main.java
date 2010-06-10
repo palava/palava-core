@@ -83,8 +83,9 @@ public final class Main {
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
             LOG.error("startup failed", e);
+            e.printStackTrace();
             stop();
-            throw e;
+            System.exit(1);
         }
     }
 
@@ -144,6 +145,7 @@ public final class Main {
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
             LOG.error("configuration error", e);
+            e.printStackTrace();
             System.exit(1);
             throw e;
         }
