@@ -117,9 +117,9 @@ public final class Main {
         if (options.isNoAutoShutdown()) {
             LOG.debug("Automatic shutdown disabled; running until someone else triggers the shutdown");
 
-            synchronized (Thread.currentThread()) {
+            synchronized (this) {
                 try {
-                    Thread.currentThread().wait();
+                    wait();
                 } catch (InterruptedException e) {
                     // it's ok, shut down
                     LOG.debug("main thread interrupted", e);
@@ -158,12 +158,15 @@ public final class Main {
             @Override
             public void run() {
                 main.stop();
-                System.exit(0);
+                synchronized (main) {
+                    main.notify();
+                }
             }
 
         }));
 
         main.waitIfNecessary();
+        System.exit(0);
     }
 
 }
