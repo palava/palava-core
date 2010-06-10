@@ -204,7 +204,6 @@ public interface Registry {
      * @param key the binding key
      * @param listener the listener
      * @throws NullPointerException if key or listener is null
-     * @throws UnsupportedOperationException if key was produced by {@link Registry.Key#matcher(Class, Predicate)} 
      */
     <T> void register(Key<T> key, T listener);
 
