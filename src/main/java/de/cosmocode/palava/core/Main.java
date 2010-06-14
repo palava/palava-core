@@ -68,11 +68,7 @@ public final class Main {
             throw new IllegalArgumentException(e);
         }
         
-        try {
-            framework = Palava.newFramework(properties);
-        } finally {
-            persistState();
-        }
+        framework = Palava.newFramework(properties);
     }
 
     private void start() {
