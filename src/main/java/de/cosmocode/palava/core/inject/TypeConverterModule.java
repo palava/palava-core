@@ -23,6 +23,8 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
@@ -31,6 +33,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 
 import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -40,7 +43,7 @@ import com.google.inject.spi.TypeConverter;
  * @author Willi Schoenborn
  */
 public final class TypeConverterModule extends CustomTypeConverterModule {
-
+    
     @Override
     protected void configure() {
         register(Charset.class, new CharsetConverter());
@@ -52,6 +55,10 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
         register(Pattern.class, new PatternConverter());
         register(Properties.class, new PropertiesConverter());
         register(SocketAddress.class, new InetSocketAddressConverter());
+        final TypeConverter stringListConverter = new StringListConverter();
+        register(new TypeLiteral<Iterable<String>>() { }, stringListConverter);
+        register(new TypeLiteral<Collection<String>>() { }, stringListConverter);
+        register(new TypeLiteral<List<String>>() { }, stringListConverter);
         register(URI.class, new URIConverter());
         register(URL.class, new URLConverter());
         register(UUID.class, new UUIDConverter());
