@@ -22,15 +22,21 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
+import com.google.gag.annotation.disclaimer.LegacySucks;
+import com.google.gag.annotation.remark.RTFM;
+import com.google.gag.annotation.team.Blame;
 import com.google.inject.ConfigurationException;
+import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.ProvisionException;
 import com.google.inject.Stage;
@@ -49,8 +55,61 @@ public final class Palava {
     
     private static final String RESOURCE_NAME = "application.properties";
     
+    private static final Set<Framework> FRAMEWORKS = Sets.newHashSet();
+    
     private Palava() {
         
+    }
+    
+    /**
+     * Adds the given framework to the set of all frameworks
+     * running in this virtual machine.
+     * 
+     * @since 2.7
+     * @param framework the framework to be added
+     * @throws NullPointerException if framework is null
+     */
+    static void addFramework(Framework framework) {
+        Preconditions.checkNotNull(framework, "Framework");
+        FRAMEWORKS.add(framework);
+    }
+    
+    /**
+     * Removes the given framework from the set of all frameworks
+     * running in this virtual machine.
+     * 
+     * @since 2.7
+     * @param framework the framework to be removed
+     * @throws NullPointerException if framework is null
+     */
+    static void removeFramework(Framework framework) {
+        Preconditions.checkNotNull(framework, "Framework");
+        FRAMEWORKS.remove(framework);
+    }
+    
+    /**
+     * Provides a static access to the one and only framework instance
+     * that is currently running.
+     * 
+     * <p>
+     *   <strong>IMPORTANT:</strong> This sole purpose of this method
+     *   is to support static lookups via legacy apis. Use this method
+     *   with extreme caution and only if you really need to do so.
+     * </p>
+     * 
+     * @deprecated use {@link Inject} if possible
+     * @since 2.7
+     * @return the current framework instance
+     * @throws IllegalStateException if none or more than one framework has been started
+     */
+    @Deprecated
+    @LegacySucks
+    @RTFM
+    @Blame(person = "Tobias Sarnowski")
+    public static Framework getCurrentFramework() {
+        final int size = FRAMEWORKS.size();
+        Preconditions.checkState(size == 1, "Expected one framework to be started but was %s", size);
+        return FRAMEWORKS.iterator().next();
     }
 
     /**

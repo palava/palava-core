@@ -54,6 +54,7 @@ final class BootstrapFramework extends AbstractFramework {
                 new SettingsModule(properties)
             );
             registry = getInstance(Registry.class);
+            Palava.addFramework(this);
         /* CHECKSTYLE:OFF */
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
@@ -84,6 +85,7 @@ final class BootstrapFramework extends AbstractFramework {
         registry.notifySilently(PreFrameworkStop.class, PreFrameworkStop.PROCEDURE);
         registry.notifySilently(FrameworkStop.class, FrameworkStop.PROCEDURE);
         registry.notifySilently(PostFrameworkStop.class, PostFrameworkStop.PROCEDURE);
+        Palava.removeFramework(this);
     }
 
 }
