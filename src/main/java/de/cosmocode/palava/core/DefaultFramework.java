@@ -44,11 +44,11 @@ final class DefaultFramework extends AbstractFramework {
     public DefaultFramework(Injector injector, Registry registry) {
         this.injector = Preconditions.checkNotNull(injector, "Injector");
         this.registry = Preconditions.checkNotNull(registry, "Registry");
-        Palava.addFramework(this);
     }
 
     @Override
     protected void doStart() {
+        Palava.addFramework(this);
         registry.notify(PreFrameworkStart.class, PreFrameworkStart.PROCEDURE);
         registry.notify(FrameworkStart.class, FrameworkStart.PROCEDURE);
         registry.notifySilently(PostFrameworkStart.class, PostFrameworkStart.PROCEDURE);
