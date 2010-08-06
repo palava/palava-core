@@ -48,7 +48,6 @@ final class BootstrapFramework extends AbstractFramework {
     
     public BootstrapFramework(Module module, Stage stage, Properties properties) {
         try {
-            Palava.addFramework(this);
             injector = Guice.createInjector(stage, 
                 module,
                 new FrameworkModule(this),
@@ -59,13 +58,13 @@ final class BootstrapFramework extends AbstractFramework {
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
             fail();
-            Palava.removeFramework(this);
             throw e;
         }
     }
     
     @Override
     protected void doStart() {
+        Palava.addFramework(this);
         registry.notify(PreFrameworkStart.class, PreFrameworkStart.PROCEDURE);
         registry.notify(FrameworkStart.class, FrameworkStart.PROCEDURE);
         registry.notifySilently(PostFrameworkStart.class, PostFrameworkStart.PROCEDURE);
