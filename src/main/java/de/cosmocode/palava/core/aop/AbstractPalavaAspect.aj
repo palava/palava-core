@@ -47,7 +47,7 @@ public abstract aspect AbstractPalavaAspect {
         public void configure(Binder binder) {
             final AbstractPalavaAspect self = AbstractPalavaAspect.this;
             LOG.trace("Injecting members on {}", self);
-            Preconditions.checkState(!alreadyInjected, "Members have been already injected on {}", self);
+            Preconditions.checkState(!alreadyInjected, "Members have been already injected on %s", self);
             binder.requestInjection(self);
             alreadyInjected = true;
         }
@@ -91,7 +91,7 @@ public abstract aspect AbstractPalavaAspect {
     }
     
     protected final void checkState() {
-        Preconditions.checkState(alreadyInjected, "Members have not been injected on {}", this);
+        Preconditions.checkState(alreadyInjected, "Members have not been injected on %s", this);
     }
 
 }
