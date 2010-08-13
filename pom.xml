@@ -3,7 +3,7 @@
   <parent>
     <artifactId>palava-parent</artifactId>
     <groupId>de.cosmocode.palava</groupId>
-    <version>2.3.3</version>
+    <version>2.4.0</version>
   </parent>
   <name>Palava Core</name>
   <groupId>de.cosmocode.palava</groupId>
