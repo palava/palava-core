@@ -16,13 +16,21 @@
 
 package de.cosmocode.palava.core.inject;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 
 import de.cosmocode.junit.UnitProvider;
 
@@ -89,6 +97,36 @@ public final class PropertiesConverterTest implements UnitProvider<PropertiesCon
     @Test(expected = RuntimeException.class)
     public void httpMissing() {
         unit().convert("http://nosuchdomain.com/missing.properties", LITERAL);
+    }
+    
+    static final class Injectee {
+    	
+    	@Inject
+    	public Injectee(@Named("file") Map<String, String> map) {
+    		System.out.println(map);
+    		Assert.assertTrue("value".equals(map.get("key")));
+    	}
+    	
+    }
+    
+    /**
+     * Tests {@link PropertiesConverter} bindings for {@link Map} injection.
+     */
+    @Test
+    public void map() {
+    	final Injector injector = Guice.createInjector(
+			new TypeConverterModule(),
+			new Module() {
+				
+				@Override
+				public void configure(Binder binder) {
+					binder.bind(String.class).annotatedWith(Names.named("file")).
+						toInstance("file:src/test/resources/present.properties");
+					
+				}
+			}
+    	);
+    	injector.getInstance(Injectee.class);
     }
 
 }

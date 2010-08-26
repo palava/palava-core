@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -53,7 +54,9 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
         register(Locale.class, new LocaleConverter());
         register(Logger.class, new LoggerConverter());
         register(Pattern.class, new PatternConverter());
-        register(Properties.class, new PropertiesConverter());
+        final TypeConverter propertiesConverter = new PropertiesConverter();
+        register(Properties.class, propertiesConverter);
+        register(new TypeLiteral<Map<String, String>>() { }, propertiesConverter);
         register(SocketAddress.class, new InetSocketAddressConverter());
         final TypeConverter stringListConverter = new StringListConverter();
         register(new TypeLiteral<Iterable<String>>() { }, stringListConverter);
