@@ -99,14 +99,19 @@ public final class PropertiesConverterTest implements UnitProvider<PropertiesCon
         unit().convert("http://nosuchdomain.com/missing.properties", LITERAL);
     }
     
+    /**
+     * Static injectee class used by {@link PropertiesConverterTest#map()}.
+     *
+     * @since 2.7
+     * @author Willi Schoenborn
+     */
     static final class Injectee {
-    	
-    	@Inject
-    	public Injectee(@Named("file") Map<String, String> map) {
-    		System.out.println(map);
-    		Assert.assertTrue("value".equals(map.get("key")));
-    	}
-    	
+
+        @Inject
+        public Injectee(@Named("file") Map<String, String> map) {
+            Assert.assertTrue("value".equals(map.get("key")));
+        }
+        
     }
     
     /**
@@ -114,19 +119,19 @@ public final class PropertiesConverterTest implements UnitProvider<PropertiesCon
      */
     @Test
     public void map() {
-    	final Injector injector = Guice.createInjector(
-			new TypeConverterModule(),
-			new Module() {
-				
-				@Override
-				public void configure(Binder binder) {
-					binder.bind(String.class).annotatedWith(Names.named("file")).
-						toInstance("file:src/test/resources/present.properties");
-					
-				}
-			}
-    	);
-    	injector.getInstance(Injectee.class);
+        final Injector injector = Guice.createInjector(
+            new TypeConverterModule(),
+            new Module() {
+                
+                @Override
+                public void configure(Binder binder) {
+                    binder.bind(String.class).annotatedWith(Names.named("file")).
+                        toInstance("file:src/test/resources/present.properties");
+                    
+                }
+            }
+        );
+        injector.getInstance(Injectee.class);
     }
 
 }
