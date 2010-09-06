@@ -56,7 +56,7 @@ public final class Main {
         }
 
         if (options.isInterceptStreams()) {
-            SystemStreamWrapper.wrapSystemStreams();
+            SystemStreamWrapper.redirectSystemStreams();
             LOG.info("SYSOUT and SYSERR will be logged through the logging system");
         }
 

@@ -16,13 +16,15 @@
 
 package de.cosmocode.palava.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 
 /**
  * Intercept the System.out and System.err to be logged with the real logging system.
@@ -31,69 +33,91 @@ import java.nio.charset.Charset;
  * @author Tobias Sarnowski
  */
 final class SystemStreamWrapper {
-    private static final Logger LOG = LoggerFactory.getLogger(SystemStreamWrapper.class);
 
-    private static final Logger SYSTEM = LoggerFactory.getLogger("SYSTEM");
+    private static final Logger LOG = LoggerFactory.getLogger("SYSTEM");
 
-    private static final Charset CHARSET = Charset.forName("UTF-8");
+    /**
+     * All different stream targets.
+     *
+     * @since 2.8
+     * @author Willi Schoenborn
+     */
+    private enum WrappedTarget {
+        
+        INFO {
 
-    static void wrapSystemStreams() {
+            @Override
+            public void log(Object message) {
+                LOG.info("{}", message);
+            }
+            
+        },
+        
+        ERROR {
+            
+            @Override
+            public void log(Object message) {
+                LOG.error("{}", message);
+            }
+            
+        };
+        
+        public abstract void log(Object message);
+        
+    }
+
+    private SystemStreamWrapper() {
+        
+    }
+
+    /**
+     * Redirects {@link System#out} to a {@link Logger} named "SYSTEM" using info
+     * and {@link System#err} to a {@link Logger} named "SYSTEM" using error.
+     * 
+     * @since 2.8
+     */
+    static void redirectSystemStreams() {
         System.setOut(new PrintStream(new StreamWrapper(WrappedTarget.INFO)));
         System.setErr(new PrintStream(new StreamWrapper(WrappedTarget.ERROR)));
     }
 
-    private static enum WrappedTarget {
-        INFO,
-        ERROR
-    }
-
+    /**
+     * An {@link OutputStream} which prints it's content using {@link SystemStreamWrapper#LOG}.
+     *
+     * @since 2.8
+     * @author Willi Schoenborn
+     */
     private static final class StreamWrapper extends OutputStream {
+        
         private final WrappedTarget target;
 
         private final StringBuilder builder = new StringBuilder(500);
 
         public StreamWrapper(WrappedTarget target) {
-            this.target = target;
-        }
-
-        private void log(Object message) {
-            if (target == WrappedTarget.INFO) {
-                SYSTEM.info("{}", message);
-            } else if (target == WrappedTarget.ERROR) {
-                SYSTEM.error("{}", message);
-            } else {
-                throw new UnsupportedOperationException("target " + target.name() + " not supported");
-            }
+            this.target = Preconditions.checkNotNull(target, "Target");
         }
 
         @Override
         public void flush() throws IOException {
             if (builder.length() > 0) {
-                log(builder);
+                target.log(builder);
                 builder.setLength(0);
             }
         }
 
-        /**
-         * must-have implementation
-         *
-         * @param b
-         * @throws IOException
-         */
         @Override
         public void write(int b) throws IOException {
             if (b == '\n' || b == '\r') {
                 flush();
             } else {
-                builder.append((char)b);
+                builder.append((char) b);
             }
         }
 
         /**
-         * overwritten for more performance
-         *
-         * @param bytes
-         * @throws IOException
+         * {@inheritDoc}
+         * 
+         * Overwritten to improve performance.
          */
         @Override
         public void write(byte[] bytes) throws IOException {
@@ -109,12 +133,13 @@ final class SystemStreamWrapper {
                     end = bytes.length - 2;
                 }
 
-                builder.append(new String(bytes, CHARSET), 0, end);
+                builder.append(new String(bytes, Charsets.UTF_8), 0, end);
                 flush();
             } else {
-                builder.append(new String(bytes, CHARSET));
+                builder.append(new String(bytes, Charsets.UTF_8));
             }
         }
+        
     }
 
 }
