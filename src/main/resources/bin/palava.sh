@@ -61,6 +61,11 @@ if [ -z "$APPLICATION_PID_FILE" ]; then
     APPLICATION_PID_FILE=run/application.pid
 fi
 
+# additional parameters for palava
+if [ -z "$PALAVA_ARGUMENTS" ]; then
+    PALAVA_ARGUMENTS=""
+fi
+
 echo_n() {
     if [ "$(echo -n)" = "$(echo)" ]; then
         echo -n "$*"
@@ -127,7 +132,7 @@ palava_internal_start() {
     fi
 
     # computed arguments
-    APPLICATION_ARGS=" --state-file $APPLICATION_STATE_FILE --no-auto-shutdown $APPLICATION_CONFIG $APPLICATION_ENV_CONFIG"
+    APPLICATION_ARGS="$PALAVA_ARGUMENTS --state-file $APPLICATION_STATE_FILE --no-auto-shutdown $APPLICATION_CONFIG $APPLICATION_ENV_CONFIG"
 
     # where is java
     if [ -z "$JAVA_HOME" ] && [ -z "$JRE_HOME" ]; then

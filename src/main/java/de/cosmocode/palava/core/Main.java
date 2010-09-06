@@ -16,19 +16,18 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Properties;
-
+import de.cosmocode.collections.MultiProperties;
+import de.cosmocode.commons.State;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.cosmocode.collections.MultiProperties;
-import de.cosmocode.commons.State;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Properties;
 
 /**
  * Application entry point.
@@ -54,6 +53,11 @@ public final class Main {
             System.err.println("Usage:  java [options] configuration-files...");
             parser.printUsage(System.err);
             throw new IllegalArgumentException(e);
+        }
+
+        if (options.isInterceptStreams()) {
+            SystemStreamWrapper.wrapSystemStreams();
+            LOG.info("SYSOUT and SYSERR will be logged through the logging system");
         }
 
         LOG.info("Options: {}", options);

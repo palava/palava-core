@@ -16,13 +16,12 @@
 
 package de.cosmocode.palava.core;
 
-import java.io.File;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.List;
 
 /**
  * A bean which holds the corresponding command line parameters.
@@ -39,6 +38,10 @@ final class Options {
     @Option(name = "-n", required = false, aliases = "--no-auto-shutdown", 
         usage = "If the framework should shut down as soon as possible after boot")
     private boolean noAutoShutdown;
+
+    @Option(name = "-i", required = false, aliases = "--intercept-streams",
+        usage = "If the framework should pipe sysout and syserr to the logging system")
+    private boolean interceptStreams = true;
     
     @Argument(required = true, usage = "List of configuration files")
     private List<File> configs = Lists.newArrayList();
@@ -46,19 +49,22 @@ final class Options {
     public File getStateFile() {
         return stateFile;
     }
-    
+
     public boolean isNoAutoShutdown() {
         return noAutoShutdown;
     }
-    
+
+    public boolean isInterceptStreams() {
+        return interceptStreams;
+    }
+
     public List<File> getConfigs() {
         return configs;
     }
 
     @Override
     public String toString() {
-        return String.format("Options [configs=%s, noAutoShutdown=%s, stateFile=%s]", 
+        return String.format("Options [configs=%s, noAutoShutdown=%s, stateFile=%s]",
             configs, noAutoShutdown, stateFile);
     }
-    
 }
