@@ -16,18 +16,25 @@
 
 package de.cosmocode.palava.core;
 
-import de.cosmocode.collections.MultiProperties;
-import de.cosmocode.commons.State;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Writer;
+import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Properties;
+import com.google.common.io.Closeables;
+
+import de.cosmocode.collections.MultiProperties;
+import de.cosmocode.commons.State;
 
 /**
  * Application entry point.
@@ -145,7 +152,7 @@ public final class Main {
         } catch (RuntimeException e) {
         /* CHECKSTYLE:ON */
             LOG.error("configuration error", e);
-            e.printStackTrace();
+            printToStdErr(e);
             System.exit(1);
             throw e;
         }
@@ -167,6 +174,13 @@ public final class Main {
 
         main.waitIfNecessary();
         System.exit(0);
+    }
+    
+    private static void printToStdErr(Exception e) {
+        final OutputStream stream = new FileOutputStream(FileDescriptor.err);
+        final PrintStream stderr = new PrintStream(stream);
+        e.printStackTrace(stderr);
+        Closeables.closeQuietly(stderr);
     }
 
 }
