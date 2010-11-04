@@ -18,6 +18,7 @@ package de.cosmocode.palava.core.inject;
 
 import java.util.Locale;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 import de.cosmocode.commons.Locales;
@@ -28,10 +29,10 @@ import de.cosmocode.commons.Locales;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class LocaleConverter extends AbstractTypeConverter<Locale> {
+public final class LocaleConverter implements TypeConverter {
 
     @Override
-    protected Locale convert(String value) {
+    public Locale convert(String value, TypeLiteral<?> toType) {
         return Locales.parse(value);
     }
 

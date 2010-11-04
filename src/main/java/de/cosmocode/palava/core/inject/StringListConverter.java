@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
+import com.google.inject.TypeLiteral;
 import com.google.inject.internal.Lists;
 import com.google.inject.spi.TypeConverter;
 
@@ -36,15 +37,15 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.6
  * @author Willi Schoenborn
  */
-public final class StringListConverter extends AbstractTypeConverter<List<String>> {
+public final class StringListConverter implements TypeConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(StringListConverter.class);
 
     private final FileConverter converter = new FileConverter();
     
     @Override
-    protected List<String> convert(String value) {
-        final File file = converter.convert(value);
+    public List<String> convert(String value, TypeLiteral<?> toType) {
+        final File file = converter.convert(value, FileConverter.LITERAL);
         
         try {
             LOG.trace("Reading lines from {}", file);

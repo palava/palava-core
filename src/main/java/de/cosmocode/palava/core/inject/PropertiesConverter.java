@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -31,13 +32,13 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class PropertiesConverter extends AbstractTypeConverter<Properties> {
+public final class PropertiesConverter implements TypeConverter {
 
-    private final URLConverter urlConverter = new URLConverter();
+    private final URLConverter converter = new URLConverter();
     
     @Override
-    protected Properties convert(String value) {
-        final URL url = urlConverter.convert(value);
+    public Properties convert(String value, TypeLiteral<?> toType) {
+        final URL url = converter.convert(value, URLConverter.LITERAL);
         final Properties properties = new Properties();
         final InputStream stream = openStream(url);
         

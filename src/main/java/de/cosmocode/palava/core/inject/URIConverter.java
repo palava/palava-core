@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -27,10 +28,10 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class URIConverter extends AbstractTypeConverter<URI> {
+public final class URIConverter implements TypeConverter {
 
     @Override
-    protected URI convert(String value) {
+    public URI convert(String value, TypeLiteral<?> toType) {
         try {
             return new URI(value);
         } catch (URISyntaxException e) {

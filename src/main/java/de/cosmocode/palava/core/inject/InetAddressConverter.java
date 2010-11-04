@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -27,10 +28,10 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class InetAddressConverter extends AbstractTypeConverter<InetAddress> {
+public final class InetAddressConverter implements TypeConverter {
 
     @Override
-    protected InetAddress convert(String value) {
+    public InetAddress convert(String value, TypeLiteral<?> toType) {
         try {
             return InetAddress.getByName(value);
         } catch (UnknownHostException e) {

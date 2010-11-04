@@ -33,6 +33,9 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
@@ -48,20 +51,35 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
     @Override
     protected void configure() {
         register(Charset.class, new CharsetConverter());
+        
+        final TypeConverter csvConverter = new CsvConverter();
+        register(new TypeLiteral<Iterable<String[]>>() { }, csvConverter);
+        register(new TypeLiteral<Collection<String[]>>() { }, csvConverter);
+        register(new TypeLiteral<List<String[]>>() { }, csvConverter);
+
         register(File.class, new FileConverter());
         register(InetAddress.class, new InetAddressConverter());
         register(InetSocketAddress.class, new InetSocketAddressConverter());
         register(Locale.class, new LocaleConverter());
         register(Logger.class, new LoggerConverter());
+        
+        final TypeConverter multimapConverter = new MultimapConverter();
+        register(new TypeLiteral<Multimap<String, String>>() { }, multimapConverter);
+        register(new TypeLiteral<ListMultimap<String, String>>() { }, multimapConverter);
+        
         register(Pattern.class, new PatternConverter());
+        
         final TypeConverter propertiesConverter = new PropertiesConverter();
         register(Properties.class, propertiesConverter);
         register(new TypeLiteral<Map<String, String>>() { }, propertiesConverter);
         register(SocketAddress.class, new InetSocketAddressConverter());
+        
         final TypeConverter stringListConverter = new StringListConverter();
         register(new TypeLiteral<Iterable<String>>() { }, stringListConverter);
         register(new TypeLiteral<Collection<String>>() { }, stringListConverter);
         register(new TypeLiteral<List<String>>() { }, stringListConverter);
+        
+        register(new TypeLiteral<Table<Integer, String, String>>() { }, new TableConverter());
         register(URI.class, new URIConverter());
         register(URL.class, new URLConverter());
         register(UUID.class, new UUIDConverter());

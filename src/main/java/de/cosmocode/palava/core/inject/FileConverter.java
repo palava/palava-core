@@ -17,8 +17,10 @@
 package de.cosmocode.palava.core.inject;
 
 import java.io.File;
+import java.net.URL;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -27,16 +29,19 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class FileConverter extends AbstractTypeConverter<File> {
+public final class FileConverter implements TypeConverter {
 
+    public static final TypeLiteral<File> LITERAL = TypeLiteral.get(File.class);
+    
     private static final String FILE_PREFIX = "file:";
     
-    private final URLConverter urlConverter = new URLConverter();
+    private final URLConverter converter = new URLConverter();
     
     @Override
-    protected File convert(String value) {
+    public File convert(String value, TypeLiteral<?> toType) {
         Preconditions.checkArgument(value.startsWith(FILE_PREFIX), "%s must start with %s", value, FILE_PREFIX);
-        return new File(urlConverter.convert(value).getFile());
+        final URL url = converter.convert(value, URLConverter.LITERAL);
+        return new File(url.getFile());
     }
     
 }

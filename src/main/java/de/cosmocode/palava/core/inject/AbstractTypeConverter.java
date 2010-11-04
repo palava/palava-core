@@ -22,13 +22,13 @@ import com.google.inject.spi.TypeConverter;
 /**
  * Abstract base class for {@link TypeConverter}s.
  *
+ * @deprecated is not adding any value
  * @since 2.4
  * @param <T> target type
  * @author Willi Schoenborn
  */
+@Deprecated
 public abstract class AbstractTypeConverter<T> implements TypeConverter {
-    
-    private TypeLiteral<?> literal;
     
     /**
      * Converts the specified value to type T.
@@ -41,12 +41,7 @@ public abstract class AbstractTypeConverter<T> implements TypeConverter {
     
     @Override
     public final Object convert(String value, TypeLiteral<?> typeLiteral) {
-        this.literal = typeLiteral;
         return convert(value);
-    }
-    
-    protected final TypeLiteral<?> getLiteral() {
-        return literal;
     }
     
     @Override

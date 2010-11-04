@@ -32,8 +32,6 @@ import de.cosmocode.junit.UnitProvider;
  */
 public final class PatternConverterTest implements UnitProvider<PatternConverter> {
 
-    private static final TypeLiteral<Pattern> LITERAL = TypeLiteral.get(Pattern.class);
-
     @Override
     public PatternConverter unit() {
         return new PatternConverter();
@@ -44,7 +42,7 @@ public final class PatternConverterTest implements UnitProvider<PatternConverter
      */
     @Test
     public void all() {
-        final Pattern actual = Pattern.class.cast(unit().convert(".*", LITERAL));
+        final Pattern actual = Pattern.class.cast(unit().convert(".*", PatternConverter.LITERAL));
         Assert.assertEquals(Pattern.compile(".*").pattern(), actual.pattern());
     }
 
@@ -53,7 +51,7 @@ public final class PatternConverterTest implements UnitProvider<PatternConverter
      */
     @Test
     public void any() {
-        final Pattern actual = Pattern.class.cast(unit().convert(".", LITERAL));
+        final Pattern actual = Pattern.class.cast(unit().convert(".", PatternConverter.LITERAL));
         Assert.assertEquals(Pattern.compile(".").pattern(), actual.pattern());
     }
 
@@ -62,7 +60,7 @@ public final class PatternConverterTest implements UnitProvider<PatternConverter
      */
     @Test
     public void only() {
-        final Pattern actual = Pattern.class.cast(unit().convert("^.$", LITERAL));
+        final Pattern actual = Pattern.class.cast(unit().convert("^.$", PatternConverter.LITERAL));
         Assert.assertEquals(Pattern.compile("^.$").pattern(), actual.pattern());
     }
     
@@ -71,7 +69,7 @@ public final class PatternConverterTest implements UnitProvider<PatternConverter
      */
     @Test(expected = RuntimeException.class)
     public void illegal() {
-        unit().convert("**");
+        unit().convert("**", PatternConverter.LITERAL);
     }
     
 }

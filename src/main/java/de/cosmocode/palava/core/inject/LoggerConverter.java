@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -27,10 +28,10 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class LoggerConverter extends AbstractTypeConverter<Logger> {
+public final class LoggerConverter implements TypeConverter {
 
     @Override
-    protected Logger convert(String value) {
+    public Logger convert(String value, TypeLiteral<?> toType) {
         return LoggerFactory.getLogger(value);
     }
 

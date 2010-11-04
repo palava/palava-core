@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -29,13 +30,14 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.5
  * @author Willi Schoenborn
  */
-public final class InetSocketAddressConverter extends AbstractTypeConverter<InetSocketAddress> {
+public final class InetSocketAddressConverter implements TypeConverter {
 
     private static final Pattern PATTERN = Pattern.compile("^([^:]+):(\\d+)$");
+    
     private static final String WILDCARD = "*";
     
     @Override
-    protected InetSocketAddress convert(String value) {
+    public InetSocketAddress convert(String value, TypeLiteral<?> toType) {
         final Matcher matcher = PATTERN.matcher(value);
         Preconditions.checkArgument(matcher.matches(), "%s does not match %s", value, PATTERN);
         final String host = matcher.group(1);

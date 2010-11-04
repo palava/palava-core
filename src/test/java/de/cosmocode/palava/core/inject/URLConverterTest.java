@@ -34,8 +34,6 @@ import de.cosmocode.junit.UnitProvider;
  */
 public final class URLConverterTest implements UnitProvider<URLConverter> {
 
-    private static final TypeLiteral<URL> LITERAL = TypeLiteral.get(URL.class);
-    
     @Override
     public URLConverter unit() {
         return new URLConverter();
@@ -48,7 +46,8 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
      */
     @Test
     public void http() throws MalformedURLException {
-        Assert.assertEquals(new URL("http://www.google.de"), unit().convert("http://www.google.de", LITERAL));
+        Assert.assertEquals(new URL("http://www.google.de"), 
+                unit().convert("http://www.google.de", URLConverter.LITERAL));
     }
 
     /**
@@ -58,7 +57,7 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
      */
     @Test
     public void ftp() throws MalformedURLException {
-        Assert.assertEquals(new URL("ftp://google.de"), unit().convert("ftp://google.de", LITERAL));
+        Assert.assertEquals(new URL("ftp://google.de"), unit().convert("ftp://google.de", URLConverter.LITERAL));
     }
 
     /**
@@ -68,7 +67,7 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
      */
     @Test
     public void file() throws MalformedURLException {
-        Assert.assertEquals(new URL("file:some.file"), unit().convert("file:some.file", LITERAL));
+        Assert.assertEquals(new URL("file:some.file"), unit().convert("file:some.file", URLConverter.LITERAL));
     }
 
     /**
@@ -78,7 +77,7 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
      */
     @Test
     public void classpath() throws MalformedURLException {
-        final Object actual = unit().convert("classpath:present.file", LITERAL);
+        final Object actual = unit().convert("classpath:present.file", URLConverter.LITERAL);
         Assert.assertNotNull(actual);
         Assert.assertEquals(Resources.getResource("present.file"), actual);
     }
@@ -88,7 +87,7 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
      */
     @Test(expected = RuntimeException.class)
     public void illegal() {
-        unit().convert("", LITERAL);
+        unit().convert("", URLConverter.LITERAL);
     }
     
 }

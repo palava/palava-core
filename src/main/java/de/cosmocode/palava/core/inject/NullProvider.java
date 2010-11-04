@@ -16,24 +16,20 @@
 
 package de.cosmocode.palava.core.inject;
 
-import java.util.regex.Pattern;
-
-import com.google.inject.TypeLiteral;
-import com.google.inject.spi.TypeConverter;
+import com.google.inject.Provider;
 
 /**
- * {@link TypeConverter} for {@link Pattern}s.
+ * {@link Provider} implementation which always returns null.
  *
- * @since 2.4
  * @author Willi Schoenborn
  */
-public final class PatternConverter implements TypeConverter {
-
-    public static final TypeLiteral<Pattern> LITERAL = TypeLiteral.get(Pattern.class);
+enum NullProvider implements Provider<Object> {
+    
+    INSTANCE;
     
     @Override
-    public Pattern convert(String value, TypeLiteral<?> toType) {
-        return Pattern.compile(value);
+    public Object get() {
+        return null;
     }
-
+    
 }

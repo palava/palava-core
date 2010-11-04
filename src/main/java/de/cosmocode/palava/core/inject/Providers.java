@@ -41,21 +41,4 @@ public final class Providers {
         return (Provider<T>) NullProvider.INSTANCE;
     }
     
-    /**
-     * {@link Provider} implementation which always returns null.
-     *
-     * @author Willi Schoenborn
-     * @param <T> generic return type
-     */
-    private static enum NullProvider implements Provider<Object> {
-        
-        INSTANCE;
-        
-        @Override
-        public Object get() {
-            return null;
-        }
-        
-    }
-    
 }

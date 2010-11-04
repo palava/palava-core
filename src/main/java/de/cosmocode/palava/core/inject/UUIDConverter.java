@@ -18,6 +18,7 @@ package de.cosmocode.palava.core.inject;
 
 import java.util.UUID;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -26,10 +27,10 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class UUIDConverter extends AbstractTypeConverter<UUID> {
+public final class UUIDConverter implements TypeConverter {
 
     @Override
-    protected UUID convert(String value) {
+    public UUID convert(String value, TypeLiteral<?> toType) {
         return UUID.fromString(value);
     }
     

@@ -23,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
+
+import de.cosmocode.commons.Conditions;
 
 /**
  * A {@link TypeConverter} for {@link URL}s.
@@ -31,14 +35,16 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class URLConverter extends AbstractTypeConverter<URL> {
+public final class URLConverter implements TypeConverter {
 
+    public static final TypeLiteral<URL> LITERAL = TypeLiteral.get(URL.class);
+    
     private static final Logger LOG = LoggerFactory.getLogger(URLConverter.class);
     
     private static final String CLASSPATH_PREFIX = "classpath:";
 
     @Override
-    protected URL convert(String value) {
+    public URL convert(String value, TypeLiteral<?> literal) {
         if (value.startsWith(CLASSPATH_PREFIX)) {
             LOG.trace("Considering {} to be a classpath resource", value);
             final ClassLoader loader = getClassLoader();
@@ -58,7 +64,7 @@ public final class URLConverter extends AbstractTypeConverter<URL> {
         try {
             return Thread.currentThread().getContextClassLoader();
         } catch (SecurityException e) {
-            return URLConverter.class.getClassLoader();
+            return getClass().getClassLoader();
         }
     }
     

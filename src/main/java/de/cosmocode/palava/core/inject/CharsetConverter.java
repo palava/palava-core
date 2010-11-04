@@ -18,6 +18,7 @@ package de.cosmocode.palava.core.inject;
 
 import java.nio.charset.Charset;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
 /**
@@ -26,10 +27,10 @@ import com.google.inject.spi.TypeConverter;
  * @since 2.4
  * @author Willi Schoenborn
  */
-public final class CharsetConverter extends AbstractTypeConverter<Charset> {
+public final class CharsetConverter implements TypeConverter {
 
     @Override
-    protected Charset convert(String value) {
+    public Charset convert(String value, TypeLiteral<?> toType) {
         return Charset.forName(value);
     }
 
