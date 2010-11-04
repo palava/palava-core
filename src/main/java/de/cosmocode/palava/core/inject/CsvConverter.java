@@ -43,7 +43,7 @@ import de.cosmocode.commons.Strings;
  * A {@link TypeConverter} which reads csv files and produces
  * {@link List}s of {@link String} arrays.
  * 
- * <h2>Defaults</h2>
+ * <h4>Defaults</h4>
  * 
  * <table>
  *   <tr>
@@ -59,12 +59,14 @@ import de.cosmocode.commons.Strings;
  *     <td>\</td>
  *   </tr>
  * </table>
+ * 
+ * <h4>Usage</h4>
  * <p>
  *   application.properties<br />
- *   {@code my.data = csv:file://data.csv}
+ *   {@code my.data = csv:file:data.csv}
  * </p>
  * 
- * <h2>Configuration</h2>
+ * <h4>Configuration</h4>
  * <p>
  *   Separator, quote char and escape char can be configured using the following
  *   syntax:<br />
@@ -73,13 +75,13 @@ import de.cosmocode.commons.Strings;
  * 
  * <p>
  *   Example:<br />
- *   {@code my.data = csv:\t:':#:file://data.csv}<br />
+ *   {@code my.data = csv:\t:':#:file:data.csv}<br />
  * </p>
  * 
  * <p>
  *   There is no need to specify every three characters, if you only want to change
- *   the separator, just leave rest:<br />
- *   {@code my.data = csv:\t:file://data.csv}
+ *   the separator, just leave the rest:<br />
+ *   {@code my.data = csv:\t:file:data.csv}
  * </p>
  * 
  * <p>
