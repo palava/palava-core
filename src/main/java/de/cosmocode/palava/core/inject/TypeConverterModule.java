@@ -56,13 +56,6 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
     @Override
     protected void configure() {
         register(Charset.class, new CharsetConverter());
-        
-        final TypeConverter csvConverter = new CsvConverter();
-        register(new TypeLiteral<Iterable<String[]>>() { }, csvConverter);
-        register(new TypeLiteral<Collection<String[]>>() { }, csvConverter);
-        register(new TypeLiteral<List<String[]>>() { }, csvConverter);
-        
-        register(CsvIteratorConverter.LITERAL, new CsvIteratorConverter());
 
         register(File.class, new FileConverter());
         register(InetAddress.class, new InetAddressConverter());
