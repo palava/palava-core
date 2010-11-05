@@ -66,9 +66,9 @@ public final class CsvIteratorConverter implements TypeConverter {
         final Matcher matcher = PATTERN.matcher(value);
         Preconditions.checkArgument(matcher.matches(), "%s does not match %s", value, PATTERN.pattern());
         
-        final char separator = extractChar(matcher, 1, ',');
-        final char quote = extractChar(matcher, 2, '"');
-        final char escape = extractChar(matcher, 3, '\\');
+        final char separator = extractChar(matcher, 1, DefaultCsvStrategy.INSTANCE.separator());
+        final char quote = extractChar(matcher, 2, DefaultCsvStrategy.INSTANCE.quote());
+        final char escape = extractChar(matcher, 3, DefaultCsvStrategy.INSTANCE.escape());
         final String location = matcher.group(4);
         
         final URL url = converter.convert(location, URLConverter.LITERAL);
