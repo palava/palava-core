@@ -40,6 +40,11 @@ import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
+import de.cosmocode.palava.core.inject.csv.CsvConverter;
+import de.cosmocode.palava.core.inject.csv.CsvIteratorConverter;
+import de.cosmocode.palava.core.inject.csv.MultimapConverter;
+import de.cosmocode.palava.core.inject.csv.TableConverter;
+
 /**
  * A {@link Module} for custom {@link TypeConverter}s.
  *
@@ -56,6 +61,8 @@ public final class TypeConverterModule extends CustomTypeConverterModule {
         register(new TypeLiteral<Iterable<String[]>>() { }, csvConverter);
         register(new TypeLiteral<Collection<String[]>>() { }, csvConverter);
         register(new TypeLiteral<List<String[]>>() { }, csvConverter);
+        
+        register(CsvIteratorConverter.LITERAL, new CsvIteratorConverter());
 
         register(File.class, new FileConverter());
         register(InetAddress.class, new InetAddressConverter());

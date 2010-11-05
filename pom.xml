@@ -54,7 +54,7 @@
     <dependency>
       <groupId>de.cosmocode</groupId>
       <artifactId>cosmocode-commons</artifactId>
-      <version>[1.12,2)</version>
+      <version>[1.19,2)</version>
     </dependency>
     <dependency>
       <groupId>args4j</groupId>
