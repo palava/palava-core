@@ -16,12 +16,13 @@
 
 package de.cosmocode.palava.core;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.util.List;
+
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
-import java.io.File;
-import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
  * A bean which holds the corresponding command line parameters.

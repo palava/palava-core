@@ -16,28 +16,15 @@
 
 package de.cosmocode.palava.core.inject.csv;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
-import de.cosmocode.commons.Strings;
 import de.cosmocode.commons.io.CloseableIterator;
 
 /**

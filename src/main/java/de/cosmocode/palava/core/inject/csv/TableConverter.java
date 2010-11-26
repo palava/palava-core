@@ -16,22 +16,10 @@
 
 package de.cosmocode.palava.core.inject.csv;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
 import java.util.List;
 
-import au.com.bytecode.opencsv.CSVReader;
-
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 

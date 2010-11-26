@@ -40,8 +40,6 @@ import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeConverter;
 
-import de.cosmocode.palava.core.inject.csv.CsvConverter;
-import de.cosmocode.palava.core.inject.csv.CsvIteratorConverter;
 import de.cosmocode.palava.core.inject.csv.MultimapConverter;
 import de.cosmocode.palava.core.inject.csv.TableConverter;
 
