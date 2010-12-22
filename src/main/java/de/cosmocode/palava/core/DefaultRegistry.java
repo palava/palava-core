@@ -173,6 +173,7 @@ final class DefaultRegistry extends AbstractRegistry {
                 if (silent) {
                     DefaultRegistry.this.notifySilently(key, new Procedure<T>() {
                         
+                        @Override
                         public void apply(T listener) {
                             try {
                                 method.invoke(listener, args);
@@ -186,7 +187,8 @@ final class DefaultRegistry extends AbstractRegistry {
                     });
                 } else {
                     DefaultRegistry.this.notify(key, new Procedure<T>() {
-                        
+
+                        @Override
                         public void apply(T listener) {
                             try {
                                 method.invoke(listener, args);
