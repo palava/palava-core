@@ -97,5 +97,4 @@ abstract class AbstractFramework implements Framework {
      */
     protected abstract void doStop();
     
-
 }
