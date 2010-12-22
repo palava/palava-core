@@ -33,7 +33,7 @@ public abstract class AbstractRegistry implements Registry {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(listener, "Listener");
         register(Key.get(type), listener);
-    };
+    }
     
     @Override
     public <T> Iterable<T> getListeners(Class<T> type) {
@@ -78,7 +78,7 @@ public abstract class AbstractRegistry implements Registry {
     public <T> boolean remove(Class<T> type, T listener) {
         Preconditions.checkNotNull(type, "Type");
         return remove(Key.get(type), listener);
-    };
+    }
     
     @Override
     public <T> Iterable<T> removeAll(Class<T> type) {

@@ -74,7 +74,7 @@ final class DefaultRegistry extends AbstractRegistry {
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("Registering {} for {}", listener, key);
         mapping.put(key, listener);
-    };
+    }
 
     @Override
     public <T> Iterable<T> getListeners(Key<T> key) {
@@ -181,7 +181,7 @@ final class DefaultRegistry extends AbstractRegistry {
                             } catch (InvocationTargetException e) {
                                 throw new IllegalStateException(e);
                             }
-                        };
+                        }
                         
                     });
                 } else {
@@ -195,7 +195,7 @@ final class DefaultRegistry extends AbstractRegistry {
                             } catch (InvocationTargetException e) {
                                 throw new IllegalStateException(e);
                             }
-                        };
+                        }
                         
                     });
                 }
@@ -284,7 +284,7 @@ final class DefaultRegistry extends AbstractRegistry {
         Preconditions.checkNotNull(listener, "Listener");
         LOG.trace("Removing {} from {}", listener, key);
         return mapping.remove(key, listener);
-    };
+    }
 
     @Override
     public <T> boolean remove(T listener) {

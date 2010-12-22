@@ -36,7 +36,7 @@ abstract class AbstractFramework implements Framework {
     @Override
     public final State currentState() {
         return state;
-    };
+    }
     
     /**
      * Sets the current state to {@link State#FAILED}.
