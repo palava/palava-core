@@ -139,9 +139,8 @@ public final class Main {
      * Application entry point.
      *
      * @param args command line arguments
-     * @throws CmdLineException if command line parsing failed
      */
-    public static void main(String[] args) throws CmdLineException {
+    public static void main(String[] args) {
         AsciiArt.print();
 
         final Main main;

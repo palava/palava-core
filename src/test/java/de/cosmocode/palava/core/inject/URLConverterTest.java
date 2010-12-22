@@ -72,11 +72,9 @@ public final class URLConverterTest implements UnitProvider<URLConverter> {
 
     /**
      * Tests {@link URLConverter#convert(String, TypeLiteral)} with a classpath url.
-     * 
-     * @throws MalformedURLException should not happen 
      */
     @Test
-    public void classpath() throws MalformedURLException {
+    public void classpath() {
         final Object actual = unit().convert("classpath:present.file", URLConverter.LITERAL);
         Assert.assertNotNull(actual);
         Assert.assertEquals(Resources.getResource("present.file"), actual);
