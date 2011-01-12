@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.aop;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Constant holder class for configuration keys.
- * 
- * @since 2.0
- * @author Tobias Sarnowski
+ * A simple annotation used to test {@link PalavaAspect}.
+ *
+ * @since 2.9
  * @author Willi Schoenborn
  */
-public final class CoreConfig {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@interface Negate {
 
-    public static final String PREFIX = "core.";
-
-    public static final String APPLICATION = PREFIX + "application";
-    
-    public static final String STAGE = PREFIX + "stage";
-    
-    public static final String REINJECTABLE_ASPECTS = PREFIX + "reinjectableAspects";
-    
-    private CoreConfig() {
-        
-    }
 }

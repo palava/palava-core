@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.aop;
+
+import java.util.concurrent.Callable;
 
 /**
- * Constant holder class for configuration keys.
- * 
- * @since 2.0
- * @author Tobias Sarnowski
+ * A simplier version of {@link Callable} to test {@link NegateAspect}.
+ *
+ * @since 2.9
  * @author Willi Schoenborn
  */
-public final class CoreConfig {
+interface Target extends Callable<Boolean> {
 
-    public static final String PREFIX = "core.";
-
-    public static final String APPLICATION = PREFIX + "application";
+    @Override
+    Boolean call();
     
-    public static final String STAGE = PREFIX + "stage";
-    
-    public static final String REINJECTABLE_ASPECTS = PREFIX + "reinjectableAspects";
-    
-    private CoreConfig() {
-        
-    }
 }

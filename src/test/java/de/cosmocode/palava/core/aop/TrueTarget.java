@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.aop;
 
 /**
- * Constant holder class for configuration keys.
- * 
- * @since 2.0
- * @author Tobias Sarnowski
+ * An advice target for {@link NegateAspect}.
+ *
+ * @since 2.9
  * @author Willi Schoenborn
  */
-public final class CoreConfig {
+final class TrueTarget implements Target {
 
-    public static final String PREFIX = "core.";
-
-    public static final String APPLICATION = PREFIX + "application";
-    
-    public static final String STAGE = PREFIX + "stage";
-    
-    public static final String REINJECTABLE_ASPECTS = PREFIX + "reinjectableAspects";
-    
-    private CoreConfig() {
-        
+    @Negate
+    @Override
+    public Boolean call() {
+        return Boolean.TRUE;
     }
+    
 }

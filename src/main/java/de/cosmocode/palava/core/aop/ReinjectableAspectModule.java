@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package de.cosmocode.palava.core;
+package de.cosmocode.palava.core.aop;
+
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
+
+import de.cosmocode.palava.core.CoreConfig;
 
 /**
- * Constant holder class for configuration keys.
- * 
- * @since 2.0
- * @author Tobias Sarnowski
+ * A module which binds a boolean annotated with {@link CoreConfig#REINJECTABLE_ASPECTS} to true.
+ *
+ * @since 2.9
  * @author Willi Schoenborn
  */
-public final class CoreConfig {
+public final class ReinjectableAspectModule implements Module {
 
-    public static final String PREFIX = "core.";
-
-    public static final String APPLICATION = PREFIX + "application";
-    
-    public static final String STAGE = PREFIX + "stage";
-    
-    public static final String REINJECTABLE_ASPECTS = PREFIX + "reinjectableAspects";
-    
-    private CoreConfig() {
-        
+    @Override
+    public void configure(Binder binder) {
+        binder.bindConstant().annotatedWith(Names.named(CoreConfig.REINJECTABLE_ASPECTS)).to(true);
     }
+
 }
