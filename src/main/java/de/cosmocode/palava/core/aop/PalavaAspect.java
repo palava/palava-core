@@ -43,7 +43,7 @@ import de.cosmocode.palava.core.CoreConfig;
  * @since 2.9
  * @author Willi Schoenborn
  */
-@Aspect
+@Aspect("issingleton()")
 public abstract class PalavaAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(PalavaAspect.class);    
