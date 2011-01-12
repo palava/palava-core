@@ -141,9 +141,9 @@ public abstract class PalavaAspect {
     }
 
     @Pointcut("call(com.google.inject.Injector com.google.inject.Guice.createInjector(" +
-        "java.lang.Iterable<? extends com.google.inject.Module>)) && args(modules)")
-    @SuppressWarnings("unused")
-    private void moduleIterable(Iterable<? extends Module> modules) { }
+        "java.lang.Iterable)) && args(modules)")
+    @SuppressWarnings({ "unused", "unchecked" })
+    private void moduleIterable(Iterable modules) { }
 
     /**
      * An advice around {@link Guice#createInjector(Iterable)} to inject members on this aspect.
@@ -154,7 +154,8 @@ public abstract class PalavaAspect {
      * @return the injector
      */
     @Around("moduleIterable(modules) && notWithinThis()")
-    public final Object aroundModuleIterable(ProceedingJoinPoint point, Iterable<? extends Module> modules) {
+    @SuppressWarnings("unchecked")
+    public final Object aroundModuleIterable(ProceedingJoinPoint point, Iterable modules) {
         try {
             return point.proceed(new Object[] {
                 Iterables.concat(modules, Collections.singleton(module))
@@ -194,9 +195,9 @@ public abstract class PalavaAspect {
     }
 
     @Pointcut("call(com.google.inject.Injector com.google.inject.Guice.createInjector(" +
-        "com.google.inject.Stage, java.lang.Iterable<? extends com.google.inject.Module>)) && args(stage, modules)")
-    @SuppressWarnings("unused")
-    private void stageAndModuleIterable(Stage stage, Iterable<? extends Module> modules) { }
+        "com.google.inject.Stage, java.lang.Iterable)) && args(stage, modules)")
+    @SuppressWarnings({ "unused", "unchecked" })
+    private void stageAndModuleIterable(Stage stage, Iterable modules) { }
     
     /**
      * An advice around {@link Guice#createInjector(Stage, Iterable)} to inject members on this aspect.
@@ -208,8 +209,9 @@ public abstract class PalavaAspect {
      * @return the injector
      */
     @Around("stageAndModuleIterable(stage, modules) && notWithinThis()")
+    @SuppressWarnings("unchecked")
     public final Object aroundStageAndModuleIterable(ProceedingJoinPoint point, Stage stage, 
-            Iterable<? extends Module> modules) {
+            Iterable modules) {
         try {
             return point.proceed(new Object[] {
                 stage, Iterables.concat(modules, Collections.singleton(module))
