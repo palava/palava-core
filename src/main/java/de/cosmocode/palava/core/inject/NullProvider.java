@@ -32,4 +32,9 @@ enum NullProvider implements Provider<Object> {
         return null;
     }
     
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+    
 }
