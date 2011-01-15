@@ -108,12 +108,6 @@ public abstract class PalavaAspect {
         return array;
     }
     
-    @Pointcut("!within(de.cosmocode.palava.core.aop.PalavaAspect+)")
-    @SuppressWarnings("unused")
-    private void notWithinThis() {
-        
-    }
-    
     @Pointcut("call(com.google.inject.Injector com.google.inject.Guice.createInjector(" +
         "com.google.inject.Module...)) && args(modules)")
     @SuppressWarnings("unused")
@@ -127,8 +121,8 @@ public abstract class PalavaAspect {
      * @param modules the originally passed modules
      * @return the injector
      */
-    @Around("moduleArray(modules) && notWithinThis()")
-    public final Object aroundModuleArray(ProceedingJoinPoint point, Module... modules) {
+    @Around("moduleArray(modules)")
+    public Object aroundModuleArray(ProceedingJoinPoint point, Module... modules) {
         try {
             return point.proceed(new Object[] {
                 append(modules)
@@ -153,9 +147,9 @@ public abstract class PalavaAspect {
      * @param modules the originally passed modules
      * @return the injector
      */
-    @Around("moduleIterable(modules) && notWithinThis()")
+    @Around("moduleIterable(modules)")
     @SuppressWarnings("unchecked")
-    public final Object aroundModuleIterable(ProceedingJoinPoint point, Iterable modules) {
+    public Object aroundModuleIterable(ProceedingJoinPoint point, Iterable modules) {
         try {
             return point.proceed(new Object[] {
                 Iterables.concat(modules, Collections.singleton(module))
@@ -181,8 +175,8 @@ public abstract class PalavaAspect {
      * @param modules the originally passed modules
      * @return the injector
      */
-    @Around("stageAndModuleArray(stage, modules) && notWithinThis()")
-    public final Object aroundStageAndModuleArray(ProceedingJoinPoint point, Stage stage, Module... modules) {
+    @Around("stageAndModuleArray(stage, modules)")
+    public Object aroundStageAndModuleArray(ProceedingJoinPoint point, Stage stage, Module... modules) {
         try {
             return point.proceed(new Object[] {
                 stage, append(modules)
@@ -208,9 +202,9 @@ public abstract class PalavaAspect {
      * @param modules the originally passed stage
      * @return the injector
      */
-    @Around("stageAndModuleIterable(stage, modules) && notWithinThis()")
+    @Around("stageAndModuleIterable(stage, modules)")
     @SuppressWarnings("unchecked")
-    public final Object aroundStageAndModuleIterable(ProceedingJoinPoint point, Stage stage, 
+    public Object aroundStageAndModuleIterable(ProceedingJoinPoint point, Stage stage, 
             Iterable modules) {
         try {
             return point.proceed(new Object[] {
