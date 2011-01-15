@@ -34,9 +34,11 @@ import com.google.inject.Stage;
  * Abstract aspect which intercepts {@link Guice#createInjector(..)} calls
  * to get hands on the injector.
  *
+ * @deprecated use {@link PalavaAspect}
  * @since 2.0
  * @author Willi Schoenborn
  */
+@Deprecated
 public abstract aspect AbstractPalavaAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPalavaAspect.class);
