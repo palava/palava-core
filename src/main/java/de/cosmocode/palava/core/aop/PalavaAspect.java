@@ -84,7 +84,7 @@ public abstract class PalavaAspect {
      * @throws IllegalStateException if this aspect is already injected and does not allow reinjection
      */
     @Inject
-    void setInjected() {
+    final void setInjected() {
         checkInjectable();
         this.injected = true;
     }
@@ -97,7 +97,7 @@ public abstract class PalavaAspect {
      * @throws IllegalStateException if this aspect is already injected and does not allow reinjection
      */
     @Inject(optional = true)
-    void setReinjectable(@Named(CoreConfig.REINJECTABLE_ASPECTS) boolean reinjectable) {
+    final void setReinjectable(@Named(CoreConfig.REINJECTABLE_ASPECTS) boolean reinjectable) {
         this.reinjectable = reinjectable;
     }
 
