@@ -25,10 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import com.google.inject.TypeLiteral;
-import com.google.inject.internal.Lists;
 import com.google.inject.spi.TypeConverter;
 
 /**
