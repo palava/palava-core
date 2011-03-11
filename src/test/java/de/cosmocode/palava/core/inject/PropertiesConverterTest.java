@@ -96,7 +96,7 @@ public final class PropertiesConverterTest implements UnitProvider<PropertiesCon
      */
     @Test(expected = RuntimeException.class)
     public void httpMissing() {
-        unit().convert("http://example.com/missing.properties", LITERAL);
+        unit().convert("http://lsdkfjslkfjslkfjslfkjsdlfkjsldfjksdoieruwfl.com/missing.properties", LITERAL);
     }
     
     /**
