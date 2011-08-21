@@ -18,7 +18,13 @@ package de.cosmocode.palava.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.*;
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import de.cosmocode.collections.Procedure;
 import de.cosmocode.commons.Throwables;
 import org.slf4j.Logger;
@@ -163,7 +169,7 @@ final class DefaultRegistry extends AbstractRegistry {
             } else if (method.equals(HASHCODE)) {
                 return hashCode();
             } else if (method.getReturnType() == void.class) {
-                Procedure<T> procedure = new Procedure<T>() {
+                final Procedure<T> procedure = new Procedure<T>() {
 
                     @Override
                     public void apply(T listener) {
