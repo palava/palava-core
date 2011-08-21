@@ -16,21 +16,20 @@
 
 package de.cosmocode.palava.core;
 
-import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-
 import de.cosmocode.collections.Procedure;
 import de.cosmocode.junit.UnitProvider;
 import de.cosmocode.palava.core.Registry.Key;
+import org.easymock.EasyMock;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Tests {@link Registry} implementations.
@@ -511,7 +510,63 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
         unit.proxy(key).doAnything();
         EasyMock.verify(listener);
     }
-    
+
+    @Test(expected = CustomRuntimeException.class)
+    public void proxyTypeException() throws IOException {
+        final Registry unit = unit();
+
+        final Listener listener = EasyMock.createMock("listener", Listener.class);
+        listener.doAnything();
+        EasyMock.expectLastCall().andThrow(new CustomRuntimeException());
+        EasyMock.replay(listener);
+
+        unit.register(Listener.class, listener);
+        unit.proxy(Listener.class).doAnything();
+    }
+
+    @Test(expected = CustomRuntimeException.class)
+    public void proxyKeyException() throws IOException {
+        final Registry unit = unit();
+
+        final Listener listener = EasyMock.createMock("listener", Listener.class);
+        listener.doAnything();
+        EasyMock.expectLastCall().andThrow(new CustomRuntimeException());
+        EasyMock.replay(listener);
+
+        final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
+
+        unit.register(key, listener);
+        unit.proxy(key).doAnything();
+    }
+
+    @Test(expected = IOException.class)
+    public void proxyTypeCheckedException() throws IOException {
+        final Registry unit = unit();
+
+        final FailingListener listener = EasyMock.createMock("listener", FailingListener.class);
+        listener.doAnything();
+        EasyMock.expectLastCall().andThrow(new IOException());
+        EasyMock.replay(listener);
+
+        unit.register(FailingListener.class, listener);
+        unit.proxy(FailingListener.class).doAnything();
+    }
+
+    @Test(expected = IOException.class)
+    public void proxyKeyCheckedException() throws IOException {
+        final Registry unit = unit();
+
+        final FailingListener listener = EasyMock.createMock("listener", FailingListener.class);
+        listener.doAnything();
+        EasyMock.expectLastCall().andThrow(new IOException());
+        EasyMock.replay(listener);
+
+        final Key<FailingListener> key = Key.get(FailingListener.class, Deprecated.class);
+
+        unit.register(key, listener);
+        unit.proxy(key).doAnything();
+    }
+
     /**
      * Tests {@link Registry#proxy(Class)} with multiple listeners.
      */

@@ -16,26 +16,19 @@
 
 package de.cosmocode.palava.core;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.*;
+import de.cosmocode.collections.Procedure;
+import de.cosmocode.commons.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
-
-import de.cosmocode.collections.Procedure;
 
 /**
  * Default implementation of the {@link Registry} interface.
@@ -95,14 +88,14 @@ final class DefaultRegistry extends AbstractRegistry {
             public Iterator<T> iterator() {
                 return new AbstractIterator<T>() {
                     
-                    private final Iterator<Entry<Key<? extends Object>, Object>> iterator = 
+                    private final Iterator<Entry<Key<?>, Object>> iterator =
                         mapping.entries().iterator();
                     
                     @Override
                     protected T computeNext() {
                         while (iterator.hasNext()) {
-                            final Entry<Key<? extends Object>, Object> entry = iterator.next();
-                            final Key<? extends Object> key = entry.getKey();
+                            final Entry<Key<?>, Object> entry = iterator.next();
+                            final Key<?> key = entry.getKey();
                             if (key.getType() == type && predicate.apply(key.getMeta())) {
                                 @SuppressWarnings("unchecked")
                                 final T listener = (T) entry.getValue();
@@ -170,36 +163,24 @@ final class DefaultRegistry extends AbstractRegistry {
             } else if (method.equals(HASHCODE)) {
                 return hashCode();
             } else if (method.getReturnType() == void.class) {
-                if (silent) {
-                    DefaultRegistry.this.notifySilently(key, new Procedure<T>() {
-                        
-                        @Override
-                        public void apply(T listener) {
-                            try {
-                                method.invoke(listener, args);
-                            } catch (IllegalAccessException e) {
-                                throw new IllegalStateException(e);
-                            } catch (InvocationTargetException e) {
-                                throw new IllegalStateException(e);
-                            }
-                        }
-                        
-                    });
-                } else {
-                    DefaultRegistry.this.notify(key, new Procedure<T>() {
+                Procedure<T> procedure = new Procedure<T>() {
 
-                        @Override
-                        public void apply(T listener) {
-                            try {
-                                method.invoke(listener, args);
-                            } catch (IllegalAccessException e) {
-                                throw new IllegalStateException(e);
-                            } catch (InvocationTargetException e) {
-                                throw new IllegalStateException(e);
-                            }
+                    @Override
+                    public void apply(T listener) {
+                        try {
+                            method.invoke(listener, args);
+                        } catch (IllegalAccessException e) {
+                            throw new AssertionError(e);
+                        } catch (InvocationTargetException e) {
+                            throw Throwables.sneakyThrow(e.getCause());
                         }
-                        
-                    });
+                    }
+
+                };
+                if (silent) {
+                    DefaultRegistry.this.notifySilently(key, procedure);
+                } else {
+                    DefaultRegistry.this.notify(key, procedure);
                 }
                 return null;
             } else {
