@@ -21,6 +21,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import de.cosmocode.collections.Procedure;
+import de.cosmocode.commons.Throwables;
 import de.cosmocode.junit.UnitProvider;
 import de.cosmocode.palava.core.Registry.Key;
 import org.easymock.EasyMock;
@@ -28,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
@@ -565,6 +567,52 @@ public abstract class AbstractRegistryTest implements UnitProvider<Registry> {
 
         unit.register(key, listener);
         unit.proxy(key).doAnything();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void proxyTypeUndeclaredException() throws RuntimeException {
+        final Registry unit = unit();
+
+        final Listener listener = new Listener() {
+
+            @Override
+            public void doAnything() {
+                throw Throwables.sneakyThrow(new IOException());
+            }
+
+        };
+
+        unit.register(Listener.class, listener);
+
+        try {
+            unit.proxy(Listener.class).doAnything();
+        } catch (UndeclaredThrowableException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void proxyKeyUndeclaredException() throws RuntimeException {
+        final Registry unit = unit();
+
+        final Listener listener = new Listener() {
+
+            @Override
+            public void doAnything() {
+                throw Throwables.sneakyThrow(new IOException());
+            }
+
+        };
+
+        final Key<Listener> key = Key.get(Listener.class, Deprecated.class);
+
+        unit.register(key, listener);
+
+        try {
+            unit.proxy(key).doAnything();
+        } catch (UndeclaredThrowableException e) {
+            throw new AssertionError(e);
+        }
     }
 
     /**

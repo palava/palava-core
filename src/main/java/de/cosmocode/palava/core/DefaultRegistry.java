@@ -18,6 +18,7 @@ package de.cosmocode.palava.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -26,7 +27,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import de.cosmocode.collections.Procedure;
-import de.cosmocode.commons.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,17 +39,17 @@ import java.util.Map.Entry;
 /**
  * Default implementation of the {@link Registry} interface.
  *
- * @since 2.0
  * @author Willi Schoenborn
+ * @since 2.0
  */
 final class DefaultRegistry extends AbstractRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultRegistry.class);
-    
+
     private static final Method TO_STRING;
     private static final Method EQUALS;
     private static final Method HASHCODE;
-    
+
     static {
         try {
             TO_STRING = Object.class.getMethod("toString");
@@ -61,7 +61,7 @@ final class DefaultRegistry extends AbstractRegistry {
     }
 
     private final Multimap<Key<? extends Object>, Object> mapping;
-    
+
     public DefaultRegistry() {
         final SetMultimap<Key<? extends Object>, Object> multimap = LinkedHashMultimap.create();
         this.mapping = Multimaps.synchronizedSetMultimap(multimap);
@@ -82,21 +82,21 @@ final class DefaultRegistry extends AbstractRegistry {
         final Iterable<T> listeners = (Iterable<T>) mapping.get(key);
         return Iterables.unmodifiableIterable(listeners);
     }
-    
+
     @Override
     public <T> Iterable<T> find(final Class<T> type, final Predicate<? super Object> predicate) {
         Preconditions.checkNotNull(type, "Type");
         Preconditions.checkNotNull(predicate, "Predicate");
-        
+
         return new Iterable<T>() {
-            
+
             @Override
             public Iterator<T> iterator() {
                 return new AbstractIterator<T>() {
-                    
+
                     private final Iterator<Entry<Key<?>, Object>> iterator =
                         mapping.entries().iterator();
-                    
+
                     @Override
                     protected T computeNext() {
                         while (iterator.hasNext()) {
@@ -110,58 +110,57 @@ final class DefaultRegistry extends AbstractRegistry {
                         }
                         return endOfData();
                     }
-                    
+
                 };
             }
-            
+
         };
     }
-    
+
     @Override
     public <T> T proxy(final Key<T> key) {
         return proxy(key, false);
     }
-    
+
     @Override
     public <T> T silentProxy(Key<T> key) {
         return proxy(key, true);
     }
-    
+
     private <T> T proxy(Key<T> key, boolean silent) {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkArgument(key.getType().isInterface(), "Type must be an interface");
         Preconditions.checkArgument(!key.getType().isAnnotation(), "Type must not be an annotation");
-        
+
         final ClassLoader loader = getClass().getClassLoader();
         final Class<?>[] interfaces = {key.getType()};
         final InvocationHandler handler = new ProxyHandler<T>(key, silent);
-        
+
         @SuppressWarnings("unchecked")
         final T proxy = (T) java.lang.reflect.Proxy.newProxyInstance(loader, interfaces, handler);
         LOG.debug("Created proxy for {}", key);
         return proxy;
     }
-    
+
     /**
      * Inner class allowing to encapsulate proxy invocation handling.
      *
-     * @author Willi Schoenborn
      * @param <T>
+     * @author Willi Schoenborn
      */
     private final class ProxyHandler<T> implements InvocationHandler {
-        
+
         private final Key<T> key;
-        
+
         private final boolean silent;
-        
+
         public ProxyHandler(Key<T> key, boolean silent) {
             this.key = Preconditions.checkNotNull(key, "Key");
             this.silent = silent;
         }
-        
+
         @Override
-        public Object invoke(Object proxy, final Method method, final Object[] args) 
-            throws IllegalAccessException, InvocationTargetException {
+        public Object invoke(Object proxy, final Method method, final Object[] args) {
             if (method.equals(TO_STRING)) {
                 return String.format("%s.proxy(%s)", DefaultRegistry.this, key);
             } else if (method.equals(EQUALS)) {
@@ -178,7 +177,7 @@ final class DefaultRegistry extends AbstractRegistry {
                         } catch (IllegalAccessException e) {
                             throw new AssertionError(e);
                         } catch (InvocationTargetException e) {
-                            throw Throwables.sneakyThrow(e.getCause());
+                            throw propagate(e.getCause(), method.getExceptionTypes());
                         }
                     }
 
@@ -192,6 +191,19 @@ final class DefaultRegistry extends AbstractRegistry {
             } else {
                 throw new IllegalStateException(String.format("%s must return void", method));
             }
+        }
+
+        private RuntimeException propagate(Throwable throwable, Class<?>[] types) {
+            Throwables.propagateIfPossible(throwable);
+
+            @SuppressWarnings("unchecked")
+            final Class<? extends RuntimeException>[] exceptionTypes = Class[].class.cast(types);
+
+            for (Class<? extends RuntimeException> type : exceptionTypes) {
+                Throwables.propagateIfInstanceOf(throwable, type);
+            }
+
+            throw Throwables.propagate(throwable);
         }
 
         @Override
@@ -231,9 +243,9 @@ final class DefaultRegistry extends AbstractRegistry {
         private DefaultRegistry getOuterType() {
             return DefaultRegistry.this;
         }
-        
+
     }
-    
+
     @Override
     public <T> void notify(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
@@ -249,7 +261,7 @@ final class DefaultRegistry extends AbstractRegistry {
     public <T> void notifySilent(Key<T> key, Procedure<? super T> command) {
         notifySilently(key, command);
     }
-    
+
     @Override
     public <T> void notifySilently(Key<T> key, Procedure<? super T> command) {
         Preconditions.checkNotNull(key, "Key");
@@ -259,14 +271,14 @@ final class DefaultRegistry extends AbstractRegistry {
             LOG.trace("notifying {} for {}", listener, key);
             try {
                 command.apply(listener);
-            /*CHECKSTYLE:OFF*/
+                /*CHECKSTYLE:OFF*/
             } catch (RuntimeException e) {
-            /*CHECKSTYLE:ON*/
+                /*CHECKSTYLE:ON*/
                 LOG.error("Notifying listener failed", e);
             }
-        }    
+        }
     }
-    
+
     @Override
     public <T> boolean remove(Key<T> key, T listener) {
         Preconditions.checkNotNull(key, "Key");
