@@ -19,6 +19,7 @@ package de.cosmocode.palava.core.inject;
 import java.util.Map;
 import java.util.Properties;
 
+import de.cosmocode.palava.core.aop.SuppressInject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,6 +40,7 @@ import de.cosmocode.junit.UnitProvider;
  *
  * @author Willi Schoenborn
  */
+@SuppressInject
 public final class PropertiesConverterTest implements UnitProvider<PropertiesConverter> {
 
     private static final TypeLiteral<Properties> LITERAL = TypeLiteral.get(Properties.class);

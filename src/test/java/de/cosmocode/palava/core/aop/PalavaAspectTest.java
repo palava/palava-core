@@ -35,7 +35,7 @@ import com.google.inject.Stage;
 public final class PalavaAspectTest {
 
     /**
-     * Tests whether {@link TrueTarget#run()} returns {@link Boolean#FALSE}
+     * Tests whether {@link TrueTarget#call()} returns {@link Boolean#FALSE}
      * when {@link Guice#createInjector(Module...)} is used.
      *
      * @since 2.9
@@ -48,7 +48,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link TrueTarget#run()} returns {@link Boolean#FALSE}
+     * Tests whether {@link TrueTarget#call()} returns {@link Boolean#FALSE}
      * when {@link Guice#createInjector(Stage, Module...)} is used.
      *
      * @since 2.9
@@ -61,7 +61,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link TrueTarget#run()} returns {@link Boolean#FALSE}
+     * Tests whether {@link TrueTarget#call()} returns {@link Boolean#FALSE}
      * when {@link Guice#createInjector(Iterable)} is used.
      *
      * @since 2.9
@@ -75,7 +75,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link TrueTarget#run()} returns {@link Boolean#FALSE}
+     * Tests whether {@link TrueTarget#call()} returns {@link Boolean#FALSE}
      * when {@link Guice#createInjector(Stage, Iterable)} is used.
      *
      * @since 2.9
@@ -89,7 +89,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link FalseTarget#run()} returns {@link Boolean#TRUE}
+     * Tests whether {@link FalseTarget#call()} returns {@link Boolean#TRUE}
      * when {@link Guice#createInjector(Module...)} is used.
      *
      * @since 2.9
@@ -102,7 +102,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link FalseTarget#run()} returns {@link Boolean#TRUE}
+     * Tests whether {@link FalseTarget#call()} returns {@link Boolean#TRUE}
      * when {@link Guice#createInjector(Stage, Module...)} is used.
      *
      * @since 2.9
@@ -115,7 +115,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link FalseTarget#run()} returns {@link Boolean#TRUE}
+     * Tests whether {@link FalseTarget#call()} returns {@link Boolean#TRUE}
      * when {@link Guice#createInjector(Iterable)} is used.
      *
      * @since 2.9
@@ -129,7 +129,7 @@ public final class PalavaAspectTest {
     }
 
     /**
-     * Tests whether {@link FalseTarget#run()} returns {@link Boolean#TRUE}
+     * Tests whether {@link FalseTarget#call()} returns {@link Boolean#TRUE}
      * when {@link Guice#createInjector(Stage, Iterable)} is used.
      *
      * @since 2.9

@@ -44,7 +44,7 @@ public final class NegateAspect extends PalavaAspect {
      */
     @Around("call(@de.cosmocode.palava.core.aop.Negate * *.*())")
     public Boolean block(ProceedingJoinPoint point) {
-        checkState();
+        checkInjected();
         LOG.trace("Negating {}", point.getStaticPart());
         
         try {

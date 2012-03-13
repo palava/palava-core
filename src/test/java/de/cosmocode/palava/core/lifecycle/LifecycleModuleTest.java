@@ -16,6 +16,7 @@
 
 package de.cosmocode.palava.core.lifecycle;
 
+import de.cosmocode.palava.core.aop.SuppressInject;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,6 +34,7 @@ import de.cosmocode.palava.core.event.FrameworkStop;
  *
  * @author Willi Schoenborn
  */
+@SuppressInject
 public final class LifecycleModuleTest {
 
     /**
